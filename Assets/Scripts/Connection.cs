@@ -3,15 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.SceneManagement;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class Connection : MonoBehaviourPunCallbacks
 {
+    public static GameObject connection;
+
     // Start is called before the first frame update
-    void Start()
+    void Awake()
+    {
+        if (connection != gameObject)
+        {
+            connection = gameObject;
+            DontDestroyOnLoad(gameObject);
+        } else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void Start()
     {
         PhotonNetwork.ConnectUsingSettings();
     }
 
+    public void CreateRoom()
+    {
+        Hashtable roomHashtable = new Hashtable();
+        roomHashtable.Add("Score", 0);
+        RoomOptions roomOptions = new RoomOptions();
+
+        roomOptions.CustomRoomProperties = roomHashtable;
+        roomOptions.IsOpen= true;
+        roomOptions.IsVisible = true;
+        roomOptions.MaxPlayers = 1;
+        PhotonNetwork.CreateRoom("Random" + Random.Range(0, 100), roomOptions);
+    }
+
+    // Funções do Photon
     public override void OnConnectedToMaster()
     {
         print("Conectou ao servidor");
@@ -21,7 +51,8 @@ public class Connection : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         print("Entrou no lobby");
-        PhotonNetwork.JoinRandomRoom();
+        SceneManager.LoadScene("Lobby");
+        //PhotonNetwork.JoinRandomRoom();
     }
 
     public override void OnCreatedRoom()
