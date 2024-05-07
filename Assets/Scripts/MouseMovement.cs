@@ -1,38 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MouseMovement : MonoBehaviour
 {
-    public float mouseSensitivity;
-    public GameObject head;
+
+    public float mouseSensitivity = 100f;
 
     float xRotation = 0f;
     float yRotation = 0f;
 
     void Start()
     {
+        //Locking the cursor to the middle of the screen and making it invisible
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        // Movimento do mouse
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
-        // Rotação da cabeça apenas no eixo X (para cima e para baixo)
+        //control rotation around x axis (Look up and down)
         xRotation -= mouseY;
+
+        //we clamp the rotation so we cant Over-rotate (like in real life)
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        // Rotação do corpo apenas no eixo Y (para a esquerda e para a direita)
+        //control rotation around y axis (Look up and down)
         yRotation += mouseX;
 
-        // Aplicar rotação do corpo
-        transform.rotation = Quaternion.Euler(0f, yRotation, 0f);
+        //applying both rotations
+        transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0f);
 
-        // Aplicar rotação da cabeça
-        head.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
     }
 }
