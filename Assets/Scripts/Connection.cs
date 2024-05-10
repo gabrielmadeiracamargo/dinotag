@@ -39,7 +39,7 @@ public class Connection : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        if (PhotonNetwork.IsConnected) connectionStatus.GetComponent<TextMeshProUGUI>().text = "    Status: <color=green>Online";
+        if (PhotonNetwork.IsConnected && connectionStatus != null) connectionStatus.GetComponent<TextMeshProUGUI>().text = "    Status: <color=green>Online";
         else connectionStatus.GetComponent<TextMeshProUGUI>().text = "    Status: <color=red>Offline";
     }
 
@@ -77,12 +77,15 @@ public class Connection : MonoBehaviourPunCallbacks
 
     public override void OnCreatedRoom()
     {
+        
         print($"Criou a sala {input}");
     }
 
     public override void OnJoinedRoom()
     {
         print($"Entrou na sala {input}");
+        if (PhotonNetwork.IsMasterClient) PhotonNetwork.LoadLevel("Game");
+        print($"Entrou na sala {PhotonNetwork.CurrentRoom.Name}");
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message) // criar sala se não tiver nenhuma
