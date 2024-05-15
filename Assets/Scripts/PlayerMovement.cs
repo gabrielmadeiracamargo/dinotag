@@ -1,9 +1,11 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public GameObject playerCam;
     public CharacterController controller;
 
     public float speed = 12f;
@@ -20,9 +22,15 @@ public class PlayerMovement : MonoBehaviour
 
     public bool isGrounded;
 
+    public void Awake()
+    {
+        if (!GetComponent<PhotonView>().IsMine) playerCam.SetActive(false);
+    }
 
     void Update()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
+
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
         if (isGrounded && velocity.y < 0) velocity.y = -2f;

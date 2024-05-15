@@ -1,4 +1,5 @@
 using UnityEngine;
+using Photon.Pun;
 
 public class MouseMovement : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class MouseMovement : MonoBehaviour
 
     void Update()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
+
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 

@@ -29,18 +29,22 @@ public class Connection : MonoBehaviourPunCallbacks
             Destroy(gameObject);
         }
 
-        PhotonNetwork.ConnectUsingSettings();
         //roomHashtable.Add("Score", 0);
         roomOptions.CustomRoomProperties = roomHashtable;
         roomOptions.IsOpen = true;
         roomOptions.IsVisible = true;
         roomOptions.MaxPlayers = 2;
+
+        PhotonNetwork.ConnectUsingSettings();
     }
 
     private void Update()
     {
-        if (PhotonNetwork.IsConnected && connectionStatus != null) connectionStatus.GetComponent<TextMeshProUGUI>().text = "    Status: <color=green>Online";
-        else connectionStatus.GetComponent<TextMeshProUGUI>().text = "    Status: <color=red>Offline";
+        if (connectionStatus!=null)
+        {
+            if (PhotonNetwork.IsConnected) connectionStatus.GetComponent<TextMeshProUGUI>().text = "    Status: <color=green>Online";
+            else connectionStatus.GetComponent<TextMeshProUGUI>().text = "    Status: <color=red>Offline";
+        }
     }
 
     public void ReadRoomInputName(string s)
