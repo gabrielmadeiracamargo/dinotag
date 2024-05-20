@@ -1,213 +1,99 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class AIMovement : MonoBehaviour
 {
-    [Header("Variáveis públicas")]
-    public NavMeshAgent navMeshAgent;
-    public float startWaitTime = 4;
-    public float timeToRotate = 2;
-    public float speedWalk = 2;
-    public float speedRun = 9;
+    Animator animator;
 
-    public float viewRadius = 15;
-    public float viewAngle = 90;
-    public LayerMask playerMask;
-    public LayerMask obstacleMask;
-    public float meshResolution = 1f;
-    public int edgeIterations = 4;
-    public float edgeDistance = 0.5f;
+    public float moveSpeed, rotationSpeed = 100f; // Velocidade de rotação
 
-    public Transform[] waypoints;
-    [Header ("Variáveis privadas")]
-    [SerializeField] int m_CurrentWaypointIndex;
+    Vector3 stopPosition;
 
-    [SerializeField] Vector3 playerLastPosition = Vector3.zero;
-    [SerializeField] Vector3 m_PlayerPosition;
+    float walkTime;
+    public float walkCounter;
+    float waitTime;
+    public float waitCounter;
 
-    [SerializeField] float m_WaitTime;
-    [SerializeField] float m_TimeToRotate;
-    [SerializeField] bool m_PlayerInRange;
-    [SerializeField] bool m_PlayerNear;
-    [SerializeField] bool m_IsPatrol;
-    [SerializeField] bool m_CaughtPlayer;
+    int WalkDirection;
+    Quaternion targetRotation;
 
-    private void Start()
+    public bool isWalking;
+
+    // Start is called before the first frame update
+    void Start()
     {
-        m_PlayerPosition = Vector3.zero;
-        m_IsPatrol = true;
-        m_CaughtPlayer= false;
-        m_PlayerInRange= false;
-        m_WaitTime = startWaitTime;
-        m_TimeToRotate = timeToRotate;
+        animator = GetComponent<Animator>();
 
-        m_CurrentWaypointIndex= 0;
-        navMeshAgent = GetComponent<NavMeshAgent>();
+        //So that all the prefabs don't move/stop at the same time
+        walkTime = Random.Range(3, 6);
+        waitTime = Random.Range(5, 7);
 
-        navMeshAgent.isStopped= false;
-        navMeshAgent.speed = speedWalk;
-        navMeshAgent.SetDestination(waypoints[m_CurrentWaypointIndex].position);
+        waitCounter = waitTime;
+        walkCounter = walkTime;
+
+        ChooseDirection();
     }
 
-    private void Update()
+    // Update is called once per frame
+    void Update()
     {
-        EnviromentView();
+        if (isWalking)
+        {
+            animator.SetBool("isRunning", true);
 
-        if (!m_IsPatrol)
-        {
-            Chasing();
-        }
-        else
-        {
-            Patroling();
-        }
-    }
+            walkCounter -= Time.deltaTime;
 
-    private void Chasing()
-    {
-        m_PlayerNear = false;
-        playerLastPosition = Vector3.zero;
+            // Rotaciona suavemente em direção ao alvo
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
-        if (!m_CaughtPlayer)
-        {
-            Move(speedRun);
-            navMeshAgent.SetDestination(m_PlayerPosition);
-        }
-        if (navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
-        {
-            if(m_WaitTime <= 0 && !m_CaughtPlayer && Vector3.Distance(transform.position, GameObject.FindGameObjectWithTag("Player").transform.position) >= 6f) 
-            {
-                m_IsPatrol = true;
-                m_PlayerNear = false;
-                Move(speedWalk);
-                m_TimeToRotate = timeToRotate;
-                m_WaitTime = startWaitTime;
-                navMeshAgent.SetDestination(waypoints[m_CurrentWaypointIndex].position);
-            }
-            else
-            {
-                if (Vector3.Distance(transform.position, GameObject.FindGameObjectWithTag("Player").transform.position) >= 2.5f)
-                {
-                    Stop();
-                    m_WaitTime -= Time.deltaTime;
-                }
-            }
-        }
-    }
+            // Move para frente na direção que está enfrentando
+            transform.position += transform.forward * moveSpeed * Time.deltaTime;
 
-    void Patroling()
-    {
-        if(m_PlayerNear)
-        {
-            if(m_TimeToRotate <= 0)
+            if (walkCounter <= 0)
             {
-                Move(speedWalk);
-                LookingPlayer(playerLastPosition);
-            }
-            else
-            {
-                Stop();
-                m_TimeToRotate -= Time.deltaTime;
+                stopPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+                isWalking = false;
+                //stop movement
+                transform.position = stopPosition;
+                //reset the waitCounter
+                waitCounter = waitTime;
             }
         }
         else
         {
-            m_PlayerNear = false;
-            playerLastPosition = Vector3.zero;
-            navMeshAgent.SetDestination(waypoints[m_CurrentWaypointIndex].position);
-            if (navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
+            animator.SetBool("isRunning", false);
+            waitCounter -= Time.deltaTime;
+
+            if (waitCounter <= 0)
             {
-                if(m_WaitTime <= 0)
-                {
-                    NextPoint();
-                    Move(speedWalk);
-                    m_WaitTime = startWaitTime;
-                }
-                else
-                {
-                    Stop();
-                    m_WaitTime -= Time.deltaTime;
-                }
+                ChooseDirection();
             }
         }
     }
 
-    void Move(float speed)
+    public void ChooseDirection()
     {
-        navMeshAgent.isStopped = false;
-        navMeshAgent.speed = speed;
-    }
+        WalkDirection = Random.Range(0, 4);
 
-    void Stop()
-    {
-        navMeshAgent.isStopped = true; 
-        navMeshAgent.speed = 0;
-    }
-
-    public void NextPoint()
-    {
-        m_CurrentWaypointIndex = (m_CurrentWaypointIndex+ 1) % waypoints.Length;
-        navMeshAgent.SetDestination(waypoints[m_CurrentWaypointIndex].position);
-    }
-
-    void CaughtPlayer()
-    {
-        m_CaughtPlayer= true;
-    }
-
-    void LookingPlayer(Vector3 player)
-    {
-        navMeshAgent.SetDestination(player);
-        if (Vector3.Distance(transform.position, player) <= 0.3)
+        // Define a rotação alvo baseada na direção escolhida
+        switch (WalkDirection)
         {
-            if (m_WaitTime <= 0)
-            {
-                m_PlayerNear = false;
-                Move(speedWalk);
-                navMeshAgent.SetDestination(waypoints[m_CurrentWaypointIndex].position);
-                m_WaitTime = startWaitTime;
-                m_TimeToRotate = timeToRotate;
-            }
-            else
-            {
-                Stop();
-                m_WaitTime -= Time.deltaTime;
-            }
+            case 0:
+                targetRotation = Quaternion.Euler(0f, 0f, 0f);
+                break;
+            case 1:
+                targetRotation = Quaternion.Euler(0f, 90f, 0f);
+                break;
+            case 2:
+                targetRotation = Quaternion.Euler(0f, -90f, 0f);
+                break;
+            case 3:
+                targetRotation = Quaternion.Euler(0f, 180f, 0f);
+                break;
         }
+
+        isWalking = true;
+        walkCounter = walkTime;
     }
-
-    void EnviromentView()
-    {
-        Collider[] playerInRange = Physics.OverlapSphere(transform.position, viewRadius, playerMask);
-
-        for (int i = 0; i < playerInRange.Length; i++) 
-        { 
-            Transform player = playerInRange[i].transform;
-            Vector3 dirToPlayer = (player.position - transform.position).normalized;
-            if (Vector3.Angle(transform.forward, dirToPlayer)< viewAngle / 2)
-            {
-                float dstToPlayer = Vector3.Distance(transform.position, player.position);
-                if (!Physics.Raycast(transform.position, dirToPlayer, dstToPlayer, obstacleMask))
-                {
-                    m_PlayerInRange = true;
-                    m_IsPatrol = false;
-                }
-                else
-                {
-                    m_PlayerInRange = false;
-                }
-            }
-            if (Vector3.Distance(transform.position, player.position) > viewRadius)
-            {
-                m_PlayerInRange = false;
-            }
-            if (m_PlayerInRange)
-            {
-               m_PlayerPosition = player.transform.position;
-            }
-        }
-    }
-
 }
