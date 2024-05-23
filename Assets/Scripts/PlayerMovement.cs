@@ -2,8 +2,9 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviourPunCallbacks
 {
     public GameObject playerCam;
     public CharacterController controller;
@@ -22,9 +23,20 @@ public class PlayerMovement : MonoBehaviour
 
     public bool isGrounded;
 
+    public TMP_Text nickTxt;
+
+    [PunRPC]
+    public void RPC_SetNickname(int index)
+    {
+        nickTxt.text = PhotonNetwork.PlayerList[index-1].NickName;
+    }
+
     public void Awake()
     {
         if (!GetComponent<PhotonView>().IsMine) playerCam.SetActive(false);
+        else nickTxt.gameObject.SetActive(false);
+
+        GetComponent<PhotonView>().RPC("RPC_SetNickname", RpcTarget.OthersBuffered, GetComponent<PhotonView>().ControllerActorNr);
     }
 
     void Update()

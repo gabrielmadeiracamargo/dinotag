@@ -2347,6 +2347,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   connectionStatus: {fileID: 1516115612}
   input: 
+  nick: gabriel
 --- !u!4 &1816533642
 Transform:
   m_ObjectHideFlags: 0
