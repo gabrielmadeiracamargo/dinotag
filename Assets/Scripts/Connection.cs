@@ -11,7 +11,8 @@ public class Connection : MonoBehaviourPunCallbacks
 {
     public static GameObject connection;
     public GameObject connectionStatus;
-    [SerializeField] private string input, nick;
+    public string input;
+    public string nick;
     Hashtable roomHashtable = new Hashtable();
     RoomOptions roomOptions = new RoomOptions();
 
@@ -52,6 +53,12 @@ public class Connection : MonoBehaviourPunCallbacks
     public void ReadRoomInputName(string s)
     {
         input = s;
+    }
+
+    public void ReadNickname(string s)
+    {
+        nick = s;
+        PhotonNetwork.LocalPlayer.NickName = nick;
     }
 
     public void CreateRoom()
