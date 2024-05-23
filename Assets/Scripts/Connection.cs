@@ -5,14 +5,21 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using TMPro;
 
 public class Connection : MonoBehaviourPunCallbacks
 {
     public static GameObject connection;
+    public GameObject connectionStatus;
+    [SerializeField] private string input;
+    Hashtable roomHashtable = new Hashtable();
+    RoomOptions roomOptions = new RoomOptions();
 
     // Start is called before the first frame update
     void Awake()
     {
+        PhotonNetwork.AutomaticallySyncScene = true;
+
         if (connection != gameObject)
         {
             connection = gameObject;
@@ -21,24 +28,43 @@ public class Connection : MonoBehaviourPunCallbacks
         {
             Destroy(gameObject);
         }
+
+        //roomHashtable.Add("Score", 0);
+        roomOptions.CustomRoomProperties = roomHashtable;
+        roomOptions.IsOpen = true;
+        roomOptions.IsVisible = true;
+        roomOptions.MaxPlayers = 2;
+
+        PhotonNetwork.ConnectUsingSettings();
     }
 
-    private void Start()
+    private void Update()
     {
-        PhotonNetwork.ConnectUsingSettings();
+        if (connectionStatus!=null)
+        {
+            if (PhotonNetwork.IsConnected) connectionStatus.GetComponent<TextMeshProUGUI>().text = "    Status: <color=green>Online";
+            else connectionStatus.GetComponent<TextMeshProUGUI>().text = "    Status: <color=red>Offline";
+        }
+    }
+
+    public void ReadRoomInputName(string s)
+    {
+        input = s;
     }
 
     public void CreateRoom()
     {
-        Hashtable roomHashtable = new Hashtable();
-        roomHashtable.Add("Score", 0);
-        RoomOptions roomOptions = new RoomOptions();
+        PhotonNetwork.CreateRoom(input, roomOptions);
+    }
 
-        roomOptions.CustomRoomProperties = roomHashtable;
-        roomOptions.IsOpen= true;
-        roomOptions.IsVisible = true;
-        roomOptions.MaxPlayers = 1;
-        PhotonNetwork.CreateRoom("Random" + Random.Range(0, 100), roomOptions);
+    public void JoinRoom()
+    {
+        PhotonNetwork.JoinRoom(input);
+    }
+
+    public void QuickPlay()
+    {
+        PhotonNetwork.JoinRandomOrCreateRoom();
     }
 
     // Funções do Photon
@@ -51,18 +77,19 @@ public class Connection : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         print("Entrou no lobby");
-        SceneManager.LoadScene("Lobby");
-        //PhotonNetwork.JoinRandomRoom();
     }
 
     public override void OnCreatedRoom()
     {
-        print("Criou a sala");
+        
+        print($"Criou a sala {input}");
     }
 
     public override void OnJoinedRoom()
     {
-        print("Entrou na sala");
+        print($"Entrou na sala {input}");
+        if (PhotonNetwork.IsMasterClient) PhotonNetwork.LoadLevel("Game");
+        print($"Entrou na sala {PhotonNetwork.CurrentRoom.Name}");
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message) // criar sala se não tiver nenhuma

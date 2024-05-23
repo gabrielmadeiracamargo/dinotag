@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4775219554002278}
   - component: {fileID: 33326053453097746}
   - component: {fileID: 23347498147556770}
+  - component: {fileID: 8240815239740995807}
   m_Layer: 0
   m_Name: LowPoly - FirTree A
   m_TagString: Untagged
@@ -84,3 +85,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8240815239740995807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1069289201138886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 238f3c2fdd2a2d4458b18cec8d40347d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ItemName: Tree
