@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 33326053453097746}
   - component: {fileID: 23347498147556770}
   - component: {fileID: 8240815239740995807}
+  - component: {fileID: 4434544194236561187}
   m_Layer: 0
   m_Name: LowPoly - FirTree A
   m_TagString: Untagged
@@ -97,4 +98,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 238f3c2fdd2a2d4458b18cec8d40347d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ItemName: Tree
+  ItemName: "\xC1rvore"
+  selectionManager: {fileID: 0}
+--- !u!65 &4434544194236561187
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1069289201138886}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 3.318054, y: 3.491307, z: 9.527887}
+  m_Center: {x: 0.00000011920929, y: -1.401767e-13, z: 4.6256967}

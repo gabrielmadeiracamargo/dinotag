@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class PlayerMovement : MonoBehaviourPunCallbacks
+public class PlayerMovement : MonoBehaviourPunCallbacks // usando pra outras coisas além da movimentação
 {
     public GameObject playerCam;
     public CharacterController controller;
@@ -24,6 +24,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     public bool isGrounded;
 
     public TMP_Text nickTxt;
+    public PhotonView phView;
+
+    public Material skin2;
 
     [PunRPC]
     public void RPC_SetNickname(int index)
@@ -33,15 +36,18 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
     public void Awake()
     {
-        if (!GetComponent<PhotonView>().IsMine) playerCam.SetActive(false);
+        phView = GetComponent<PhotonView>();
+
+        if (!phView.IsMine) playerCam.SetActive(false);
         else nickTxt.gameObject.SetActive(false);
 
-        GetComponent<PhotonView>().RPC("RPC_SetNickname", RpcTarget.OthersBuffered, GetComponent<PhotonView>().ControllerActorNr);
+
+        phView.RPC("RPC_SetNickname", RpcTarget.OthersBuffered, phView.ControllerActorNr);
     }
 
     void Update()
     {
-        if (!GetComponent<PhotonView>().IsMine) return;
+        if (!phView.IsMine) return;
 
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
@@ -56,6 +62,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
+            photonView.RPC("RPC_ChangeColor", RpcTarget.AllBuffered);
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
@@ -66,5 +73,14 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
         controller.Move(velocity * Time.deltaTime);
 
+    }
+
+    [PunRPC]
+    public void RPC_ChangeColor()
+    {
+        for (int i = 0; i < GetComponentsInChildren<SkinnedMeshRenderer>().Length; i++)
+        {
+            GetComponentsInChildren<SkinnedMeshRenderer>()[i].material = skin2;
+        }
     }
 }

@@ -82,7 +82,7 @@ public class Connection : MonoBehaviourPunCallbacks
         print("Conectou ao servidor");
         PhotonNetwork.JoinLobby();
     }
-
+    /*
     public override void OnJoinedLobby()
     {
         print("Entrou no lobby");
@@ -93,22 +93,27 @@ public class Connection : MonoBehaviourPunCallbacks
         
         print($"Criou a sala {input}");
     }
-
+    */
     public override void OnJoinedRoom()
     {
-        print($"Entrou na sala {input}");
+        //print($"Entrou na sala {input}");
         if (PhotonNetwork.IsMasterClient) PhotonNetwork.LoadLevel("Game");
-        print($"Entrou na sala {PhotonNetwork.CurrentRoom.Name}");
+        //print($"Entrou na sala {PhotonNetwork.CurrentRoom.Name}");
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message) // criar sala se não tiver nenhuma
     {
-        print("Falhou na aleatória");
+        //print("Falhou na aleatória");
         PhotonNetwork.CreateRoom($"Room{Random.Range(100, 1000)} {Random.Range(100,1000)}");
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
-        print("Falhou na específica");
+        //print("Falhou na específica");
+    }
+
+    public void OnQuitButtonClicked()
+    {
+        Application.Quit();
     }
 }
