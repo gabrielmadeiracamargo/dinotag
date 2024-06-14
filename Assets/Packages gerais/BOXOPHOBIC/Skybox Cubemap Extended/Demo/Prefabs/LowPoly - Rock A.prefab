@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23445742227598232}
   - component: {fileID: 1220305890364133290}
   - component: {fileID: 3755619983872992027}
+  - component: {fileID: 3492205114754444229}
   m_Layer: 0
   m_Name: LowPoly - Rock A
   m_TagString: Untagged
@@ -29,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 1927372005322154}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 20, y: 15, z: 20}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -111,3 +112,30 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0574602, y: 0.97157097, z: 0.50731593}
   m_Center: {x: 0, y: 0.000002861023, z: 0.17922325}
+--- !u!205 &3492205114754444229
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1927372005322154}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 0, z: 0}
+  m_Size: 1
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.6
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 23445742227598232}
+  - screenRelativeHeight: 0.3
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 23445742227598232}
+  - screenRelativeHeight: 0.1
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 23445742227598232}
+  m_Enabled: 1
