@@ -22,7 +22,6 @@ public class InteractableObject : MonoBehaviour
 
     public void Awake()
     {
-        selectionManager = GameObject.FindGameObjectWithTag("Player").GetComponent<SelectionManager>();
     }
 
     public string GetItemName()
@@ -31,6 +30,8 @@ public class InteractableObject : MonoBehaviour
     }
     private void Update()
     {
+        selectionManager = GameObject.FindGameObjectsWithTag("Player")[0].GetComponent<SelectionManager>();
+
         if (selectionManager.targetName == gameObject.name)
         {
             for (int i = 0; i < GetComponent<MeshRenderer>().materials.Length; i++)

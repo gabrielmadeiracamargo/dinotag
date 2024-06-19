@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Photon.Pun;
 
 public class SelectionManager : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class SelectionManager : MonoBehaviour
 
     void Update()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
 
         if (GameObject.Find("Canvas/Info Text") != null) 
         { 

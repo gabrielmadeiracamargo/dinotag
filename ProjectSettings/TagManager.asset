@@ -3,19 +3,21 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Obs
+  - Crash
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Player
+  - Ground
   - Water
   - UI
-  - Ground
-  - Obstacle
   - 
   - 
-  - 
+  - Pointer
+  - Not_In_Minimap
+  - Minimap_Layer
   - 
   - 
   - 

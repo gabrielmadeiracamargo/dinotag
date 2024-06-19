@@ -79,7 +79,7 @@ public class Connection : MonoBehaviourPunCallbacks
     // Funções do Photon
     public override void OnConnectedToMaster()
     {
-        print("Conectou ao servidor");
+        //print("Conectou ao servidor");
         PhotonNetwork.JoinLobby();
     }
     /*
