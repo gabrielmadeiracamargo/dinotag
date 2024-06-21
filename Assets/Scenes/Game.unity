@@ -441,6 +441,9 @@ MonoBehaviour:
   - {fileID: 1312478391}
   pauseMenu: {fileID: 1137690649}
   waitingText: {fileID: 610912960}
+  cutsceneEnded: 0
+  _director: {fileID: 0}
+  cutsceneObjects: {fileID: 0}
 --- !u!4 &12613852
 Transform:
   m_ObjectHideFlags: 0
@@ -3047,7 +3050,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &189220317
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10304,7 +10307,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &613706302
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14618,7 +14621,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &927492283
 Transform:
   m_ObjectHideFlags: 0

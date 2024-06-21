@@ -6,14 +6,20 @@ using Photon.Pun;
 public class EnterCar : MonoBehaviourPunCallbacks
 {
 
-    [SerializeField] GameObject player;
-
     private void OnTriggerStay(Collider collider)
     {
+        print("colidindo");
         if (collider.gameObject.CompareTag("Player") && Input.GetMouseButtonUp(0))
         {
-            player = GameObject.FindGameObjectWithTag("Player");
+            print("era pra entrar");
             GetComponent<PhotonView>().RPC("RPC_EnterCar", RpcTarget.AllBuffered);
+        }
+    }
+    private void OnTriggerEnter(Collider collider)
+    {
+        if (collider.gameObject.name == "Fuga" && PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.LoadLevel("Pastas temporárias de cada um/Nery/fugacarro");
         }
     }
 
@@ -28,7 +34,8 @@ public class EnterCar : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_EnterCar()
     {
-        player.SetActive(false);
+        print("rpc");
+        GameController.Instance.stevenPlayer.SetActive(false);
         GetComponent<CarController>().enabled = true;
         GetComponentInChildren<Camera>().enabled = true;
     }
@@ -36,8 +43,8 @@ public class EnterCar : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_ExitCar()
     {
-        player.SetActive(true);
-        player.transform.position = transform.position;
+        GameController.Instance.stevenPlayer.SetActive(true);
+        GameController.Instance.stevenPlayer.transform.position = transform.position;
         GetComponent<CarController>().enabled = false;
         GetComponentInChildren<Camera>().enabled = false;
     }

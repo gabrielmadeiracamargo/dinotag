@@ -78,15 +78,14 @@ public class GameController : MonoBehaviourPunCallbacks
             else OnPauseClosed();
         }
 
-        if (_director.time > 0) // cutscene começou
+        /*if (_director.time > 0) // cutscene começou
         {
             stevenPlayer.SetActive(false);
             dinoPlayer.SetActive(false);
-        }
+        }*/
         if (_director.time >= 62) // cutscene acabou
         {
             stevenPlayer.SetActive(true);
-            //stevenPlayer.transform.position = spawnPoints[0].transform.position; continuar
             dinoPlayer.SetActive(true);
             cutsceneObjects.SetActive(false);
             cutsceneEnded = true;
