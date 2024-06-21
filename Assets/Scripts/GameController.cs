@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.Playables;
 
 public class GameController : MonoBehaviourPunCallbacks
 {
@@ -12,6 +13,10 @@ public class GameController : MonoBehaviourPunCallbacks
     public Transform[] spawnPoints;
     [SerializeField] GameObject pauseMenu, waitingText;
     bool isOnPause;
+    public bool cutsceneEnded;
+    [SerializeField] PlayableDirector _director;
+    [SerializeField] GameObject cutsceneObjects;
+
 
     // Start is called before the first frame update
     void Awake()
@@ -57,14 +62,36 @@ public class GameController : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-        if (PhotonNetwork.PlayerList.Length == 1) 
+        if (PhotonNetwork.PlayerList.Length == 1)
             waitingText.SetActive(true);
-        else if (PhotonNetwork.PlayerList.Length == 2 && waitingText.activeSelf) waitingText.SetActive(false);
+        else if (PhotonNetwork.PlayerList.Length == 2)
+        {   if (!cutsceneEnded)
+            {
+                cutsceneObjects.SetActive(true);
+            }
+            if (waitingText.activeSelf) waitingText.SetActive(false);
+        }
 
         if (Input.GetButtonDown("Cancel"))
         {
             if (!isOnPause) OnPauseOpened();
             else OnPauseClosed();
         }
+
+        if (_director.time > 0) // cutscene começou
+        {
+            stevenPlayer.SetActive(false);
+            dinoPlayer.SetActive(false);
+        }
+        if (_director.time >= 62) // cutscene acabou
+        {
+            stevenPlayer.SetActive(true);
+            //stevenPlayer.transform.position = spawnPoints[0].transform.position; continuar
+            dinoPlayer.SetActive(true);
+            cutsceneObjects.SetActive(false);
+            cutsceneEnded = true;
+        }
     }
+
+    
 }
