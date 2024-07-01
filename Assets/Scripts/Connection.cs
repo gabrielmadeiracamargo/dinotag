@@ -97,7 +97,7 @@ public class Connection : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         //print($"Entrou na sala {input}");
-        if (PhotonNetwork.IsMasterClient) PhotonNetwork.LoadLevel("Pastas temporárias de cada um/Nery/Game");
+        if (PhotonNetwork.IsMasterClient) PhotonNetwork.LoadLevel("Game");
         //print($"Entrou na sala {PhotonNetwork.CurrentRoom.Name}");
     }
 

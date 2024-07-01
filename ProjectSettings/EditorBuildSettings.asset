@@ -9,9 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: "Assets/Pastas tempor\xE1rias de cada um/Nery/Game.unity"
-    guid: 042c75a7c056d92489acd49f8f764698
+    path: Assets/Scenes/Game.unity
+    guid: 32c9780e888ed91458f46d44f642c10c
   - enabled: 1
-    path: "Assets/Pastas tempor\xE1rias de cada um/Nery/fugacarro.unity"
-    guid: b87e5632b4dd1194fa8d9ef4be8365d5
+    path: Assets/Scenes/fugacarro.unity
+    guid: ddacb372123522b45b9d98c002516989
   m_configObjects: {}

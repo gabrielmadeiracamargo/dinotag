@@ -4,6 +4,8 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.Playables;
+using UnityEngine.SocialPlatforms.Impl;
+using System;
 
 public class GameController : MonoBehaviourPunCallbacks
 {
@@ -16,11 +18,14 @@ public class GameController : MonoBehaviourPunCallbacks
     public bool cutsceneEnded;
     [SerializeField] PlayableDirector _director;
     [SerializeField] GameObject cutsceneObjects;
-
+    [SerializeField] GameObject skipCutsceneButton;
+    public Material skybox;
+    public float timer;
 
     // Start is called before the first frame update
     void Awake()
     {
+        stevenPlayer = GameObject.FindGameObjectWithTag("Player");
         /*if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -62,12 +67,24 @@ public class GameController : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-        if (PhotonNetwork.PlayerList.Length == 1)
-            waitingText.SetActive(true);
+        timer += Time.deltaTime;
+        if ((int)skybox.GetFloat("_CubemapTransition") != 1)
+        {
+            skybox.SetFloat("_CubemapTransition", timer / (60 * 5));
+            skybox.SetFloat("_FogIntensity", timer / (60 * 5));
+        }
+
+        if (PhotonNetwork.PlayerList.Length == 1) waitingText.SetActive(true);
         else if (PhotonNetwork.PlayerList.Length == 2)
-        {   if (!cutsceneEnded)
+        {   
+            if (!cutsceneEnded)
             {
+                GameObject.FindGameObjectWithTag("Player").transform.position = new Vector3 (150,-150,0);
+                GameObject.FindGameObjectWithTag("TRex").transform.position = new Vector3 (150,-150,0);
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
                 cutsceneObjects.SetActive(true);
+                skipCutsceneButton.SetActive(true);
             }
             if (waitingText.activeSelf) waitingText.SetActive(false);
         }
@@ -78,19 +95,31 @@ public class GameController : MonoBehaviourPunCallbacks
             else OnPauseClosed();
         }
 
-        /*if (_director.time > 0) // cutscene começou
+        if (_director.time >= 62 && !cutsceneEnded)
         {
-            stevenPlayer.SetActive(false);
-            dinoPlayer.SetActive(false);
-        }*/
-        if (_director.time >= 62) // cutscene acabou
-        {
-            stevenPlayer.SetActive(true);
-            dinoPlayer.SetActive(true);
-            cutsceneObjects.SetActive(false);
+            GameObject.FindGameObjectWithTag("Player").transform.position = spawnPoints[0].position;
+            GameObject.FindGameObjectWithTag("TRex").transform.position = spawnPoints[1].position;
             cutsceneEnded = true;
+        }
+
+        if (cutsceneEnded)
+        {
+            cutsceneObjects.SetActive(false);
+            skipCutsceneButton.SetActive(false);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
     }
 
-    
+    public void OnQuitButtonClicked()
+    {
+        Application.Quit();
+    }
+
+    public void SkipCutscene()
+    {
+        skipCutsceneButton.SetActive(false);
+        _director.time = 58.5f;
+    }
+
 }

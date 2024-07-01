@@ -78,7 +78,7 @@ public class Player : MonoBehaviourPunCallbacks // usando pra outras coisas além
 
     public void ChangeSkin()
     {
-        GameObject.FindGameObjectsWithTag("Player")[PhotonNetwork.LocalPlayer.ActorNumber - 1].GetComponent<PhotonView>().RPC("RPC_ChangeSkin", RpcTarget.AllBuffered);
+        GameObject.FindGameObjectWithTag("Player").GetComponent<PhotonView>().RPC("RPC_ChangeSkin", RpcTarget.AllBuffered);
     }
 
     [PunRPC]

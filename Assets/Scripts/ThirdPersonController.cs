@@ -115,7 +115,8 @@ public class ThirdPersonController : MonoBehaviourPunCallbacks
 
         // Jump animation
         if ( animator != null )
-            animator.SetBool("air", cc.isGrounded == false );
+            animator.SetBool("air", isJumping == true);
+
 
         // Handle can jump or not
         if ( inputJump && cc.isGrounded )
@@ -219,6 +220,7 @@ public class ThirdPersonController : MonoBehaviourPunCallbacks
             isJumping = false;
         }
     }
+
     public void ChangeSkin()
     {
        GetComponent<PhotonView>().RPC("RPC_ChangeSkin", RpcTarget.AllBuffered);
@@ -227,13 +229,16 @@ public class ThirdPersonController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_ChangeSkin()
     {
-        // Alterna para a próxima skin na lista
-        currentSkinIndex = (currentSkinIndex + 1) % skins.Count;
-        Material newSkin = skins[currentSkinIndex];
-
-        foreach (var renderer in GetComponentsInChildren<SkinnedMeshRenderer>())
+        if (gameObject.CompareTag("Player"))
         {
-            renderer.material = newSkin;
+            // Alterna para a próxima skin na lista
+            currentSkinIndex = (currentSkinIndex + 1) % skins.Count;
+            Material newSkin = skins[currentSkinIndex];
+
+            foreach (var renderer in GetComponentsInChildren<SkinnedMeshRenderer>())
+            {
+                if (renderer != null) renderer.material = newSkin;
+            }
         }
     }
 
