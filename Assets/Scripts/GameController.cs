@@ -6,6 +6,8 @@ using Photon.Realtime;
 using UnityEngine.Playables;
 using UnityEngine.SocialPlatforms.Impl;
 using System;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviourPunCallbacks
 {
@@ -22,11 +24,18 @@ public class GameController : MonoBehaviourPunCallbacks
     public Material skybox;
     public float timer;
 
+    public ProgressBarCircle healthBar;
+    [SerializeField] GameObject uiObjectsToHide;
+
     // Start is called before the first frame update
     void Awake()
     {
+        if (LevelManager.Instance != null) LevelManager.Instance._loaderCanvas.SetActive(false);
+
         stevenPlayer = GameObject.FindGameObjectWithTag("Player");
-        /*if (Instance != null && Instance != this)
+        skybox.SetFloat("_CubemapTransition", 0);
+        skybox.SetFloat("_FogIntensity", 0);
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
         }
@@ -35,7 +44,7 @@ public class GameController : MonoBehaviourPunCallbacks
             Instance = this;
         }
 
-        DontDestroyOnLoad(gameObject);*/
+        DontDestroyOnLoad(gameObject);
     }
 
     public override void OnJoinedRoom()
@@ -51,17 +60,11 @@ public class GameController : MonoBehaviourPunCallbacks
     {
         isOnPause = true;
         pauseMenu.SetActive(true);
-
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
     }
     public void OnPauseClosed()
     {
         isOnPause = false;
         pauseMenu.SetActive(false);
-
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
     }
 
     // Update is called once per frame
@@ -70,8 +73,8 @@ public class GameController : MonoBehaviourPunCallbacks
         timer += Time.deltaTime;
         if ((int)skybox.GetFloat("_CubemapTransition") != 1)
         {
-            skybox.SetFloat("_CubemapTransition", timer / (60 * 5));
-            skybox.SetFloat("_FogIntensity", timer / (60 * 5));
+            skybox.SetFloat("_CubemapTransition", timer / (60));
+            skybox.SetFloat("_FogIntensity", timer / (60));
         }
 
         if (PhotonNetwork.PlayerList.Length == 1) waitingText.SetActive(true);
@@ -81,15 +84,13 @@ public class GameController : MonoBehaviourPunCallbacks
             {
                 GameObject.FindGameObjectWithTag("Player").transform.position = new Vector3 (150,-150,0);
                 GameObject.FindGameObjectWithTag("TRex").transform.position = new Vector3 (150,-150,0);
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
                 cutsceneObjects.SetActive(true);
                 skipCutsceneButton.SetActive(true);
             }
             if (waitingText.activeSelf) waitingText.SetActive(false);
         }
 
-        if (Input.GetButtonDown("Cancel"))
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
             if (!isOnPause) OnPauseOpened();
             else OnPauseClosed();
@@ -106,8 +107,19 @@ public class GameController : MonoBehaviourPunCallbacks
         {
             cutsceneObjects.SetActive(false);
             skipCutsceneButton.SetActive(false);
-            Cursor.lockState = CursorLockMode.Locked;
+        }
+
+        if (isOnPause)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            uiObjectsToHide.SetActive(false);
+        }
+        else
+        {
             Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            uiObjectsToHide.SetActive(true);
         }
     }
 
@@ -120,6 +132,12 @@ public class GameController : MonoBehaviourPunCallbacks
     {
         skipCutsceneButton.SetActive(false);
         _director.time = 58.5f;
+    }
+
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    {
+        base.OnPlayerLeftRoom(otherPlayer);
+        SceneManager.LoadScene("Menu");
     }
 
 }

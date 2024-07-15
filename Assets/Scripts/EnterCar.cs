@@ -12,7 +12,11 @@ public class EnterCar : MonoBehaviourPunCallbacks
     {
         if (!GetComponent<PhotonView>().IsMine) return;
 
-        if (collider.gameObject.name == "Car" && Input.GetMouseButton(0) && PhotonNetwork.PlayerList.Length == 2) GetComponent<PhotonView>().RPC("RPC_EnterCar", RpcTarget.AllBuffered);
+        if (collider.gameObject.name == "Car" && Input.GetMouseButton(0)/* && PhotonNetwork.PlayerList.Length == 2*/)
+        {
+            if (PhotonNetwork.IsConnectedAndReady) GetComponent<PhotonView>().RPC("RPC_EnterCar", RpcTarget.AllBuffered);
+            else RPC_EnterCar();
+        }
     }
     private void OnTriggerEnter(Collider collider)
     {
@@ -28,7 +32,8 @@ public class EnterCar : MonoBehaviourPunCallbacks
 
         if (isOnCar && Input.GetMouseButtonUp(1))
         {
-            GetComponent<PhotonView>().RPC("RPC_ExitCar", RpcTarget.All);
+            if (PhotonNetwork.IsConnectedAndReady) GetComponent<PhotonView>().RPC("RPC_ExitCar", RpcTarget.All);
+            else RPC_ExitCar();
         }
 
         if (isOnCar)
