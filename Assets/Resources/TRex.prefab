@@ -62,7 +62,7 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -875,7 +875,7 @@ MonoBehaviour:
     CullDistance: 5000
     ShowGizmo: 0
     GizmoColor: {r: 0, g: 1, b: 1, a: 1}
-  - LayerName: Layer Not Defined
+  - LayerName: Portrait
     UseDefaultCullDistance: 1
     CullDistance: 5000
     ShowGizmo: 0
@@ -1528,6 +1528,7 @@ MonoBehaviour:
   phView: {fileID: 0}
   playerCam: {fileID: 1864468380673402929}
   minimapCamera: {fileID: 7976204525581183797}
+  portrait: {fileID: 21300000, guid: 5ee279332f8bd11438bcae233a67bc92, type: 3}
   skins: []
   minimapTexture: {fileID: 8400000, guid: 8600592228f668941ba74ad446e8c86a, type: 2}
 --- !u!114 &1864468381169091722

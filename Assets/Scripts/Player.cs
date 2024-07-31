@@ -55,6 +55,7 @@ public class Player : MonoBehaviourPunCallbacks
     public GameObject playerCam;
 
     [SerializeField] GameObject minimapCamera;
+    [SerializeField] Sprite portrait;
 
     public List<Material> skins = new List<Material>(); // Lista de skins
     private int currentSkinIndex = 0; // Índice da skin atual
@@ -75,7 +76,6 @@ public class Player : MonoBehaviourPunCallbacks
             Debug.LogWarning("Hey buddy, you don't have the Animator component in your player. Without it, the animations won't work.");
 
         if (!phView.IsMine) minimapCamera.SetActive(false);
-
     }
 
 
@@ -84,6 +84,7 @@ public class Player : MonoBehaviourPunCallbacks
     {
         if (!photonView.IsMine) return;
         GameObject.FindGameObjectWithTag("Minimap").GetComponent<RawImage>().texture = minimapTexture;
+        GameController.Instance.portrait.sprite = this.portrait;
 
         GameController.Instance.healthBar.BarValue = life;
 

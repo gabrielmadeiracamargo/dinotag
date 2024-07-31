@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 [ExecuteInEditMode]
 
@@ -9,7 +10,7 @@ public class ProgressBarCircle : MonoBehaviour {
     [Header("Title Setting")]
     public string Title;
     public Color TitleColor;
-    public Font TitleFont;    
+    public TMP_FontAsset TitleFont;    
 
     [Header("Bar Setting")]
     public Color BarColor;
@@ -28,7 +29,7 @@ public class ProgressBarCircle : MonoBehaviour {
     private Image bar, barBackground,Mask;
     private float nextPlay;
     private AudioSource audiosource;
-    private Text txtTitle;
+    public TextMeshProUGUI txtTitle;
     public float barValue;
     public float BarValue
     {
@@ -46,7 +47,7 @@ public class ProgressBarCircle : MonoBehaviour {
     private void Awake()
     {
 
-        txtTitle = transform.Find("Text").GetComponent<Text>();
+        txtTitle = transform.Find("Text").GetComponent<TextMeshProUGUI>();
         barBackground = transform.Find("BarBackgroundCircle").GetComponent<Image>();
         bar = transform.Find("BarCircle").GetComponent<Image>();
         audiosource = GetComponent<AudioSource>();
@@ -75,7 +76,7 @@ public class ProgressBarCircle : MonoBehaviour {
        
         bar.fillAmount = -(val / 100) + 1f;
 
-        txtTitle.text = Title + " " + val + "%";
+        txtTitle.text = Title + " " + Mathf.RoundToInt(val) + "%";
 
         if (midAlert >= val && val > lowAlert) barBackground.color = BarMidAlertColor;
         else if (lowAlert >= val) barBackground.color = BarLowAlertColor;
@@ -89,8 +90,7 @@ public class ProgressBarCircle : MonoBehaviour {
 
         if (!Application.isPlaying)
         {
-           
-            UpdateValue(50);
+            UpdateValue(50f);
             txtTitle.color = TitleColor;
             txtTitle.font = TitleFont;
             Mask.color = MaskColor;

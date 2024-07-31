@@ -2121,12 +2121,12 @@ MonoBehaviour:
   gravity: 9.8
   animator: {fileID: 3625927451974042601}
   cc: {fileID: 7150436822050514169}
-  life: 3
+  life: 100
   nickTxt: {fileID: 2753308739730515631}
   phView: {fileID: 0}
   playerCam: {fileID: 237278930112303628}
   minimapCamera: {fileID: 684754620}
-  minimap: {fileID: 0}
+  portrait: {fileID: 21300000, guid: ab5edd579b638014789286618a7a7660, type: 3}
   skins:
   - {fileID: 2100000, guid: d143d9814ff6c8545bea82253b253ca4, type: 2}
   - {fileID: 2100000, guid: e28ed4577f9344e429c6277b75406fe3, type: 2}
@@ -2142,7 +2142,7 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 0.73
+  m_Height: 0.65
   m_Radius: 0.09
   m_SlopeLimit: 45
   m_StepOffset: 0.3
@@ -2823,32 +2823,32 @@ MonoBehaviour:
     CullDistance: 300
     ShowGizmo: 0
     GizmoColor: {r: 0, g: 1, b: 1, a: 1}
-  - LayerName: Layer Not Defined
+  - LayerName: RCC
     UseDefaultCullDistance: 1
     CullDistance: 5000
     ShowGizmo: 0
     GizmoColor: {r: 0, g: 1, b: 1, a: 1}
-  - LayerName: Layer Not Defined
+  - LayerName: RCC_WheelCollider
     UseDefaultCullDistance: 1
     CullDistance: 5000
     ShowGizmo: 0
     GizmoColor: {r: 0, g: 1, b: 1, a: 1}
-  - LayerName: Layer Not Defined
+  - LayerName: RCC_DetachablePart
     UseDefaultCullDistance: 1
     CullDistance: 5000
     ShowGizmo: 0
     GizmoColor: {r: 0, g: 1, b: 1, a: 1}
-  - LayerName: Layer Not Defined
+  - LayerName: RCC_Trailer
     UseDefaultCullDistance: 1
     CullDistance: 5000
     ShowGizmo: 0
     GizmoColor: {r: 0, g: 1, b: 1, a: 1}
-  - LayerName: Layer Not Defined
+  - LayerName: RCC_Crasher
     UseDefaultCullDistance: 1
     CullDistance: 5000
     ShowGizmo: 0
     GizmoColor: {r: 0, g: 1, b: 1, a: 1}
-  - LayerName: Layer Not Defined
+  - LayerName: Portrait
     UseDefaultCullDistance: 1
     CullDistance: 5000
     ShowGizmo: 0

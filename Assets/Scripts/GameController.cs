@@ -13,19 +13,25 @@ public class GameController : MonoBehaviourPunCallbacks
 {
     public static GameController Instance { get; private set; }
 
+    [Header("Player related")]
     public GameObject player, stevenPlayer, dinoPlayer;
     public Transform[] spawnPoints;
-    [SerializeField] GameObject pauseMenu, waitingText;
-    bool isOnPause;
+
+    [Header("UI related")]
+    [SerializeField] GameObject tabMenu, waitingText;
+    [SerializeField] GameObject uiObjectsToHide, settingsMenu;
+    public ProgressBarCircle healthBar;
+    [SerializeField] GameObject skipCutsceneButton;
+    public Image portrait;
+    bool isOnTab;
+
+    [Header("Game related")]
     public bool cutsceneEnded;
     [SerializeField] PlayableDirector _director;
     [SerializeField] GameObject cutsceneObjects;
-    [SerializeField] GameObject skipCutsceneButton;
     public Material skybox;
     public float timer;
 
-    public ProgressBarCircle healthBar;
-    [SerializeField] GameObject uiObjectsToHide;
 
     // Start is called before the first frame update
     void Awake()
@@ -56,15 +62,15 @@ public class GameController : MonoBehaviourPunCallbacks
         PhotonNetwork.Instantiate(player.name, spawnPoints[PhotonNetwork.LocalPlayer.ActorNumber - 1].position, player.transform.rotation);
     }
 
-    public void OnPauseOpened()
+    public void OnTabOpened()
     {
-        isOnPause = true;
-        pauseMenu.SetActive(true);
+        isOnTab = true;
+        tabMenu.SetActive(true);
     }
-    public void OnPauseClosed()
+    public void OnTabClosed()
     {
-        isOnPause = false;
-        pauseMenu.SetActive(false);
+        isOnTab = false;
+        tabMenu.SetActive(false);
     }
 
     // Update is called once per frame
@@ -92,9 +98,11 @@ public class GameController : MonoBehaviourPunCallbacks
 
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if (!isOnPause) OnPauseOpened();
-            else OnPauseClosed();
+            if (!isOnTab) OnTabOpened();
+            else OnTabClosed();
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape)) settingsMenu.SetActive(!settingsMenu.activeInHierarchy);
 
         if (_director.time >= 62 && !cutsceneEnded)
         {
@@ -109,7 +117,7 @@ public class GameController : MonoBehaviourPunCallbacks
             skipCutsceneButton.SetActive(false);
         }
 
-        if (isOnPause)
+        if (isOnTab)
         {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
@@ -117,8 +125,8 @@ public class GameController : MonoBehaviourPunCallbacks
         }
         else
         {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
+            //Cursor.visible = false;
+            //Cursor.lockState = CursorLockMode.Locked;
             uiObjectsToHide.SetActive(true);
         }
     }
