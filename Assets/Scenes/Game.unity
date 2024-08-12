@@ -221,6 +221,12 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 7.400002, y: 5.799462, z: 0.47580412}
   m_Center: {x: 0, y: 2.609192, z: 0}
+--- !u!4 &5889314 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5816764808958687770, guid: 1ec5eca8fdf6ab14ca046e95f217c155,
+    type: 3}
+  m_PrefabInstance: {fileID: 585758375}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &9480198
 GameObject:
   m_ObjectHideFlags: 0
@@ -5384,6 +5390,25 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3625927451974042601, guid: 1ec5eca8fdf6ab14ca046e95f217c155,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 92046a8e23162d34e854e8505a523cf6, type: 2}
+    - target: {fileID: 3625927451974042601, guid: 1ec5eca8fdf6ab14ca046e95f217c155,
+        type: 3}
+      propertyPath: m_WarningMessage
+      value: "\nBinding warning: Some generic clip(s) animate transforms that are
+        already bound by a Humanoid avatar. These transforms can only be changed
+        by Humanoid clips.\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:LeftFoot'\n\tTransform
+        'mixamorig:LeftHandIndex1'\n\tTransform 'mixamorig:Spine1'\n\tTransform 'mixamorig:LeftToeBase'\n\tTransform
+        'mixamorig:RightArm'\n\tTransform 'mixamorig:LeftLeg'\n\tTransform 'mixamorig:LeftShoulder'\n\tTransform
+        'mixamorig:RightHandIndex3'\n\tTransform 'mixamorig:RightFoot'\n\tand more
+        ...\n\tFrom animation clip 'Walking'\n\tFrom animation clip 'Idle'\n\tFrom
+        animation clip 'Run'\n\tFrom animation clip 'Crouch Walk'\n\tFrom animation
+        clip 'Crouch Idle'\n\tFrom animation clip 'Jump'\n\tFrom animation clip 'hit1'\n\tFrom
+        animation clip 'hit2'\n\tFrom animation clip 'hit3'"
+      objectReference: {fileID: 0}
     - target: {fileID: 4633401818625102958, guid: 1ec5eca8fdf6ab14ca046e95f217c155,
         type: 3}
       propertyPath: interactionInfoUI
@@ -8017,7 +8042,7 @@ MonoBehaviour:
   spawnPoints:
   - {fileID: 1772454762}
   - {fileID: 928355612}
-  pauseMenu: {fileID: 640467596}
+  tabMenu: {fileID: 0}
   waitingText: {fileID: 530601148}
   uiObjectsToHide: {fileID: 1732612692}
   settingsMenu: {fileID: 991428043}
@@ -13305,7 +13330,8 @@ MonoBehaviour:
   m_fontAsset: {fileID: 11400000, guid: e7f0a0cdb52567e4687f2c98b4069bdd, type: 2}
   m_sharedMaterial: {fileID: -1522351895944230828, guid: e7f0a0cdb52567e4687f2c98b4069bdd,
     type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: -1522351895944230828, guid: e7f0a0cdb52567e4687f2c98b4069bdd, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
@@ -38779,6 +38805,75 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1001 &2536878547083304544
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 5889314}
+    m_Modifications:
+    - target: {fileID: 2312255434586240647, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
+        type: 3}
+      propertyPath: m_Name
+      value: sword
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.011650485
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.050370656
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.0007297478
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.022609532
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.3588276
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.85288316
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.37857893
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 39.016
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 203.535
+      objectReference: {fileID: 0}
+    - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 414.077
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e85fc4dc7ff48ef47b06d604ed700c4e, type: 3}
 --- !u!1 &2544939118893519029
 GameObject:
   m_ObjectHideFlags: 0

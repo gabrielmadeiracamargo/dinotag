@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.32107174, g: 0.21133253, b: 0.40438062, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7753,12 +7753,16 @@ MonoBehaviour:
   spawnPoints:
   - {fileID: 1772454762}
   - {fileID: 928355612}
-  pauseMenu: {fileID: 640467596}
+  tabMenu: {fileID: 0}
   waitingText: {fileID: 530601148}
+  uiObjectsToHide: {fileID: 0}
+  settingsMenu: {fileID: 0}
+  healthBar: {fileID: 0}
+  skipCutsceneButton: {fileID: 0}
+  portrait: {fileID: 0}
   cutsceneEnded: 0
   _director: {fileID: 589820386}
   cutsceneObjects: {fileID: 1075572633}
-  skipCutsceneButton: {fileID: 0}
   skybox: {fileID: 0}
   timer: 0
 --- !u!4 &784620873
@@ -15669,18 +15673,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1579817449}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1579817451 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6817904206078762027, guid: 851710e4df1660843b96cc640b8f4a05,
-    type: 3}
-  m_PrefabInstance: {fileID: 1579817449}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1579817450}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1579817452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15700,7 +15692,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 1579817451}
+  - {fileID: 0}
   sceneViewId: 2
   InstantiationId: 0
   isRuntimeInstantiated: 0

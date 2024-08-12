@@ -40,7 +40,9 @@ public class Player : MonoBehaviourPunCallbacks
 
     // Inputs
     float inputHorizontal;
+    private int inputXHash = Animator.StringToHash("inputX");
     float inputVertical;
+    private int inputYHash = Animator.StringToHash("inputY");
     bool inputJump;
     bool inputCrouch;
     bool inputSprint;
@@ -93,6 +95,9 @@ public class Player : MonoBehaviourPunCallbacks
         inputVertical = Input.GetAxis("Vertical");
         inputJump = Input.GetAxis("Jump") == 1f;
         inputSprint = Input.GetAxis("Fire3") == 1f;
+
+        animator.SetFloat(inputXHash, inputHorizontal);
+        animator.SetFloat(inputYHash, inputVertical);
         // Unfortunately GetAxis does not work with GetKeyDown, so inputs must be taken individually
         inputCrouch = Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.JoystickButton1);
 
