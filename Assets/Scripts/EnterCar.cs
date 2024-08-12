@@ -5,40 +5,61 @@ using Photon.Pun;
 
 public class EnterCar : MonoBehaviourPunCallbacks
 {
-
-    [SerializeField] GameObject player;
+    [SerializeField] GameObject stevenModel, car;
+    [SerializeField] bool isOnCar;
 
     private void OnTriggerStay(Collider collider)
     {
-        if (collider.gameObject.CompareTag("Player") && Input.GetMouseButtonUp(0))
+        if (!GetComponent<PhotonView>().IsMine) return;
+
+        if (collider.gameObject.name == "Car" && Input.GetMouseButton(0)/* && PhotonNetwork.PlayerList.Length == 2*/)
         {
-            player = GameObject.FindGameObjectWithTag("Player");
-            GetComponent<PhotonView>().RPC("RPC_EnterCar", RpcTarget.AllBuffered);
+            if (PhotonNetwork.IsConnectedAndReady) GetComponent<PhotonView>().RPC("RPC_EnterCar", RpcTarget.AllBuffered);
+            else RPC_EnterCar();
+        }
+    }
+    private void OnTriggerEnter(Collider collider)
+    {
+        if (collider.gameObject.name == "Fuga" && PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.LoadLevel("fugacarro");
         }
     }
 
     private void Update()
     {
-        if (GetComponent<CarController>().enabled == true && Input.GetMouseButtonUp(1))
+        if (!GetComponent<PhotonView>().IsMine) return;
+
+        if (isOnCar && Input.GetMouseButtonUp(1))
         {
-            GetComponent<PhotonView>().RPC("RPC_ExitCar", RpcTarget.AllBuffered);
+            if (PhotonNetwork.IsConnectedAndReady) GetComponent<PhotonView>().RPC("RPC_ExitCar", RpcTarget.All);
+            else RPC_ExitCar();
+        }
+
+        if (isOnCar)
+        {
+            gameObject.transform.position = car.transform.position;
         }
     }
 
     [PunRPC]
     public void RPC_EnterCar()
     {
-        player.SetActive(false);
-        GetComponent<CarController>().enabled = true;
-        GetComponentInChildren<Camera>().enabled = true;
+        if (!GetComponent<PhotonView>().IsMine) return;
+        stevenModel.SetActive(false);
+        car.GetComponent<CarController>().enabled = true;
+        car.transform.Find("Camera").gameObject.SetActive(true);
+        isOnCar = true;
     }
 
     [PunRPC]
     public void RPC_ExitCar()
     {
-        player.SetActive(true);
-        player.transform.position = transform.position;
-        GetComponent<CarController>().enabled = false;
-        GetComponentInChildren<Camera>().enabled = false;
+        if (!GetComponent<PhotonView>().IsMine) return;
+
+        isOnCar = false;
+        stevenModel.SetActive(true);
+        car.GetComponent<CarController>().enabled = false;
+        car.transform.Find("Camera").gameObject.SetActive(false);
     }
 }

@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Photon.Pun;
 
 public class CarController : MonoBehaviour
 {
@@ -23,23 +24,23 @@ public class CarController : MonoBehaviour
     [Space(20)]
     //[Header("CAR SETUP")]
     [Space(10)]
-    [Range(20, 20000)]
+    //[Range(20, 20000)]
     public int maxSpeed = 90; //The maximum speed that the car can reach in km/h.
-    [Range(10, 12000)]
+    //[Range(10, 12000)]
     public int maxReverseSpeed = 45; //The maximum speed that the car can reach while going on reverse in km/h.
-    [Range(1, 1000)]
+    //[Range(1, 1000)]
     public int accelerationMultiplier = 2; // How fast the car can accelerate. 1 is a slow acceleration and 10 is the fastest.
     [Space(10)]
-    [Range(10, 45)]
+    //[Range(10, 45)]
     public int maxSteeringAngle = 27; // The maximum angle that the tires can reach while rotating the steering wheel.
-    [Range(0.1f, 10f)]
+    //[Range(0.1f, 10f)]
     public float steeringSpeed = 0.5f; // How fast the steering wheel turns.
     [Space(10)]
-    [Range(100, 60000)]
+    //[Range(100, 60000)]
     public int brakeForce = 350; // The strength of the wheel brakes.
-    [Range(1, 10)]
+    //[Range(1, 10)]
     public int decelerationMultiplier = 2; // How fast the car decelerates when the user is not using the throttle.
-    [Range(1, 100)]
+    //[Range(1, 100)]
     public int handbrakeDriftMultiplier = 5; // How much grip the car loses when the user hit the handbrake.
     [Space(10)]
     public Vector3 bodyMassCenter; // This is a vector that contains the center of mass of the car. I recommend to set this value
@@ -162,6 +163,8 @@ public class CarController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
+
         //In this part, we set the 'carRigidbody' value with the Rigidbody attached to this
         //gameObject. Also, we define the center of mass of the car with the Vector3 given
         //in the inspector.
@@ -285,6 +288,7 @@ public class CarController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
 
         //CAR DATA
 
@@ -415,6 +419,7 @@ public class CarController : MonoBehaviour
     // This method converts the car speed data from float to string, and then set the text of the UI carSpeedText with this value.
     public void CarSpeedUI()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
 
         if (useUI)
         {
@@ -437,6 +442,7 @@ public class CarController : MonoBehaviour
     // Apart from that, the tireScreechSound will play whenever the car starts drifting or losing traction.
     public void CarSounds()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
 
         if (useSounds)
         {
@@ -485,6 +491,8 @@ public class CarController : MonoBehaviour
     //The following method turns the front car wheels to the left. The speed of this movement will depend on the steeringSpeed variable.
     public void TurnLeft()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
+
         steeringAxis = steeringAxis - (Time.deltaTime * 10f * steeringSpeed);
         if (steeringAxis < -1f)
         {
@@ -498,6 +506,8 @@ public class CarController : MonoBehaviour
     //The following method turns the front car wheels to the right. The speed of this movement will depend on the steeringSpeed variable.
     public void TurnRight()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
+
         steeringAxis = steeringAxis + (Time.deltaTime * 10f * steeringSpeed);
         if (steeringAxis > 1f)
         {
@@ -512,6 +522,8 @@ public class CarController : MonoBehaviour
     // on the steeringSpeed variable.
     public void ResetSteeringAngle()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
+
         if (steeringAxis < 0f)
         {
             steeringAxis = steeringAxis + (Time.deltaTime * 10f * steeringSpeed);
@@ -532,6 +544,8 @@ public class CarController : MonoBehaviour
     // This method matches both the position and rotation of the WheelColliders with the WheelMeshes.
     void AnimateWheelMeshes()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
+
         try
         {
             Quaternion FLWRotation;
@@ -571,6 +585,8 @@ public class CarController : MonoBehaviour
     // This method apply positive torque to the wheels in order to go forward.
     public void GoForward()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
+
         //If the forces aplied to the rigidbody in the 'x' asis are greater than
         //3f, it means that the car is losing traction, then the car will start emitting particle systems.
         if (Mathf.Abs(localVelocityX) > 2.5f)
@@ -626,6 +642,8 @@ public class CarController : MonoBehaviour
     // This method apply negative torque to the wheels in order to go backwards.
     public void GoReverse()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
+
         //If the forces aplied to the rigidbody in the 'x' asis are greater than
         //3f, it means that the car is losing traction, then the car will start emitting particle systems.
         if (Mathf.Abs(localVelocityX) > 2.5f)
@@ -681,6 +699,8 @@ public class CarController : MonoBehaviour
     //The following function set the motor torque to 0 (in case the user is not pressing either W or S).
     public void ThrottleOff()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
+
         frontLeftCollider.motorTorque = 0;
         frontRightCollider.motorTorque = 0;
         rearLeftCollider.motorTorque = 0;
@@ -692,6 +712,8 @@ public class CarController : MonoBehaviour
     // usually every 0.1f when the user is not pressing W (throttle), S (reverse) or Space bar (handbrake).
     public void DecelerateCar()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
+
         if (Mathf.Abs(localVelocityX) > 2.5f)
         {
             isDrifting = true;
@@ -736,6 +758,8 @@ public class CarController : MonoBehaviour
     // This function applies brake torque to the wheels according to the brake force given by the user.
     public void Brakes()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
+
         frontLeftCollider.brakeTorque = brakeForce;
         frontRightCollider.brakeTorque = brakeForce;
         rearLeftCollider.brakeTorque = brakeForce;
@@ -747,6 +771,8 @@ public class CarController : MonoBehaviour
     // it is high, then you could make the car to feel like going on ice.
     public void Handbrake()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
+
         CancelInvoke("RecoverTraction");
         // We are going to start losing traction smoothly, there is were our 'driftingAxis' variable takes
         // place. This variable will start from 0 and will reach a top value of 1, which means that the maximum
@@ -801,6 +827,8 @@ public class CarController : MonoBehaviour
     // depending on the value of the bool variables 'isDrifting' and 'isTractionLocked'.
     public void DriftCarPS()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
+
 
         if (useEffects)
         {
@@ -865,6 +893,8 @@ public class CarController : MonoBehaviour
     // This function is used to recover the traction of the car when the user has stopped using the car's handbrake.
     public void RecoverTraction()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
+
         isTractionLocked = false;
         driftingAxis = driftingAxis - (Time.deltaTime / 1.5f);
         if (driftingAxis < 0f)

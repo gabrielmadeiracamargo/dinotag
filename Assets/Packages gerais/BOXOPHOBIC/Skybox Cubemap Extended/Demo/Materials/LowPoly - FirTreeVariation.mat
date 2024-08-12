@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: LowPoly - FirTreeVariation
-  m_Shader: {fileID: 4800000, guid: 8fa84e1c8f3a97b4bb416e8eb087630e, type: 3}
+  m_Shader: {fileID: 4800000, guid: 313fcf3aebc04cf4ab4f8c5f2850be7f, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -20,6 +20,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -86,14 +90,21 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _OutlineSize: 100
+    - _OutlineWidth: 0.15
     - _Parallax: 0.02
     - _RampLevels: 2
     - _RimAlpha: 0
     - _RimDropOff: 0
     - _RimPower: 0
+    - _RimStep: 0.65
+    - _RimStepSmooth: 0.4
+    - _ShadowStep: 0.5
+    - _ShadowStepSmooth: 0.04
     - _Smoothness: 0.2
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
+    - _SpecularStep: 0.6
+    - _SpecularStepSmooth: 0.05
     - _SrcBlend: 1
     - _TopColorPos: 5
     - _UVSec: 0
@@ -102,6 +113,7 @@ Material:
     - _ZWrite: 1
     - __dirty: 0
     m_Colors:
+    - _BaseColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _BottomColor: {r: 0.14855024, g: 0.36764702, b: 0.062175572, a: 1}
     - _Color: {r: 0.027627591, g: 0.53676474, b: 0.2628841, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
@@ -110,6 +122,7 @@ Material:
     - _LowColor: {r: 1, g: 1, b: 1, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - _TopColor: {r: 0.33912262, g: 0.7867647, b: 0.19669113, a: 1}
     - _Vector1: {r: 0, g: 0, b: 0, a: 0}
     - _WindCycles: {r: 0, g: 0, b: 0.5, a: 0}

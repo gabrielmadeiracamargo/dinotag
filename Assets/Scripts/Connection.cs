@@ -6,6 +6,7 @@ using Photon.Realtime;
 using UnityEngine.SceneManagement;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using TMPro;
+using System.Threading.Tasks;
 
 public class Connection : MonoBehaviourPunCallbacks
 {
@@ -79,10 +80,10 @@ public class Connection : MonoBehaviourPunCallbacks
     // Funções do Photon
     public override void OnConnectedToMaster()
     {
-        //print("Conectou ao servidor");
+        print("Conectou ao servidor");
         PhotonNetwork.JoinLobby();
     }
-    /*
+    
     public override void OnJoinedLobby()
     {
         print("Entrou no lobby");
@@ -93,11 +94,15 @@ public class Connection : MonoBehaviourPunCallbacks
         
         print($"Criou a sala {input}");
     }
-    */
-    public override void OnJoinedRoom()
+    
+    public override async void OnJoinedRoom()
     {
         //print($"Entrou na sala {input}");
-        if (PhotonNetwork.IsMasterClient) PhotonNetwork.LoadLevel("Pastas temporárias de cada um/Nery/Game");
+        if (PhotonNetwork.IsMasterClient)
+        {
+            await Task.Delay(100);
+            PhotonNetwork.LoadLevel("Game");
+        }
         //print($"Entrou na sala {PhotonNetwork.CurrentRoom.Name}");
     }
 

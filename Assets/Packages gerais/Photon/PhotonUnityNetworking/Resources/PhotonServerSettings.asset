@@ -46,6 +46,7 @@ MonoBehaviour:
   - RPC_ChangeSkin
   - RPC_EnterCar
   - RPC_ExitCar
+  - RPC_SkipCutscene
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

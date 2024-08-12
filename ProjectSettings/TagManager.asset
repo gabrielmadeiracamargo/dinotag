@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Obs
   - Crash
+  - TRex
+  - Bullet
+  - CinemachineTarget
+  - Minimap
   layers:
   - Default
   - TransparentFX
@@ -13,17 +17,17 @@ TagManager:
   - Ground
   - Water
   - UI
-  - 
-  - 
+  - Ambient
+  - Minimap
   - Pointer
-  - Not_In_Minimap
-  - Minimap_Layer
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Fence
+  - Interior
+  - RCC
+  - RCC_WheelCollider
+  - RCC_DetachablePart
+  - RCC_Trailer
+  - RCC_Crasher
+  - Portrait
   - 
   - 
   - 
