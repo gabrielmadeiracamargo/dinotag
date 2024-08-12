@@ -10,6 +10,7 @@ TagManager:
   - Bullet
   - CinemachineTarget
   - Minimap
+  - Sword
   layers:
   - Default
   - TransparentFX

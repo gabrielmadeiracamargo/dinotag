@@ -266,13 +266,6 @@ public class Player : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void RPC_TakeDamage(int damage)
-    {
-        life -= damage;
-        //if (life <= 0); gameObject.SetActive(false);
-    }
-
-    [PunRPC]
     public void RPC_SetNickname(int index)
     {
         nickTxt.text = PhotonNetwork.PlayerList[index - 1].NickName;
