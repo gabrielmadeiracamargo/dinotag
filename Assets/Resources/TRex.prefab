@@ -1454,6 +1454,7 @@ GameObject:
   - component: {fileID: 1864468381169091717}
   - component: {fileID: 1864468381169091716}
   - component: {fileID: 1864468381169091723}
+  - component: {fileID: 1800523537404419908}
   - component: {fileID: 1864468381169091722}
   - component: {fileID: 1864468381169091721}
   - component: {fileID: 1864468381169091720}
@@ -1531,6 +1532,19 @@ MonoBehaviour:
   portrait: {fileID: 21300000, guid: 5ee279332f8bd11438bcae233a67bc92, type: 3}
   skins: []
   minimapTexture: {fileID: 8400000, guid: 8600592228f668941ba74ad446e8c86a, type: 2}
+--- !u!114 &1800523537404419908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1864468381169091726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ec1d091d5d6fd944a0ba937e8f14230, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cooldownTime: 2
 --- !u!114 &1864468381169091722
 MonoBehaviour:
   m_ObjectHideFlags: 0

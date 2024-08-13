@@ -11,7 +11,7 @@ public class Combat : MonoBehaviourPunCallbacks
     public static int noOfClicks = 0;
     float lastClickedTime = 0;
     float maxComboDelay = 1;
-
+    float damage;
 
     void Start()
     {
@@ -46,6 +46,9 @@ public class Combat : MonoBehaviourPunCallbacks
                 OnClick();
             }
         }
+
+        if (noOfClicks == 0) GameObject.FindGameObjectWithTag("Sword").GetComponent<BoxCollider>().enabled = false;
+        else GameObject.FindGameObjectWithTag("Sword").GetComponent<BoxCollider>().enabled = true;
     }
 
     void OnClick()
@@ -54,34 +57,38 @@ public class Combat : MonoBehaviourPunCallbacks
         noOfClicks++;
         if (noOfClicks == 1)
         {
+            damage = Random.Range(4f, 7f);
             anim.SetBool("hit1", true);
         }
         noOfClicks = Mathf.Clamp(noOfClicks, 0, 3);
 
         if (noOfClicks >= 2 && anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f && anim.GetCurrentAnimatorStateInfo(0).IsName("hit1"))
         {
+            damage = Random.Range(7f, 10f);
             anim.SetBool("hit1", false);
             anim.SetBool("hit2", true);
         }
         if (noOfClicks >= 3 && anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f && anim.GetCurrentAnimatorStateInfo(0).IsName("hit2"))
         {
+            damage = 7f;
             anim.SetBool("hit2", false);
             anim.SetBool("hit3", true);
         }
     }
 
     [PunRPC]
-    public void RPC_TakeDamage(int damage)
+    public void RPC_TakeDamage(float damage)
     {
-        if (gameObject.CompareTag("TRex") && photonView.IsMine)
+        if (gameObject.CompareTag("TRex") && GetComponent<PhotonView>().IsMine)
         {
             GetComponent<Player>().life -= damage;
         }
         //if (life <= 0); gameObject.SetActive(false);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.CompareTag("Sword")) photonView.RPC("RPC_TakeDamage", RpcTarget.All, 5);
+        if (other.gameObject.CompareTag("Sword")) GetComponent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.All, damage);
+
     }
 }
