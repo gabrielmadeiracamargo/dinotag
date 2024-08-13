@@ -11,6 +11,7 @@ TagManager:
   - CinemachineTarget
   - Minimap
   - Sword
+  - Bite
   layers:
   - Default
   - TransparentFX

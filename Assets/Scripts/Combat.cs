@@ -15,12 +15,15 @@ public class Combat : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
         anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
+
         if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f && anim.GetCurrentAnimatorStateInfo(0).IsName("hit1"))
         {
             anim.SetBool("hit1", false);
@@ -53,6 +56,8 @@ public class Combat : MonoBehaviourPunCallbacks
 
     void OnClick()
     {
+        if (!GetComponent<PhotonView>().IsMine) return;
+
         lastClickedTime = Time.time;
         noOfClicks++;
         if (noOfClicks == 1)
@@ -79,16 +84,13 @@ public class Combat : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_TakeDamage(float damage)
     {
-        if (gameObject.CompareTag("TRex") && GetComponent<PhotonView>().IsMine)
-        {
-            GetComponent<Player>().life -= damage;
-        }
+        if (GetComponent<PhotonView>().IsMine) GetComponent<Player>().life -= damage;
         //if (life <= 0); gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Sword")) GetComponent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.All, damage);
+        if ((other.gameObject.CompareTag("Sword") && gameObject.CompareTag("TRex"))  || (other.gameObject.CompareTag("Bite") && gameObject.CompareTag("Player"))) GetComponent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.All, damage);
 
     }
 }
