@@ -5371,6 +5371,50 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 585758378, guid: 1ec5eca8fdf6ab14ca046e95f217c155, type: 3}
+      propertyPath: m_SynchronizeParameters.Array.size
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 585758378, guid: 1ec5eca8fdf6ab14ca046e95f217c155, type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[5].Name
+      value: inputX
+      objectReference: {fileID: 0}
+    - target: {fileID: 585758378, guid: 1ec5eca8fdf6ab14ca046e95f217c155, type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[5].Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 585758378, guid: 1ec5eca8fdf6ab14ca046e95f217c155, type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[6].Name
+      value: inputY
+      objectReference: {fileID: 0}
+    - target: {fileID: 585758378, guid: 1ec5eca8fdf6ab14ca046e95f217c155, type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[6].Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 585758378, guid: 1ec5eca8fdf6ab14ca046e95f217c155, type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[7].Name
+      value: hit1
+      objectReference: {fileID: 0}
+    - target: {fileID: 585758378, guid: 1ec5eca8fdf6ab14ca046e95f217c155, type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[7].Type
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 585758378, guid: 1ec5eca8fdf6ab14ca046e95f217c155, type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[8].Name
+      value: hit2
+      objectReference: {fileID: 0}
+    - target: {fileID: 585758378, guid: 1ec5eca8fdf6ab14ca046e95f217c155, type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[8].Type
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 585758378, guid: 1ec5eca8fdf6ab14ca046e95f217c155, type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[9].Name
+      value: hit3
+      objectReference: {fileID: 0}
+    - target: {fileID: 585758378, guid: 1ec5eca8fdf6ab14ca046e95f217c155, type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[9].Type
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 684754623, guid: 1ec5eca8fdf6ab14ca046e95f217c155, type: 3}
       propertyPath: m_CullingMask.m_Bits
       value: 2147483647
@@ -5403,11 +5447,9 @@ PrefabInstance:
         by Humanoid clips.\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:LeftFoot'\n\tTransform
         'mixamorig:LeftHandIndex1'\n\tTransform 'mixamorig:Spine1'\n\tTransform 'mixamorig:LeftToeBase'\n\tTransform
         'mixamorig:RightArm'\n\tTransform 'mixamorig:LeftLeg'\n\tTransform 'mixamorig:LeftShoulder'\n\tTransform
-        'mixamorig:RightHandIndex3'\n\tTransform 'mixamorig:RightFoot'\n\tand more
-        ...\n\tFrom animation clip 'Walking'\n\tFrom animation clip 'Idle'\n\tFrom
-        animation clip 'Run'\n\tFrom animation clip 'Crouch Walk'\n\tFrom animation
-        clip 'Crouch Idle'\n\tFrom animation clip 'Jump'\n\tFrom animation clip 'hit1'\n\tFrom
-        animation clip 'hit2'\n\tFrom animation clip 'hit3'"
+        'mixamorig:RightFoot'\n\tTransform 'mixamorig:Head'\n\tand more ...\n\tFrom
+        animation clip 'hit1'\n\tFrom animation clip 'hit2'\n\tFrom animation clip
+        'hit3'"
       objectReference: {fileID: 0}
     - target: {fileID: 4633401818625102958, guid: 1ec5eca8fdf6ab14ca046e95f217c155,
         type: 3}
@@ -12578,6 +12620,25 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1153669740}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1168605485 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2312255434586240647, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
+    type: 3}
+  m_PrefabInstance: {fileID: 2536878547083304544}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1168605489
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1168605485}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.7484729, y: 0.2152939, z: 2.204315}
+  m_Center: {x: -0.01473149, y: 0.0000000032293954, z: 1.102342}
 --- !u!1001 &1181867561
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38816,6 +38877,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: sword
+      objectReference: {fileID: 0}
+    - target: {fileID: 2312255434586240647, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
+        type: 3}
+      propertyPath: m_TagString
+      value: Sword
       objectReference: {fileID: 0}
     - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
         type: 3}

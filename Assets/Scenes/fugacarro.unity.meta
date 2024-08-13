@@ -1,7 +1,13 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/New Terrain 3.asset.meta
+guid: 86905d422df48df479af4b8b9f6741ac
+NativeFormatImporter:
+========
 guid: ddacb372123522b45b9d98c002516989
 DefaultImporter:
+>>>>>>>> ecc42d7a955ba1be95eb08bc5983489f15db750b:Assets/Scenes/fugacarro.unity.meta
   externalObjects: {}
+  mainObjectFileID: 15600000
   userData: 
   assetBundleName: 
   assetBundleVariant: 
