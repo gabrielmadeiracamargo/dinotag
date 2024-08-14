@@ -71,7 +71,7 @@ Material:
     - roughnessFactor: 0.4150871
     m_Colors:
     - _BaseColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _OutlineColor: {r: 0.8784314, g: 0, b: 0.25490198, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - baseColorFactor: {r: 0.05585423, g: 0.05585423, b: 0.05585423, a: 1}

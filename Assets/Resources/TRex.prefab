@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &174869407863312025
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1546,6 +1546,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldownTime: 2
+  knockbackForce: 250
 --- !u!114 &1864468381169091722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1602,28 +1603,28 @@ MonoBehaviour:
   ShowParameterInspector: 1
   m_SynchronizeParameters:
   - Type: 4
-    SynchronizeType: 1
+    SynchronizeType: 2
     Name: walk
   - Type: 4
-    SynchronizeType: 1
+    SynchronizeType: 2
     Name: air
   - Type: 4
-    SynchronizeType: 1
+    SynchronizeType: 2
     Name: sprint
   - Type: 4
-    SynchronizeType: 1
+    SynchronizeType: 2
     Name: crouch
   - Type: 4
-    SynchronizeType: 0
+    SynchronizeType: 2
     Name: hit1
   - Type: 4
-    SynchronizeType: 0
+    SynchronizeType: 2
     Name: hit2
   - Type: 4
-    SynchronizeType: 0
+    SynchronizeType: 2
     Name: hit3
   m_SynchronizeLayers:
-  - SynchronizeType: 0
+  - SynchronizeType: 2
     LayerIndex: 0
 --- !u!143 &1864468381169091727
 CharacterController:
@@ -2957,7 +2958,7 @@ GameObject:
   - component: {fileID: 6600230964009507517}
   m_Layer: 0
   m_Name: Bite
-  m_TagString: Untagged
+  m_TagString: Bite
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2970,7 +2971,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7661018295541121310}
   m_LocalRotation: {x: -0.08715578, y: 0, z: 0, w: 0.9961947}
-  m_LocalPosition: {x: 0, y: 10.4, z: 11.25}
+  m_LocalPosition: {x: 0, y: 7.9, z: 6.64}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2985,10 +2986,10 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7661018295541121310}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 2.5443168
+  m_Radius: 8
   m_Center: {x: 0, y: 1.5279884, z: 0.51634264}
 --- !u!1 &7976204525581183797
 GameObject:
