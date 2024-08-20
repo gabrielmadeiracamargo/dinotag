@@ -125,8 +125,8 @@ public class GameController : MonoBehaviourPunCallbacks
         }
         else
         {
-            //Cursor.visible = false;
-            //Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
             uiObjectsToHide.SetActive(true);
         }
     }
@@ -145,6 +145,7 @@ public class GameController : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
     {
         base.OnPlayerLeftRoom(otherPlayer);
+        PhotonNetwork.LeaveRoom();
         SceneManager.LoadScene("Menu");
     }
 

@@ -74,7 +74,7 @@ public class Connection : MonoBehaviourPunCallbacks
 
     public void QuickPlay()
     {
-        PhotonNetwork.JoinRandomOrCreateRoom();
+        PhotonNetwork.JoinRandomOrCreateRoom(roomHashtable);
     }
 
     // Funções do Photon
@@ -88,6 +88,7 @@ public class Connection : MonoBehaviourPunCallbacks
     {
         print("Entrou no lobby");
     }
+
 
     public override void OnCreatedRoom()
     {
@@ -103,6 +104,7 @@ public class Connection : MonoBehaviourPunCallbacks
             await Task.Delay(100);
             PhotonNetwork.LoadLevel("Game");
         }
+        else roomOptions.IsOpen = false;
         //print($"Entrou na sala {PhotonNetwork.CurrentRoom.Name}");
     }
 
