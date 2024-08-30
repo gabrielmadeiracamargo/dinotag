@@ -6,44 +6,62 @@ using Photon.Pun;
 
 public class Timer : MonoBehaviourPunCallbacks
 {
-    public float timeLeft;
-    public bool timerOn;
-
     public TextMeshProUGUI timerText;
+    public float timerDuration = 60*5f; // Duração do temporizador em segundos
 
-    // Update is called once per frame
-    void Update()
+    private bool timerOn = false;
+    private double startTime;
+
+    void Start()
     {
-        if (PhotonNetwork.PlayerList.Length > 1)
+        if (PhotonNetwork.IsMasterClient)
         {
-            timerText.gameObject.SetActive(true);
-            timerOn = true;
+            GameController.Instance.skipCutsceneButton.SetActive(true);
+            startTime = PhotonNetwork.Time;
+            PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "StartTime", startTime } });
+        }
+        else
+        {
+            GameController.Instance.skipCutsceneButton.SetActive(false);
+            if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("StartTime"))
+            {
+                startTime = (double)PhotonNetwork.CurrentRoom.CustomProperties["StartTime"];
+            }
         }
 
+        timerOn = true;
+    }
+
+    void Update()
+    {
         if (timerOn)
         {
-            if (timeLeft > 0)
+            timerText.gameObject.SetActive(true);
+
+            if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("StartTime"))
             {
-                timeLeft-= Time.deltaTime;
-                UpdateTimer(timeLeft);
-            }
-            else
-            {
-                Debug.Log("acabou o tempo!!");
-                timeLeft = 0;
-                timerOn = false;
+                startTime = (double)PhotonNetwork.CurrentRoom.CustomProperties["StartTime"];
+                double elapsedTime = PhotonNetwork.Time - startTime;
+                float timeLeft = (float)(timerDuration - elapsedTime);
+
+                if (timeLeft > 0)
+                {
+                    UpdateTimer(timeLeft);
+                }
+                else
+                {
+                    Debug.Log("Acabou o tempo!!");
+                    timerOn = false;
+                    UpdateTimer(0); // Mostra 00:00 no timer
+                }
             }
         }
     }
 
-
-    public void UpdateTimer(float currentTime)
+    void UpdateTimer(float currentTime)
     {
-        currentTime += 1;
-
-        float minutes = Mathf.Floor(currentTime / 60);
-        float seconds = Mathf.Floor(currentTime % 60);
-
-        timerText.text = string.Format("{0:00} : {1:00}", minutes, seconds);
+        int minutes = Mathf.FloorToInt(currentTime / 60);
+        int seconds = Mathf.FloorToInt(currentTime % 60);
+        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 }
