@@ -21,13 +21,13 @@ public class GameController : MonoBehaviourPunCallbacks
     [SerializeField] GameObject tabMenu, waitingText;
     [SerializeField] GameObject uiObjectsToHide, settingsMenu;
     public ProgressBarCircle healthBar;
-    [SerializeField] GameObject skipCutsceneButton;
+    public GameObject skipCutsceneButton;
     public Image portrait;
     bool isOnTab;
 
     [Header("Game related")]
     public bool cutsceneEnded;
-    [SerializeField] PlayableDirector _director;
+    public PlayableDirector _director;
     [SerializeField] GameObject cutsceneObjects;
     public Material skybox;
     public float timer;
@@ -86,12 +86,12 @@ public class GameController : MonoBehaviourPunCallbacks
         if (PhotonNetwork.PlayerList.Length == 1) waitingText.SetActive(true);
         else if (PhotonNetwork.PlayerList.Length == 2)
         {   
+            if (!GetComponent<Timer>().enabled) GetComponent<Timer>().enabled = true;
             if (!cutsceneEnded)
             {
                 GameObject.FindGameObjectWithTag("Player").transform.position = new Vector3 (150,-150,0);
                 GameObject.FindGameObjectWithTag("TRex").transform.position = new Vector3 (150,-150,0);
                 cutsceneObjects.SetActive(true);
-                skipCutsceneButton.SetActive(true);
             }
             if (waitingText.activeSelf) waitingText.SetActive(false);
         }
@@ -125,8 +125,8 @@ public class GameController : MonoBehaviourPunCallbacks
         }
         else
         {
-            //Cursor.visible = false;
-            //Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
             uiObjectsToHide.SetActive(true);
         }
     }
@@ -136,16 +136,11 @@ public class GameController : MonoBehaviourPunCallbacks
         Application.Quit();
     }
 
-    public void SkipCutscene()
-    {
-        skipCutsceneButton.SetActive(false);
-        _director.time = 58.5f;
-    }
-
     public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
     {
         base.OnPlayerLeftRoom(otherPlayer);
-        SceneManager.LoadScene("Menu");
+        PhotonNetwork.LeaveRoom();
+        //SceneManager.LoadScene("Menu");
     }
 
 }

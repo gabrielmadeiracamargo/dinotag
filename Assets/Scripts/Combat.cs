@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.SceneManagement;
 
 public class Combat : MonoBehaviourPunCallbacks
 {
@@ -60,6 +61,20 @@ public class Combat : MonoBehaviourPunCallbacks
             GameObject.FindGameObjectWithTag("Sword").GetComponent<BoxCollider>().enabled = true;
             GameObject.FindGameObjectWithTag("Bite").GetComponent<SphereCollider>().enabled = true;
         }
+
+        if (GetComponent<Player>().life <= 0.5)
+        {
+            if (!GetComponent<PhotonView>().IsMine) return;
+            switch (gameObject.tag)
+            {
+                case "Player":
+                    SceneManager.LoadScene("DinoWin");
+                    break;
+                case "TRex":
+                    SceneManager.LoadScene("PlayerWin");
+                    break;
+            }
+        }
     }
 
     void OnClick()
@@ -93,10 +108,6 @@ public class Combat : MonoBehaviourPunCallbacks
     public void RPC_TakeDamage(float damage)
     {
             GetComponent<Player>().life -= damage;
-            if (gameObject.CompareTag("Player"))
-            {
-                gameObject.GetComponent<Rigidbody>().AddForce(direction * knockbackForce);
-            }
     }
 
     private void OnTriggerEnter(Collider other)

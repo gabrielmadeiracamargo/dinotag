@@ -243,6 +243,17 @@ public class Player : MonoBehaviourPunCallbacks
             isJumping = false;
         }
     }
+    public void SkipCutscene()
+    {
+        phView.RPC("RPC_SkipCutscene", RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void RPC_SkipCutscene()
+    {
+        GameController.Instance.skipCutsceneButton.SetActive(false);
+        GameController.Instance._director.time = 58.5f;
+    }
 
     public void ChangeSkin()
     {

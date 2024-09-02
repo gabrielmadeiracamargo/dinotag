@@ -14,6 +14,7 @@ public class Connection : MonoBehaviourPunCallbacks
     public GameObject connectionStatus;
     public string input;
     public string nick;
+    public int maxPlayers = 2;
     Hashtable roomHashtable = new Hashtable();
     RoomOptions roomOptions = new RoomOptions();
 
@@ -32,14 +33,17 @@ public class Connection : MonoBehaviourPunCallbacks
         }
 
         //roomHashtable.Add("Score", 0);
-        roomOptions.CustomRoomProperties = roomHashtable;
-        roomOptions.IsOpen = true;
+        /*roomOptions.IsOpen = true;
         roomOptions.IsVisible = true;
-        roomOptions.MaxPlayers = 2;
+        roomOptions.MaxPlayers = System.Convert.ToByte(1);*/
 
         PhotonNetwork.ConnectUsingSettings();
 
         PhotonNetwork.LocalPlayer.NickName = nick;
+
+        roomOptions.CustomRoomProperties = roomHashtable;
+        roomOptions.MaxPlayers = System.Convert.ToByte(maxPlayers);
+
     }
 
     private void Update()
@@ -64,7 +68,8 @@ public class Connection : MonoBehaviourPunCallbacks
 
     public void CreateRoom()
     {
-        PhotonNetwork.CreateRoom(input, roomOptions);
+        roomOptions.MaxPlayers = System.Convert.ToByte(maxPlayers);
+        PhotonNetwork.CreateRoom(input, roomOptions, null);
     }
 
     public void JoinRoom()
@@ -74,7 +79,7 @@ public class Connection : MonoBehaviourPunCallbacks
 
     public void QuickPlay()
     {
-        PhotonNetwork.JoinRandomOrCreateRoom();
+        PhotonNetwork.JoinRandomOrCreateRoom(roomHashtable, System.Convert.ToByte(maxPlayers));
     }
 
     // Funções do Photon
@@ -89,6 +94,7 @@ public class Connection : MonoBehaviourPunCallbacks
         print("Entrou no lobby");
     }
 
+
     public override void OnCreatedRoom()
     {
         
@@ -97,19 +103,34 @@ public class Connection : MonoBehaviourPunCallbacks
     
     public override async void OnJoinedRoom()
     {
+        print(roomOptions.MaxPlayers - PhotonNetwork.PlayerList.Length);
         //print($"Entrou na sala {input}");
+
+        if (PhotonNetwork.CurrentRoom.PlayerCount > roomOptions.MaxPlayers)
+        {
+            PhotonNetwork.LeaveRoom(); // Sai da sala se o número de jogadores exceder o limite
+            return;
+        }
+
         if (PhotonNetwork.IsMasterClient)
         {
             await Task.Delay(100);
             PhotonNetwork.LoadLevel("Game");
+        }
+        else
+        {
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            PhotonNetwork.CurrentRoom.IsVisible = false;
         }
         //print($"Entrou na sala {PhotonNetwork.CurrentRoom.Name}");
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message) // criar sala se não tiver nenhuma
     {
+        int randomRoomNumber = Random.Range(0, 99999);
         //print("Falhou na aleatória");
-        PhotonNetwork.CreateRoom($"Room{Random.Range(100, 1000)} {Random.Range(100,1000)}");
+        PhotonNetwork.CreateRoom($"Room {randomRoomNumber}", roomOptions, null);
+        PhotonNetwork.JoinRoom($"Room {randomRoomNumber}");
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)

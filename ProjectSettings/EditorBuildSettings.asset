@@ -11,9 +11,17 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game.unity
     guid: 32c9780e888ed91458f46d44f642c10c
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Scenes/fugacarro.unity
-    guid: ddacb372123522b45b9d98c002516989
+    path: Assets/Scenes/DinoWin.unity
+    guid: 878f620703f8a52489543cbfad135f77
+  - enabled: 1
+    path: Assets/Scenes/PlayerWin.unity
+    guid: 86905d422df48df479af4b8b9f6741ac
   m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: 28d90ddab53bd9d46ae23d301a8930d8,
+      type: 2}
     com.unity.input.settings: {fileID: 11400000, guid: 9e7be553448fa2546aea5752021cbcf7,
       type: 2}
