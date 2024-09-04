@@ -274,6 +274,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ARMA
       objectReference: {fileID: 0}
+    - target: {fileID: 8991286926839929306, guid: 212e62891b975e94093f116eec64d708,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 969307a972d602d4880b4d8f4ca5536b, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 212e62891b975e94093f116eec64d708, type: 3}
 --- !u!1001 &1342524694082650148
@@ -283,6 +288,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6047142180872278243, guid: e0af8af748fef414e9e210cecd79af1f,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9b9d8c1fb2a4aeb44a11965f8ebedf6d, type: 2}
     - target: {fileID: 8382424968776572797, guid: e0af8af748fef414e9e210cecd79af1f,
         type: 3}
       propertyPath: m_RootOrder
@@ -559,6 +569,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 822885161614218013, guid: 7f3b562a9a4d5c8468b6ab0a5882d904,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 969307a972d602d4880b4d8f4ca5536b, type: 2}
+    - target: {fileID: 1198640504186433207, guid: 7f3b562a9a4d5c8468b6ab0a5882d904,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 969307a972d602d4880b4d8f4ca5536b, type: 2}
+    - target: {fileID: 3895591268027966759, guid: 7f3b562a9a4d5c8468b6ab0a5882d904,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 969307a972d602d4880b4d8f4ca5536b, type: 2}
     - target: {fileID: 7447166068701255399, guid: 7f3b562a9a4d5c8468b6ab0a5882d904,
         type: 3}
       propertyPath: m_RootOrder
@@ -628,6 +653,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3365349373115199283, guid: 57795a16d3d99a94a996e6ee7a1de767,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 969307a972d602d4880b4d8f4ca5536b, type: 2}
+    - target: {fileID: 5862217476837721529, guid: 57795a16d3d99a94a996e6ee7a1de767,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 969307a972d602d4880b4d8f4ca5536b, type: 2}
     - target: {fileID: 5924319493130933073, guid: 57795a16d3d99a94a996e6ee7a1de767,
         type: 3}
       propertyPath: m_Name
@@ -688,6 +723,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7058903636020148431, guid: 57795a16d3d99a94a996e6ee7a1de767,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 969307a972d602d4880b4d8f4ca5536b, type: 2}
+    - target: {fileID: 9134181039544665717, guid: 57795a16d3d99a94a996e6ee7a1de767,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 969307a972d602d4880b4d8f4ca5536b, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 57795a16d3d99a94a996e6ee7a1de767, type: 3}
 --- !u!1001 &9021139635056153996
@@ -697,6 +742,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7760408218484041694, guid: 83f0ed3a4340f3c4ca18f4bdcf641008,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 8b8fa934f8c7a4b46a67e90548f40f4c, type: 2}
     - target: {fileID: 8210325325879137694, guid: 83f0ed3a4340f3c4ca18f4bdcf641008,
         type: 3}
       propertyPath: m_Name
