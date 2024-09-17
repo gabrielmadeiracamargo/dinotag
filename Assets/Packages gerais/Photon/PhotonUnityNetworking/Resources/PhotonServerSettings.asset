@@ -48,6 +48,8 @@ MonoBehaviour:
   - RPC_ExitCar
   - RPC_SkipCutscene
   - RPC_UpdateTimer
+  - RPC_UpdatePlayerPosition
+  - RPC_BeBitten
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

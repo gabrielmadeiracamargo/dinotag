@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using System.Globalization;
 
 public class Gun : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class Gun : MonoBehaviour
     RaycastHit hit;
     Transform camT;
     PhotonView phView;
+    [SerializeField] GameObject sword, gun;
 
     void Start()
     {
@@ -21,16 +23,34 @@ public class Gun : MonoBehaviour
     void Update()
     {
         //if (!phView.IsMine) return;
-
-        if (Input.GetButtonDown("Fire1") && hasGun)
+        if (Physics.Raycast(camT.position, camT.forward, out hit)) 
         {
-            if (Physics.Raycast(camT.position, camT.forward, out hit)) 
+            if (hit.collider.CompareTag("Player"))
             {
-                if (hit.collider.CompareTag("Player"))
+                hit.collider.GetComponent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.All, damage);
+            }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                switch (hit.collider.gameObject.name)
                 {
-                    hit.collider.GetComponent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.All, damage);
+                    case "SwordIcon":
+                        ChooseWeapon(true);
+                        break;
+                    case "GunIcon":
+                        ChooseWeapon(false);
+                        hasGun = true;
+                        break;
                 }
             }
         }
+    }
+
+    void ChooseWeapon(bool isSword)
+    {
+        sword.SetActive(isSword);
+        gun.SetActive(!isSword);
+        GameObject.FindGameObjectsWithTag("Icons")[0].SetActive(false);
+        GameObject.FindGameObjectsWithTag("Icons")[1].SetActive(false);
     }
 }
