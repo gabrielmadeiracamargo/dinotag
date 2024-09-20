@@ -7,11 +7,11 @@ using System.Globalization;
 public class Gun : MonoBehaviour
 {
     public int damage;
-    public bool hasGun;
+    public bool hasSword, hasGun;
     RaycastHit hit;
     Transform camT;
     PhotonView phView;
-    [SerializeField] GameObject sword, gun;
+    [SerializeField] public GameObject sword, gun;
 
     void Start()
     {
@@ -32,16 +32,8 @@ public class Gun : MonoBehaviour
 
             if (Input.GetMouseButtonUp(0))
             {
-                switch (hit.collider.gameObject.name)
-                {
-                    case "SwordIcon":
-                        ChooseWeapon(true);
-                        break;
-                    case "GunIcon":
-                        ChooseWeapon(false);
-                        hasGun = true;
-                        break;
-                }
+                if (hit.collider.name == "SwordIcon") ChooseWeapon(true);
+                else if (hit.collider.name == "GunIcon") ChooseWeapon(false);
             }
         }
     }
@@ -50,7 +42,10 @@ public class Gun : MonoBehaviour
     {
         sword.SetActive(isSword);
         gun.SetActive(!isSword);
+        hasSword = isSword;
+        hasGun = !isSword;
         GameObject.FindGameObjectsWithTag("Icons")[0].SetActive(false);
         GameObject.FindGameObjectsWithTag("Icons")[1].SetActive(false);
+        print(hasGun);
     }
 }

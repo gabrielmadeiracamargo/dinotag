@@ -18,6 +18,7 @@ public class Combat : MonoBehaviourPunCallbacks
     [SerializeField] private Transform bitePosition; // Defina no Inspector
     [SerializeField] private bool isBiting = false;
     [SerializeField] float biteDuration;
+    GameObject sword, bite;
 
     void Start()
     {
@@ -27,9 +28,12 @@ public class Combat : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if (GetComponentInParent<Gun>().hasGun) return;
+        if (! GetComponent<Gun>().hasSword) return;
+        if (GameObject.FindGameObjectWithTag("Sword") != null) sword = GameObject.FindGameObjectWithTag("Sword");
+        if (GameObject.FindGameObjectWithTag("Bite") != null) bite = GameObject.FindGameObjectWithTag("Bite");
 
-        bitePosition = GameObject.FindGameObjectWithTag("Bite").transform;
+
+        if (bitePosition != null) bitePosition = bite.transform;
 
         if (!GetComponent<PhotonView>().IsMine) return;
 
@@ -60,13 +64,13 @@ public class Combat : MonoBehaviourPunCallbacks
         }
         if (noOfClicks == 0)
         {
-            GameObject.FindGameObjectWithTag("Sword").GetComponent<BoxCollider>().enabled = false;
-            GameObject.FindGameObjectWithTag("Bite").GetComponent<SphereCollider>().enabled = false;
+            sword.GetComponent<BoxCollider>().enabled = false;
+            bite.GetComponent<SphereCollider>().enabled = false;
         }
         else
         {
-            GameObject.FindGameObjectWithTag("Sword").GetComponent<BoxCollider>().enabled = true;
-            GameObject.FindGameObjectWithTag("Bite").GetComponent<SphereCollider>().enabled = true;
+            sword.GetComponent<BoxCollider>().enabled = true;
+            bite.GetComponent<SphereCollider>().enabled = true;
         }
 
         if (GetComponent<Player>().life <= 0.5f)
@@ -83,12 +87,12 @@ public class Combat : MonoBehaviourPunCallbacks
             }
         }
 
-        // Removido: Atualização contínua da posição
+        // Removido: Atualizaï¿½ï¿½o contï¿½nua da posiï¿½ï¿½o
     }
 
     void OnClick()
     {
-        if (GetComponentInParent<Gun>().hasGun) return;
+        if (!GetComponent<Gun>().hasSword) return;
 
         if (!GetComponent<PhotonView>().IsMine) return;
 
@@ -129,16 +133,16 @@ public class Combat : MonoBehaviourPunCallbacks
 
     private IEnumerator BitePlayer(Vector3 bitePos, Quaternion biteRotation)
     {
-        float biteDuration = 1.0f; // Duração da mordida em segundos
-        float elapsedTime = 0f; // Tempo que se passou desde o início da mordida
+        float biteDuration = 1.0f; // Duraï¿½ï¿½o da mordida em segundos
+        float elapsedTime = 0f; // Tempo que se passou desde o inï¿½cio da mordida
 
-        // Desabilitar controles do jogador enquanto está sendo mordido (se necessário)
+        // Desabilitar controles do jogador enquanto estï¿½ sendo mordido (se necessï¿½rio)
         // GetComponent<Player>().enabled = false;
 
-        // Enquanto o tempo da mordida não acabar
+        // Enquanto o tempo da mordida nï¿½o acabar
         while (elapsedTime < biteDuration)
         {
-            // Atualizar a posição e rotação do jogador
+            // Atualizar a posiï¿½ï¿½o e rotaï¿½ï¿½o do jogador
             SetPlayerPositionAndRotation();
 
             // Incrementar o tempo passado
@@ -146,11 +150,11 @@ public class Combat : MonoBehaviourPunCallbacks
             yield return null;
         }
 
-        // Após a duração da mordida
-        // Reabilitar controles do jogador (se necessário)
+        // Apï¿½s a duraï¿½ï¿½o da mordida
+        // Reabilitar controles do jogador (se necessï¿½rio)
         // GetComponent<Player>().enabled = true;
 
-        // Finaliza a coroutine após a duração da mordida
+        // Finaliza a coroutine apï¿½s a duraï¿½ï¿½o da mordida
     }
 
     public void SetPlayerPositionAndRotation()
@@ -186,20 +190,20 @@ public class Combat : MonoBehaviourPunCallbacks
             // Aplica dano ao jogador
             GetComponentInParent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.AllBuffered, 6f);
 
-            // Somente o T-Rex controla a variável `isBiting`
+            // Somente o T-Rex controla a variï¿½vel `isBiting`
             Combat dinoCombat = other.GetComponentInParent<Combat>();
             if (!dinoCombat.isBiting)
             {
                 dinoCombat.isBiting = true;
 
-                // Envia o RPC para o jogador mordido atualizar sua posição
+                // Envia o RPC para o jogador mordido atualizar sua posiï¿½ï¿½o
                 PhotonView playerPhotonView = GetComponent<PhotonView>();
                 if (playerPhotonView != null)
                 {
                     playerPhotonView.RPC("RPC_BeBitten", RpcTarget.All, dinoCombat.bitePosition.position, dinoCombat.bitePosition.rotation);
                 }
 
-                // Inicia a coroutine para liberar o jogador após a mordida
+                // Inicia a coroutine para liberar o jogador apï¿½s a mordida
                 StartCoroutine(ReleasePlayerAfterBite(dinoCombat));
             }
         }
@@ -207,12 +211,12 @@ public class Combat : MonoBehaviourPunCallbacks
 
     private IEnumerator ReleasePlayerAfterBite(Combat dinoCombat)
     {
-        yield return new WaitForSeconds(biteDuration); // Duração da mordida
+        yield return new WaitForSeconds(biteDuration); // Duraï¿½ï¿½o da mordida
         if (gameObject.CompareTag("Player"))
         {
             transform.rotation = new Quaternion(0,0,0,0);
         }
-        dinoCombat.isBiting = false; // Só o T-Rex altera `isBiting`
+        dinoCombat.isBiting = false; // Sï¿½ o T-Rex altera `isBiting`
     }
 
 }
