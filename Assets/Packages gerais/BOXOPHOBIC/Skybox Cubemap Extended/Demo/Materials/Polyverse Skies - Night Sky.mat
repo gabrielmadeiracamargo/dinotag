@@ -43,5 +43,5 @@ Material:
     - _Rotationn: 1
     - _SkyboxExtended: 1
     m_Colors:
-    - _TintColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _TintColor: {r: 0.13207549, g: 0.10777858, b: 0.10777858, a: 1}
   m_BuildTextureStacks: []
