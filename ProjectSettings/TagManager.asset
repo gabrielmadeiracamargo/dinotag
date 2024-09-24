@@ -12,6 +12,8 @@ TagManager:
   - Minimap
   - Sword
   - Bite
+  - Food
+  - Icons
   layers:
   - Default
   - TransparentFX
@@ -29,7 +31,7 @@ TagManager:
   - RCC_DetachablePart
   - RCC_Trailer
   - RCC_Crasher
-  - Portrait
+  - 
   - 
   - 
   - 

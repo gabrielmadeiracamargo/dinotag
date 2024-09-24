@@ -704,8 +704,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targets:
-  - name: Pedra
-    obj: {fileID: 1927372005322154, guid: a982a26b928e09f4cafe1d81136fcebb, type: 3}
+  - name: "Arma Son\xEDfera"
+    obj: {fileID: 4768620798237811076, guid: 5f50d60a7376d294dbd70565e4229660, type: 3}
   overlays: []
   customFolder: Icons
   rawIcon: {fileID: 0}
