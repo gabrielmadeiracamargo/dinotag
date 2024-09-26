@@ -22,20 +22,45 @@ public class Gun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (!phView.IsMine) return;
-        if (Physics.Raycast(camT.position, camT.forward, out hit)) 
-        {
-            if (hit.collider.CompareTag("Player"))
-            {
-                hit.collider.GetComponent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.All, damage);
-            }
+        if (hasGun) AimGun();
+    }
 
-            if (Input.GetMouseButtonUp(0))
+    void AimGun()
+    {
+        if (Input.GetMouseButtonUp(1))
+        {
+            GetComponent<Animator>().SetBool("aiming", !GetComponent<Animator>().GetBool("aiming"));
+        }
+
+        if (GetComponent<Animator>().GetBool("aiming") == true)
+        {
+            if (Input.GetMouseButtonUp(0)) ShootGun();
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (hit.collider.name == "SwordIcon") ChooseWeapon(true);
+            else if (hit.collider.name == "GunIcon") ChooseWeapon(false);
+        }
+    }
+
+    void ShootGun()
+    {
+        if (Physics.Raycast(camT.position, camT.forward, out hit))
+        {
+            if (hit.collider.gameObject.CompareTag("TRex"))
             {
-                if (hit.collider.name == "SwordIcon") ChooseWeapon(true);
-                else if (hit.collider.name == "GunIcon") ChooseWeapon(false);
+                hit.collider.gameObject.GetComponent<Combat>().phView.RPC("RPC_TakeDamage", RpcTarget.All, 5);
             }
         }
+        StartCoroutine(PlayShootingAnimation());
+    }
+
+    IEnumerator PlayShootingAnimation()
+    {
+        GetComponent<Animator>().SetBool("shooted", true);
+        yield return new WaitForEndOfFrame();
+        GetComponent<Animator>().SetBool("shooted", false);
     }
 
     void ChooseWeapon(bool isSword)

@@ -66,11 +66,16 @@ public class GameController : MonoBehaviourPunCallbacks
     void Update()
     {
         timer += Time.deltaTime;
-        if ((int)skybox.GetFloat("_CubemapTransition") != 1)
+        float transitionTime = 60f; // Duração total da transição em segundos
+        float transitionValue = 1f - (timer / transitionTime); // Inverte de 1 para 0
+
+        if (transitionValue > 0) // Verifica se ainda não chegou no mínimo
         {
-            skybox.SetFloat("_CubemapTransition", timer / (60));
-            skybox.SetFloat("_FogIntensity", timer / (60));
+            GameObject.Find("Directional Light").GetComponent<Light>().intensity = 1.125f-transitionValue;
+            skybox.SetFloat("_CubemapTransition", transitionValue);
+            skybox.SetFloat("_FogIntensity", transitionValue);
         }
+
 
         if (PhotonNetwork.PlayerList.Length == 1) waitingText.SetActive(true);
         else if (PhotonNetwork.PlayerList.Length == 2)

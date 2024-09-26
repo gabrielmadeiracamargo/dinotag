@@ -19,10 +19,12 @@ public class Combat : MonoBehaviourPunCallbacks
     [SerializeField] private bool isBiting = false;
     [SerializeField] float biteDuration;
     GameObject sword, bite;
+    public PhotonView phView;
 
     void Start()
     {
-        if (!GetComponent<PhotonView>().IsMine) return;
+        phView = GetComponent<PhotonView>();
+        if (!phView.IsMine) return;
         anim = GetComponent<Animator>();
     }
 
@@ -35,7 +37,7 @@ public class Combat : MonoBehaviourPunCallbacks
 
         if (bitePosition != null) bitePosition = bite.transform;
 
-        if (!GetComponent<PhotonView>().IsMine) return;
+        if (!phView.IsMine) return;
 
         if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f && anim.GetCurrentAnimatorStateInfo(0).IsName("hit1"))
         {
@@ -75,7 +77,7 @@ public class Combat : MonoBehaviourPunCallbacks
 
         if (GetComponent<Player>().life <= 0.5f)
         {
-            if (!GetComponent<PhotonView>().IsMine) return;
+            if (!phView.IsMine) return;
             switch (gameObject.tag)
             {
                 case "Player":
@@ -94,7 +96,7 @@ public class Combat : MonoBehaviourPunCallbacks
     {
         if (!GetComponent<Gun>().hasSword) return;
 
-        if (!GetComponent<PhotonView>().IsMine) return;
+        if (!phView.IsMine) return;
 
         lastClickedTime = Time.time;
         noOfClicks++;
