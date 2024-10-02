@@ -115,7 +115,7 @@ public class Connection : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             await Task.Delay(100);
-            PhotonNetwork.LoadLevel("Game");
+            PhotonNetwork.LoadLevel("cene");
         }
         else
         {

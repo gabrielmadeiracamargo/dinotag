@@ -1548,9 +1548,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldownTime: 2
   knockbackForce: 250
-  bitePosition: {fileID: 0}
+  bitePosition: {fileID: 8966484656435045463}
   isBiting: 0
   biteDuration: 1.5
+  phView: {fileID: 0}
 --- !u!114 &1864468381169091722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1627,6 +1628,9 @@ MonoBehaviour:
   - Type: 4
     SynchronizeType: 2
     Name: hit3
+  - Type: 4
+    SynchronizeType: 0
+    Name: sleeping
   m_SynchronizeLayers:
   - SynchronizeType: 2
     LayerIndex: 0
