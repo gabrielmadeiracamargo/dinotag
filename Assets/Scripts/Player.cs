@@ -272,4 +272,9 @@ public class Player : MonoBehaviourPunCallbacks
 
 
     }
+
+    public void BackToMenu()
+    {
+        if (photonView.IsMine) PhotonNetwork.LoadLevel("Menu");
+    }
 }

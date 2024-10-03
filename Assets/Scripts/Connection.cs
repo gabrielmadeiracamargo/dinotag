@@ -21,29 +21,38 @@ public class Connection : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Awake()
     {
+        StartCoroutine(WaitToConnect());
+        PhotonNetwork.ConnectUsingSettings();
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         PhotonNetwork.AutomaticallySyncScene = true;
 
-        if (connection != gameObject)
+        /*if (connection != gameObject)
         {
             connection = gameObject;
             DontDestroyOnLoad(gameObject);
         } else
         {
             Destroy(gameObject);
-        }
+        }*/
 
         //roomHashtable.Add("Score", 0);
         /*roomOptions.IsOpen = true;
         roomOptions.IsVisible = true;
         roomOptions.MaxPlayers = System.Convert.ToByte(1);*/
 
-        PhotonNetwork.ConnectUsingSettings();
 
         PhotonNetwork.LocalPlayer.NickName = nick;
 
         roomOptions.CustomRoomProperties = roomHashtable;
         roomOptions.MaxPlayers = System.Convert.ToByte(maxPlayers);
 
+    }
+
+    IEnumerator WaitToConnect()
+    {
+        yield return new WaitForSeconds(1.5f);
     }
 
     private void Update()

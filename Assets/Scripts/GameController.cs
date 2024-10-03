@@ -41,7 +41,7 @@ public class GameController : MonoBehaviourPunCallbacks
         stevenPlayer = GameObject.FindGameObjectWithTag("Player");
         skybox.SetFloat("_CubemapTransition", 0);
         skybox.SetFloat("_FogIntensity", 0);
-        if (Instance != null && Instance != this)
+        /*if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
         }
@@ -50,7 +50,7 @@ public class GameController : MonoBehaviourPunCallbacks
             Instance = this;
         }
 
-        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);*/
     }
 
     public override void OnJoinedRoom()
@@ -90,7 +90,16 @@ public class GameController : MonoBehaviourPunCallbacks
         }
 
 
-       // if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.F1)) settingsMenu.SetActive(!settingsMenu.activeInHierarchy);
+        if (Input.GetKeyDown(KeyCode.Escape)) 
+        {
+            settingsMenu.SetActive(!settingsMenu.activeInHierarchy);
+        }
+
+        if (settingsMenu.activeInHierarchy && Input.GetKeyDown(KeyCode.X))
+        {
+            PhotonNetwork.LeaveRoom();
+            PhotonNetwork.LoadLevel("Menu");
+        }
 
         if (_director.time >= 62 && !cutsceneEnded)
         {
@@ -106,23 +115,23 @@ public class GameController : MonoBehaviourPunCallbacks
             skipCutsceneButton.SetActive(false);
         }
 
-        if (Input.GetKeyDown(KeyCode.Tab))
+        /*if (Input.GetKeyDown(KeyCode.Tab))
         {
             if (!isOnTab) OnTabOpened();
             else OnTabClosed();
-        }
+        }*/
 
         if (isOnTab || settingsMenu.activeInHierarchy)
         {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
-            ShowObjects(uiObjectsToHide, false);
+            //ShowObjects(uiObjectsToHide, false);
         }
         else
         {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
-            ShowObjects(uiObjectsToHide, true);
+            //ShowObjects(uiObjectsToHide, true);
         }
     }
 
@@ -136,7 +145,6 @@ public class GameController : MonoBehaviourPunCallbacks
         isOnTab = false;
         tabMenu.SetActive(false);
     }
-
     public void ShowObjects(GameObject[] objects, bool isShown)
     {
         for (int i = 0; i < objects.Length; i++)
@@ -154,6 +162,6 @@ public class GameController : MonoBehaviourPunCallbacks
     {
         base.OnPlayerLeftRoom(otherPlayer);
         PhotonNetwork.LeaveRoom();
-        //SceneManager.LoadScene("Menu");
+        PhotonNetwork.LoadLevel("Menu");
     }
 }

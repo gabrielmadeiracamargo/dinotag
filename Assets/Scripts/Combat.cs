@@ -30,10 +30,9 @@ public class Combat : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if (! GetComponent<Gun>().hasSword) return;
+        if (GetComponent<Gun>() != null && !GetComponent<Gun>().hasSword) return;
         if (GameObject.FindGameObjectWithTag("Sword") != null) sword = GameObject.FindGameObjectWithTag("Sword");
         if (GameObject.FindGameObjectWithTag("Bite") != null) bite = GameObject.FindGameObjectWithTag("Bite");
-
 
         if (bitePosition != null) bitePosition = bite.transform;
 
@@ -94,7 +93,7 @@ public class Combat : MonoBehaviourPunCallbacks
 
     void OnClick()
     {
-        if (!GetComponent<Gun>().hasSword) return;
+        if (GetComponent<Gun>() != null && !GetComponent<Gun>().hasSword) return;
 
         if (!phView.IsMine) return;
 

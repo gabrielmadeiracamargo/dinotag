@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Photon.Pun;
 
 public class CameraController : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
+        if (!GetComponentInParent<PhotonView>().IsMine) return;
         player = gameObject.transform.parent.gameObject.transform;
         offsetDistanceY = transform.position.y;
 
@@ -28,6 +30,8 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
+        if (!GetComponentInParent<PhotonView>().IsMine) return;
+
         // Camera follows player with an offset
         transform.position = player.position + new Vector3(0, offsetDistanceY, 0);
 

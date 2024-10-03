@@ -109,8 +109,8 @@ public class Gun : MonoBehaviour
         gun.SetActive(!isSword);
         hasSword = isSword;
         hasGun = !isSword;
-        GameObject.FindGameObjectsWithTag("Icons")[0].SetActive(false);
-        GameObject.FindGameObjectsWithTag("Icons")[1].SetActive(false);
+        //GameObject.FindGameObjectsWithTag("Icons")[0].SetActive(false);
+        //GameObject.FindGameObjectsWithTag("Icons")[1].SetActive(false);
     }
 
     public void PickupAmmo(int amount)
