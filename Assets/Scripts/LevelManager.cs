@@ -13,16 +13,6 @@ public class LevelManager : MonoBehaviourPunCallbacks
     public GameObject _loaderCanvas;
     [SerializeField] private ProgressBar _progressBar;
 
-    void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else Destroy(gameObject);
-    }
-
     public async void LoadScene()
     {
         _loaderCanvas.SetActive(true);

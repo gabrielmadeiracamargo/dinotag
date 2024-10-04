@@ -52,7 +52,7 @@ public class Connection : MonoBehaviourPunCallbacks
 
     IEnumerator WaitToConnect()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(0.5f);
     }
 
     private void Update()

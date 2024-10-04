@@ -41,16 +41,14 @@ public class GameController : MonoBehaviourPunCallbacks
         stevenPlayer = GameObject.FindGameObjectWithTag("Player");
         skybox.SetFloat("_CubemapTransition", 0);
         skybox.SetFloat("_FogIntensity", 0);
+
         /*if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
         }
-        else
-        {
-            Instance = this;
-        }
+        else */ Instance = this;
 
-        DontDestroyOnLoad(gameObject);*/
+        //DontDestroyOnLoad(gameObject);
     }
 
     public override void OnJoinedRoom()
