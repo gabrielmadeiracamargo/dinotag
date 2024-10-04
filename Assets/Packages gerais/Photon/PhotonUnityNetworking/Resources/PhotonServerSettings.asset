@@ -51,6 +51,7 @@ MonoBehaviour:
   - RPC_UpdatePlayerPosition
   - RPC_BeBitten
   - RPC_SleepDino
+  - RPC_EndGame
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

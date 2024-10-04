@@ -19,7 +19,6 @@ public class Gun : MonoBehaviour
 
     void Start()
     {
-        ammoText.gameObject.SetActive(true);
         camT = Camera.main.transform;
         phView = GetComponent<PhotonView>();
     }
@@ -29,8 +28,10 @@ public class Gun : MonoBehaviour
     {
         if (hasGun)
         {
+            ammoText.gameObject.SetActive(true);
             AimGun(); // Handles aiming and shooting while aiming
         }
+        else ammoText.gameObject.SetActive(false);
 
         if (Physics.Raycast(camT.position, camT.forward, out hit))
         {

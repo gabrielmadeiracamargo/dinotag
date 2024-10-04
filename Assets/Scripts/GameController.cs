@@ -29,6 +29,7 @@ public class GameController : MonoBehaviourPunCallbacks
     public bool cutsceneEnded;
     public PlayableDirector _director;
     [SerializeField] GameObject cutsceneObjects;
+    public GameObject endGameObject;
     public Material skybox;
     public float timer;
 
@@ -64,10 +65,10 @@ public class GameController : MonoBehaviourPunCallbacks
     void Update()
     {
         timer += Time.deltaTime;
-        float transitionTime = 60f; // Duração total da transição em segundos
+        float transitionTime = 60f; // Duraï¿½ï¿½o total da transiï¿½ï¿½o em segundos
         float transitionValue = 1f - (timer / transitionTime); // Inverte de 1 para 0
 
-        if (transitionValue > 0) // Verifica se ainda não chegou no mínimo
+        if (transitionValue > 0) // Verifica se ainda nï¿½o chegou no mï¿½nimo
         {
             GameObject.Find("Directional Light").GetComponent<Light>().intensity = 1.125f-transitionValue;
             skybox.SetFloat("_CubemapTransition", transitionValue);

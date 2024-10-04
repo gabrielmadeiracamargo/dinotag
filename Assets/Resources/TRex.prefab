@@ -1532,6 +1532,8 @@ MonoBehaviour:
   playerCam: {fileID: 1864468380673402929}
   minimapCamera: {fileID: 7976204525581183797}
   portrait: {fileID: 21300000, guid: 5ee279332f8bd11438bcae233a67bc92, type: 3}
+  dinoLostImage: {fileID: 21300000, guid: e02c1903735b0e74b8e38e0113508d70, type: 3}
+  dinoWinImage: {fileID: 21300000, guid: c81397e6b2a026444927fdd6aba7f332, type: 3}
   skins: []
   minimapTexture: {fileID: 8400000, guid: 8600592228f668941ba74ad446e8c86a, type: 2}
 --- !u!114 &1800523537404419908
@@ -1629,7 +1631,7 @@ MonoBehaviour:
     SynchronizeType: 2
     Name: hit3
   - Type: 4
-    SynchronizeType: 0
+    SynchronizeType: 2
     Name: sleeping
   m_SynchronizeLayers:
   - SynchronizeType: 2

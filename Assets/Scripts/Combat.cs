@@ -7,8 +7,8 @@ using UnityEngine.SceneManagement;
 public class Combat : MonoBehaviourPunCallbacks
 {
     private Animator anim;
-    public float cooldownTime = 2f;
-    private float nextFireTime = 0f;
+    public float cooldownTime = 2f; // Tempo de cooldown entre as mordidas
+    private float nextBiteTime = 0f; // Guarda o tempo quando o dinossauro pode morder novamente
     public static int noOfClicks = 0;
     float lastClickedTime = 0;
     float maxComboDelay = 1;
@@ -17,7 +17,7 @@ public class Combat : MonoBehaviourPunCallbacks
     Vector3 direction;
     [SerializeField] private Transform bitePosition; // Defina no Inspector
     [SerializeField] private bool isBiting = false;
-    [SerializeField] float biteDuration;
+    [SerializeField] float biteDuration = 1.0f; // Duração da mordida
     GameObject sword, bite;
     public PhotonView phView;
 
@@ -30,12 +30,10 @@ public class Combat : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if (GetComponent<Gun>() != null && !GetComponent<Gun>().hasSword) return;
-        if (GameObject.FindGameObjectWithTag("Sword") != null) sword = GameObject.FindGameObjectWithTag("Sword");
         if (GameObject.FindGameObjectWithTag("Bite") != null) bite = GameObject.FindGameObjectWithTag("Bite");
+        if (bitePosition == null) bitePosition = GameObject.FindGameObjectWithTag("Bite").transform;
 
-        if (bitePosition != null) bitePosition = bite.transform;
-
+        if (GetComponent<Gun>() != null && !GetComponent<Gun>().hasSword) return;
         if (!phView.IsMine) return;
 
         if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f && anim.GetCurrentAnimatorStateInfo(0).IsName("hit1"))
@@ -56,13 +54,16 @@ public class Combat : MonoBehaviourPunCallbacks
         {
             noOfClicks = 0;
         }
-        if (Time.time > nextFireTime)
+
+        // Remove the nextFireTime and replace it with nextBiteTime
+        if (Time.time > nextBiteTime) // Checking if the bite cooldown has ended
         {
             if (Input.GetMouseButtonDown(0))
             {
                 OnClick();
             }
         }
+
         if (noOfClicks == 0)
         {
             sword.GetComponent<BoxCollider>().enabled = false;
@@ -87,8 +88,6 @@ public class Combat : MonoBehaviourPunCallbacks
                     break;
             }
         }
-
-        // Removido: Atualiza��o cont�nua da posi��o
     }
 
     void OnClick()
@@ -134,16 +133,13 @@ public class Combat : MonoBehaviourPunCallbacks
 
     private IEnumerator BitePlayer(Vector3 bitePos, Quaternion biteRotation)
     {
-        float biteDuration = 1.0f; // Dura��o da mordida em segundos
-        float elapsedTime = 0f; // Tempo que se passou desde o in�cio da mordida
+        isBiting = true;
+        float elapsedTime = 0f; // Tempo que se passou desde o início da mordida
 
-        // Desabilitar controles do jogador enquanto est� sendo mordido (se necess�rio)
-        // GetComponent<Player>().enabled = false;
-
-        // Enquanto o tempo da mordida n�o acabar
+        // Enquanto o tempo da mordida não acabar
         while (elapsedTime < biteDuration)
         {
-            // Atualizar a posi��o e rota��o do jogador
+            // Atualizar a posição e rotação do jogador para ficar na boca
             SetPlayerPositionAndRotation();
 
             // Incrementar o tempo passado
@@ -151,11 +147,12 @@ public class Combat : MonoBehaviourPunCallbacks
             yield return null;
         }
 
-        // Ap�s a dura��o da mordida
-        // Reabilitar controles do jogador (se necess�rio)
-        // GetComponent<Player>().enabled = true;
+        // Liberar o jogador depois da mordida
+        ReleasePlayer();
 
-        // Finaliza a coroutine ap�s a dura��o da mordida
+        // Adicionar delay entre as carregadas
+        yield return new WaitForSeconds(cooldownTime);
+        isBiting = false;
     }
 
     public void SetPlayerPositionAndRotation()
@@ -164,12 +161,20 @@ public class Combat : MonoBehaviourPunCallbacks
         transform.rotation = bitePosition.rotation;
     }
 
+    public void ReleasePlayer()
+    {
+        // Define a posição do jogador logo abaixo da boca do dinossauro para simular a queda
+        Vector3 releasePosition = bitePosition.position - (bitePosition.up * 1.5f); // Ajusta a altura para cair abaixo da boca
+        transform.position = releasePosition;
+
+        // Permite que o jogador recupere controle (se necessário)
+        GetComponent<Player>().enabled = true;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        // Player's Sword hits T-Rex
         if (gameObject.CompareTag("TRex"))
         {
-            // Aplica dano ao T-Rex
             switch (other.gameObject.tag)
             {
                 case "Sword":
@@ -185,26 +190,22 @@ public class Combat : MonoBehaviourPunCallbacks
                     break;
             }
         }
-        // T-Rex's Bite hits Player
         else if (gameObject.CompareTag("Player") && other.CompareTag("Bite") && other.GetComponentInParent<PhotonView>().IsMine)
         {
-            // Aplica dano ao jogador
             GetComponentInParent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.AllBuffered, 6f);
 
-            // Somente o T-Rex controla a vari�vel `isBiting`
             Combat dinoCombat = other.GetComponentInParent<Combat>();
-            if (!dinoCombat.isBiting)
+            if (!dinoCombat.isBiting && Time.time >= nextBiteTime) // Verificar o cooldown antes de carregar o jogador
             {
                 dinoCombat.isBiting = true;
+                nextBiteTime = Time.time + cooldownTime; // Atualiza o tempo da próxima mordida
 
-                // Envia o RPC para o jogador mordido atualizar sua posi��o
                 PhotonView playerPhotonView = GetComponent<PhotonView>();
                 if (playerPhotonView != null)
                 {
                     playerPhotonView.RPC("RPC_BeBitten", RpcTarget.All, dinoCombat.bitePosition.position, dinoCombat.bitePosition.rotation);
                 }
 
-                // Inicia a coroutine para liberar o jogador ap�s a mordida
                 StartCoroutine(ReleasePlayerAfterBite(dinoCombat));
             }
         }
@@ -212,12 +213,12 @@ public class Combat : MonoBehaviourPunCallbacks
 
     private IEnumerator ReleasePlayerAfterBite(Combat dinoCombat)
     {
-        yield return new WaitForSeconds(biteDuration); // Dura��o da mordida
+        yield return new WaitForSeconds(biteDuration); // Duração da mordida
+        dinoCombat.isBiting = false; // Liberar o jogador
+
         if (gameObject.CompareTag("Player"))
         {
-            transform.rotation = new Quaternion(0,0,0,0);
+            ReleasePlayer(); // Soltar o player após a mordida
         }
-        dinoCombat.isBiting = false; // S� o T-Rex altera `isBiting`
     }
-
 }

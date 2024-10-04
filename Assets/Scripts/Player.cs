@@ -1,9 +1,11 @@
 ﻿
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Photon.Pun;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Collections;
 
 /*
     This file has a commented version with details about how each line works. 
@@ -57,7 +59,7 @@ public class Player : MonoBehaviourPunCallbacks
     public GameObject playerCam;
 
     [SerializeField] GameObject minimapCamera;
-    [SerializeField] Sprite portrait;
+    [SerializeField] Sprite portrait, dinoLostImage, dinoWinImage;
 
     public List<Material> skins = new List<Material>(); // Lista de skins
     private int currentSkinIndex = 0; // Índice da skin atual
@@ -150,6 +152,8 @@ public class Player : MonoBehaviourPunCallbacks
         }
 
         HeadHittingDetect();
+
+        if (life <= 0)  phView.RPC("RPC_EndGame", RpcTarget.All);
     }
 
 
@@ -226,6 +230,23 @@ public class Player : MonoBehaviourPunCallbacks
             isJumping = false;
         }
     }
+
+    [PunRPC] 
+    public void RPC_EndGame()
+    {
+        GameController.Instance.endGameObject.SetActive(true);
+        if (gameObject.CompareTag("Player")) GameController.Instance.endGameObject.GetComponent<Image>().sprite = dinoWinImage;
+        else if (gameObject.CompareTag("TRex")) GameController.Instance.endGameObject.GetComponent<Image>().sprite = dinoLostImage;
+        PhotonNetwork.LeaveRoom();
+        StartCoroutine(WaitToMenu());
+    }
+
+    IEnumerator WaitToMenu()
+    {
+        yield return new WaitForSeconds(3);
+        BackToMenu();
+    }
+
     public void SkipCutscene()
     {
         phView.RPC("RPC_SkipCutscene", RpcTarget.All);
@@ -275,6 +296,6 @@ public class Player : MonoBehaviourPunCallbacks
 
     public void BackToMenu()
     {
-        if (photonView.IsMine) PhotonNetwork.LoadLevel("Menu");
+        SceneManager.LoadScene("Menu");
     }
 }

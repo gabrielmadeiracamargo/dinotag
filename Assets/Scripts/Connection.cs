@@ -28,26 +28,10 @@ public class Connection : MonoBehaviourPunCallbacks
         Cursor.lockState = CursorLockMode.None;
         PhotonNetwork.AutomaticallySyncScene = true;
 
-        /*if (connection != gameObject)
-        {
-            connection = gameObject;
-            DontDestroyOnLoad(gameObject);
-        } else
-        {
-            Destroy(gameObject);
-        }*/
-
-        //roomHashtable.Add("Score", 0);
-        /*roomOptions.IsOpen = true;
-        roomOptions.IsVisible = true;
-        roomOptions.MaxPlayers = System.Convert.ToByte(1);*/
-
-
         PhotonNetwork.LocalPlayer.NickName = nick;
 
         roomOptions.CustomRoomProperties = roomHashtable;
         roomOptions.MaxPlayers = System.Convert.ToByte(maxPlayers);
-
     }
 
     IEnumerator WaitToConnect()
@@ -57,10 +41,12 @@ public class Connection : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        if (connectionStatus!=null)
+        if (connectionStatus != null)
         {
-            if (PhotonNetwork.IsConnected) connectionStatus.GetComponent<TextMeshProUGUI>().text = "    Status: <color=green>Online";
-            else connectionStatus.GetComponent<TextMeshProUGUI>().text = "    Status: <color=red>Offline";
+            if (PhotonNetwork.IsConnected)
+                connectionStatus.GetComponent<TextMeshProUGUI>().text = "    Status: <color=green>Online";
+            else
+                connectionStatus.GetComponent<TextMeshProUGUI>().text = "    Status: <color=red>Offline";
         }
     }
 
@@ -83,41 +69,50 @@ public class Connection : MonoBehaviourPunCallbacks
 
     public void JoinRoom()
     {
+        // Verifica se está no lobby antes de tentar se conectar
+        if (!PhotonNetwork.InLobby)
+        {
+            PhotonNetwork.JoinLobby();
+        }
+
         PhotonNetwork.JoinRoom(input);
     }
 
     public void QuickPlay()
     {
+        // Verifica se está no lobby antes de tentar se conectar
+        if (!PhotonNetwork.InLobby)
+        {
+            PhotonNetwork.JoinLobby();
+        }
+
         PhotonNetwork.JoinRandomOrCreateRoom(roomHashtable, System.Convert.ToByte(maxPlayers));
     }
 
-    // Fun��es do Photon
+    // Funções do Photon
     public override void OnConnectedToMaster()
     {
         print("Conectou ao servidor");
         PhotonNetwork.JoinLobby();
     }
-    
+
     public override void OnJoinedLobby()
     {
         print("Entrou no lobby");
     }
 
-
     public override void OnCreatedRoom()
     {
-        
         print($"Criou a sala {input}");
     }
-    
+
     public override async void OnJoinedRoom()
     {
         print(roomOptions.MaxPlayers - PhotonNetwork.PlayerList.Length);
-        //print($"Entrou na sala {input}");
 
         if (PhotonNetwork.CurrentRoom.PlayerCount > roomOptions.MaxPlayers)
         {
-            PhotonNetwork.LeaveRoom(); // Sai da sala se o n�mero de jogadores exceder o limite
+            PhotonNetwork.LeaveRoom(); // Sai da sala se o número de jogadores exceder o limite
             return;
         }
 
@@ -128,27 +123,45 @@ public class Connection : MonoBehaviourPunCallbacks
         }
         else
         {
-            PhotonNetwork.CurrentRoom.IsOpen = false;
-            PhotonNetwork.CurrentRoom.IsVisible = false;
+            //PhotonNetwork.CurrentRoom.IsOpen = false;
+            //PhotonNetwork.CurrentRoom.IsVisible = false;
         }
-        //print($"Entrou na sala {PhotonNetwork.CurrentRoom.Name}");
     }
 
-    public override void OnJoinRandomFailed(short returnCode, string message) // criar sala se n�o tiver nenhuma
+    public override void OnJoinRandomFailed(short returnCode, string message) // criar sala se não tiver nenhuma
     {
         int randomRoomNumber = Random.Range(0, 99999);
-        //print("Falhou na aleat�ria");
         PhotonNetwork.CreateRoom($"Room {randomRoomNumber}", roomOptions, null);
         PhotonNetwork.JoinRoom($"Room {randomRoomNumber}");
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
-        //print("Falhou na espec�fica");
+        print("Falhou ao tentar entrar na sala específica");
     }
 
+    // Método para sair do jogo e retornar ao menu
+    public void OnQuitGame()
+    {
+        // Verifica se está em uma sala e sai dela
+        if (PhotonNetwork.InRoom)
+        {
+            PhotonNetwork.LeaveRoom();
+        }
+
+        // Carrega a cena do Menu
+        SceneManager.LoadScene("Menu");
+    }
+
+    // Método para sair completamente da aplicação
     public void OnQuitButtonClicked()
     {
         Application.Quit();
+    }
+
+    // Adiciona o evento de saída de sala para garantir que o jogador seja desconectado corretamente
+    public override void OnLeftRoom()
+    {
+        print("Saiu da sala com sucesso");
     }
 }
