@@ -1,8 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using System.Globalization;
 using TMPro;
 
 public class Gun : MonoBehaviour
@@ -11,7 +9,7 @@ public class Gun : MonoBehaviour
     public bool hasSword, hasGun;
     public int ammo = 7;
     RaycastHit hit;
-    Transform camT;
+    [SerializeField] Transform camT;
     PhotonView phView;
     [SerializeField] public GameObject sword, gun;
     [SerializeField] float shootingAnimationDelay;
@@ -23,30 +21,32 @@ public class Gun : MonoBehaviour
         phView = GetComponent<PhotonView>();
     }
 
-    // Update is called once per frame
     void Update()
     {
+        // Detecta se a tecla 1 (Espada) ou 2 (Arma) foi pressionada
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            phView.RPC("RPC_ChooseWeapon", RpcTarget.All, true); // Escolhe a espada
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            phView.RPC("RPC_ChooseWeapon", RpcTarget.All, false); // Escolhe a arma
+        }
+
         if (hasGun)
         {
             ammoText.gameObject.SetActive(true);
-            AimGun(); // Handles aiming and shooting while aiming
+            AimGun();
         }
-        else ammoText.gameObject.SetActive(false);
-
-        if (Physics.Raycast(camT.position, camT.forward, out hit))
+        else
         {
-            if (Input.GetMouseButtonUp(0))
-            {
-                if (hit.collider.name == "SwordIcon") ChooseWeapon(true);
-                else if (hit.collider.name == "GunIcon") ChooseWeapon(false);
-            }
+            ammoText.gameObject.SetActive(false);
         }
     }
 
     void AimGun()
     {
         ammoText.SetActive(true);
-        // Toggle aim mode on right mouse button
         if (Input.GetMouseButtonDown(1))
         {
             GetComponent<Animator>().SetBool("aiming", true);
@@ -56,10 +56,10 @@ public class Gun : MonoBehaviour
             GetComponent<Animator>().SetBool("aiming", false);
         }
 
-        // Allow shooting while aiming
         if (GetComponent<Animator>().GetBool("aiming"))
         {
-            if (Input.GetMouseButtonDown(0) && ammo > 0) // Left mouse button to shoot
+            Debug.DrawRay(camT.position, camT.forward * 100f, Color.red, 2f);
+            if (Input.GetMouseButtonDown(0) && ammo > 0)
             {
                 ShootGun();
             }
@@ -70,13 +70,21 @@ public class Gun : MonoBehaviour
     {
         if (Physics.Raycast(camT.position, camT.forward, out hit))
         {
-            if (hit.collider.gameObject.CompareTag("TRex"))
+            if (hit.collider.gameObject.GetComponentInParent<Player>().gameObject.CompareTag("TRex"))
             {
-                phView.RPC("RPC_SleepDino", RpcTarget.All, hit.collider.gameObject);
-                hit.collider.gameObject.GetComponent<Combat>().phView.RPC("RPC_TakeDamage", RpcTarget.All, 5);
+                print(hit.collider.gameObject.GetComponentInParent<Player>().gameObject);
+                PhotonView dinoView = hit.collider.gameObject.GetComponent<PhotonView>();
+
+                // Envia o RPC para todos os clientes
+                if (dinoView != null)
+                {
+                    //hit.collider.gameObject.GetComponentInParent<Player>().life -= 5;
+                    dinoView.RPC("RPC_SleepDino", RpcTarget.All); // T-Rex dorme (apenas no cliente dele)
+                }
             }
-                ammo--;
-                ammoText.GetComponent<TextMeshProUGUI>().text = $"{ammo}/7";
+            else print(hit.collider.name);
+            ammo--;
+            ammoText.GetComponent<TextMeshProUGUI>().text = $"{ammo}/7";
         }
         StartCoroutine(PlayShootingAnimation());
     }
@@ -91,27 +99,12 @@ public class Gun : MonoBehaviour
     }
 
     [PunRPC]
-    public void RPC_SleepDino(GameObject dino)
+    void RPC_ChooseWeapon(bool isSword)
     {
-        StartCoroutine(WaitTillWakeUp(3, dino));
-    }
-    IEnumerator WaitTillWakeUp(float delay, GameObject dino)
-    {
-        dino.GetComponent<Animator>().SetBool("sleeping", true);
-        dino.GetComponent<Player>().enabled = false;
-        yield return new WaitForSeconds(delay);
-        GetComponent<Animator>().SetBool("shooted", false);
-        dino.GetComponent<Player>().enabled = true;
-    }
-
-    void ChooseWeapon(bool isSword)
-    {
-        sword.SetActive(isSword);
-        gun.SetActive(!isSword);
-        hasSword = isSword;
-        hasGun = !isSword;
-        //GameObject.FindGameObjectsWithTag("Icons")[0].SetActive(false);
-        //GameObject.FindGameObjectsWithTag("Icons")[1].SetActive(false);
+        GameObject.FindGameObjectWithTag("Player").GetComponent<Gun>().sword.SetActive(isSword);
+        GameObject.FindGameObjectWithTag("Player").GetComponent<Gun>().gun.SetActive(!isSword);
+        GameObject.FindGameObjectWithTag("Player").GetComponent<Gun>().hasSword = isSword;
+        GameObject.FindGameObjectWithTag("Player").GetComponent<Gun>().hasGun = !isSword;
     }
 
     public void PickupAmmo(int amount)

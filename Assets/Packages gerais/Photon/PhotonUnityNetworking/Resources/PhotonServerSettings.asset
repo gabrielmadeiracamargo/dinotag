@@ -52,6 +52,7 @@ MonoBehaviour:
   - RPC_BeBitten
   - RPC_SleepDino
   - RPC_EndGame
+  - RPC_ChooseWeapon
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
