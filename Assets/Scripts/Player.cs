@@ -41,6 +41,7 @@ public class Player : MonoBehaviourPunCallbacks
     bool isCrouching = false;
 
     // Inputs
+    public bool canMove = true;
     float inputHorizontal;
     private int inputXHash = Animator.StringToHash("inputX");
     float inputVertical;
@@ -93,10 +94,13 @@ public class Player : MonoBehaviourPunCallbacks
         if (GameController.Instance.healthBar != null) GameController.Instance.healthBar.BarValue = life;
 
         // Input checkers
-        inputHorizontal = Input.GetAxis("Horizontal");
-        inputVertical = Input.GetAxis("Vertical");
-        inputJump = Input.GetAxis("Jump") == 1f;
-        inputSprint = Input.GetAxis("Fire3") == 1f;
+        if (canMove)
+        {
+            inputHorizontal = Input.GetAxis("Horizontal");
+            inputVertical = Input.GetAxis("Vertical");
+            inputJump = Input.GetAxis("Jump") == 1f;
+            inputSprint = Input.GetAxis("Fire3") == 1f;
+        }
 
         animator.SetFloat(inputXHash, inputHorizontal);
         animator.SetFloat(inputYHash, inputVertical);
