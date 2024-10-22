@@ -1959,6 +1959,7 @@ GameObject:
   - component: {fileID: 3625927451974042601}
   - component: {fileID: 4633401818625102958}
   - component: {fileID: 134352379180842926}
+  - component: {fileID: 5992495953972898473}
   - component: {fileID: 8704206931331741314}
   - component: {fileID: 7150436822050514169}
   - component: {fileID: 4094720196033886957}
@@ -2059,7 +2060,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: d143d9814ff6c8545bea82253b253ca4, type: 2}
   - {fileID: 2100000, guid: e28ed4577f9344e429c6277b75406fe3, type: 2}
   minimapTexture: {fileID: 8400000, guid: a2563f7574f7e6540939b01e3da89a48, type: 2}
---- !u!114 &8704206931331741314
+--- !u!114 &5992495953972898473
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2067,6 +2068,20 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8068794351579136809}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b892d6c3fd48c48a7637ac4694021c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sword: {fileID: 1802063588658341657}
+  phView: {fileID: 1149755976426841135}
+--- !u!114 &8704206931331741314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8068794351579136809}
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ec1d091d5d6fd944a0ba937e8f14230, type: 3}
   m_Name: 

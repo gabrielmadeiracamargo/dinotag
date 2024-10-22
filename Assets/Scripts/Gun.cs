@@ -46,7 +46,8 @@ public class Gun : MonoBehaviour
 
     void AimGun()
     {
-        ammoText.SetActive(true);
+        if (phView.IsMine) ammoText.SetActive(true);
+
         if (Input.GetMouseButtonDown(1))
         {
             GetComponent<Animator>().SetBool("aiming", true);
@@ -68,7 +69,8 @@ public class Gun : MonoBehaviour
 
     void ShootGun()
     {
-        if (Physics.Raycast(camT.position, camT.forward, out hit))
+        RaycastHit[] hits = Physics.RaycastAll(camT.position, camT.forward);
+        foreach (RaycastHit hit in hits)
         {
             if (hit.collider.gameObject.GetComponentInParent<Player>().gameObject.CompareTag("TRex"))
             {
@@ -82,10 +84,11 @@ public class Gun : MonoBehaviour
                     dinoView.RPC("RPC_SleepDino", RpcTarget.All); // T-Rex dorme (apenas no cliente dele)
                 }
             }
+
             else print(hit.collider.name);
+        }
             ammo--;
             ammoText.GetComponent<TextMeshProUGUI>().text = $"{ammo}/7";
-        }
         StartCoroutine(PlayShootingAnimation());
     }
 
