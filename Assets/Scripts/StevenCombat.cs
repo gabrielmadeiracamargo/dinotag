@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using Photon.Pun;
-using UnityEngine.SceneManagement;
 
 public class StevenCombat : MonoBehaviourPunCallbacks
 {
@@ -25,11 +24,11 @@ public class StevenCombat : MonoBehaviourPunCallbacks
             sword = GameObject.FindGameObjectWithTag("Sword");
             sword.GetComponent<BoxCollider>().enabled = false; // Desativa inicialmente
         }
-    }
+    } 
 
     void Update()
     {
-        if (!phView.IsMine) return;
+        if ((!phView.IsMine) || (GetComponent<Gun>().hasGun == true && GetComponent<Gun>().hasSword == false)) return;
 
         // Gerenciamento de combo de espada
         if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f && anim.GetCurrentAnimatorStateInfo(0).IsName("hit1"))
@@ -46,19 +45,16 @@ public class StevenCombat : MonoBehaviourPunCallbacks
             noOfClicks = 0;
         }
 
-        // Zera os cliques se o tempo máximo de combo passar
         if (Time.time - lastClickedTime > maxComboDelay)
         {
             noOfClicks = 0;
         }
 
-        // Detecção de clique para ataques
         if (Input.GetMouseButtonDown(0))
         {
             OnClick();
         }
 
-        // Ativação e Desativação do Collider da Espada
         if (noOfClicks == 0)
         {
             if (sword != null) sword.GetComponent<BoxCollider>().enabled = false;
@@ -98,17 +94,6 @@ public class StevenCombat : MonoBehaviourPunCallbacks
         }
     }
 
-    // Função chamada pelo cliente humano ao acertar o tiro
-    [PunRPC]
-    public void RPC_TakeDamage(float damage)
-    {
-        if (phView.IsMine)
-        {
-            gameObject.GetComponent<Player>().life -= damage;
-            Debug.Log("Perdeu vida. Vida atual: " + gameObject.GetComponent<Player>().life);
-        }
-    }
-
     [PunRPC]
     public void RPC_BeBitten(Vector3 bitePos, Quaternion biteRotation)
     {
@@ -117,19 +102,22 @@ public class StevenCombat : MonoBehaviourPunCallbacks
 
     private IEnumerator BitePlayer(Vector3 bitePos, Quaternion biteRotation)
     {
-        float biteDuration = 1.0f;
+        float elapsedTime = 0f;
         GetComponent<Player>().canMove = false;
 
-        // Enquanto a duração da mordida não acabar, mantém o jogador preso
-        float elapsedTime = 0f;
-        while (elapsedTime < biteDuration)
+        while (elapsedTime < 1.0f) // Durando o tempo da mordida
         {
             transform.position = bitePos;
             transform.rotation = biteRotation;
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+    }
 
+    [PunRPC]
+    public void RPC_ReleasePlayer(Vector3 releasePosition)
+    {
+        transform.position = releasePosition;
         GetComponent<Player>().canMove = true;
     }
 }

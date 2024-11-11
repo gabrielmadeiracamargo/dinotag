@@ -1,13 +1,16 @@
 using System.Collections;
 using UnityEngine;
 using Photon.Pun;
-using UnityEngine.SceneManagement;
 
 public class TRexCombat : MonoBehaviourPunCallbacks
 {
     private Animator anim;
     public float cooldownTime = 2f; // Tempo de cooldown entre as mordidas
-    [SerializeField] private Transform bitePosition;
+    public static int noOfClicks = 0;
+    float lastClickedTime = 0;
+    float maxComboDelay = 1;
+    float damage = 5f;
+    [SerializeField] private Transform bitePosition; // Posição da mordida
     [SerializeField] private bool isBiting = false;
     [SerializeField] float biteDuration = 1.0f; // Duração da mordida
     [SerializeField] GameObject bite;
@@ -19,7 +22,7 @@ public class TRexCombat : MonoBehaviourPunCallbacks
         if (!phView.IsMine) return;
         anim = GetComponent<Animator>();
 
-        // Inicializando Bite com o respectivo Collider
+        // Inicializa o Collider de Bite
         if (GameObject.FindGameObjectWithTag("Bite") != null)
         {
             bite = GameObject.FindGameObjectWithTag("Bite");
@@ -29,47 +32,105 @@ public class TRexCombat : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if (bite != null)
+        if (bitePosition == null && bite != null)
         {
             bitePosition = bite.transform;
         }
 
         if (!phView.IsMine) return;
 
-        // Gerenciamento da lógica de mordida (ativação do colisor)
-        if (Input.GetMouseButtonDown(0))
+        // Gerenciamento de animações de combo de mordida
+        if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f && anim.GetCurrentAnimatorStateInfo(0).IsName("hit1"))
         {
-            OnBite();
+            anim.SetBool("hit1", false);
+        }
+        if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f && anim.GetCurrentAnimatorStateInfo(0).IsName("hit2"))
+        {
+            anim.SetBool("hit2", false);
+        }
+        if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f && anim.GetCurrentAnimatorStateInfo(0).IsName("hit3"))
+        {
+            anim.SetBool("hit3", false);
+            noOfClicks = 0;
         }
 
-        // Ativação e Desativação do Collider de Mordida
-        if (isBiting)
+        // Zera o combo se o tempo máximo for ultrapassado
+        if (Time.time - lastClickedTime > maxComboDelay)
         {
-            if (bite != null) bite.GetComponent<SphereCollider>().enabled = true;
+            noOfClicks = 0;
         }
-        else
+
+        // Detecção de ataque de mordida
+        if (Input.GetMouseButtonDown(0))
+        {
+            OnClick();
+        }
+
+        // Ativação do Collider de mordida
+        if (noOfClicks == 0)
         {
             if (bite != null) bite.GetComponent<SphereCollider>().enabled = false;
         }
+        else
+        {
+            if (bite != null) bite.GetComponent<SphereCollider>().enabled = true;
+        }
     }
 
-    void OnBite()
+    void OnClick()
     {
         if (!phView.IsMine || isBiting) return;
 
-        isBiting = true;
-        StartCoroutine(PerformBite());
+        noOfClicks++;
+        lastClickedTime = Time.time;
+
+        if (noOfClicks == 1)
+        {
+            damage = Random.Range(4f, 7f);
+            anim.SetBool("hit1", true);
+        }
+
+        noOfClicks = Mathf.Clamp(noOfClicks, 0, 3);
+
+        if (noOfClicks >= 2 && anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f && anim.GetCurrentAnimatorStateInfo(0).IsName("hit1"))
+        {
+            damage = Random.Range(7f, 10f);
+            anim.SetBool("hit1", false);
+            anim.SetBool("hit2", true);
+        }
+        if (noOfClicks >= 3 && anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f && anim.GetCurrentAnimatorStateInfo(0).IsName("hit2"))
+        {
+            damage = 7f;
+            anim.SetBool("hit2", false);
+            anim.SetBool("hit3", true);
+        }
     }
 
-    private IEnumerator PerformBite()
+    private void OnTriggerEnter(Collider other)
     {
-        // Lógica para executar a mordida
-        anim.SetTrigger("bite");
+        // Verifica se a mordida atingiu o jogador
+        if (other.CompareTag("Player") && !isBiting)
+        {
+            isBiting = true;
+            PhotonView playerPhotonView = other.GetComponent<PhotonView>();
+
+            if (playerPhotonView != null)
+            {
+                playerPhotonView.RPC("RPC_BeBitten", RpcTarget.All, bitePosition.position, bitePosition.rotation);
+                StartCoroutine(ReleasePlayerAfterBite(playerPhotonView));
+            }
+        }
+    }
+
+    private IEnumerator ReleasePlayerAfterBite(PhotonView playerPhotonView)
+    {
         yield return new WaitForSeconds(biteDuration);
         isBiting = false;
+
+        // Solta o jogador, movendo-o para uma posição abaixo da boca do T-Rex
+        playerPhotonView.RPC("RPC_ReleasePlayer", RpcTarget.All, bitePosition.position - (bitePosition.up * 1.5f));
     }
 
-    // Função chamada ao receber dano
     [PunRPC]
     public void RPC_TakeDamage(float damage)
     {
@@ -78,25 +139,5 @@ public class TRexCombat : MonoBehaviourPunCallbacks
             gameObject.GetComponent<Player>().life -= damage;
             Debug.Log("T-Rex perdeu vida. Vida atual: " + gameObject.GetComponent<Player>().life);
         }
-    }
-
-    // Faz o T-Rex entrar no estado de "dormir"
-    [PunRPC]
-    public void RPC_SleepDino()
-    {
-        if (phView.IsMine)
-        {
-            GetComponentInParent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.AllBuffered, 5f);
-            StartCoroutine(Sleep());
-        }
-    }
-
-    private IEnumerator Sleep()
-    {
-        GetComponent<Player>().canMove = false;
-        GetComponent<Animator>().SetBool("sleeping", true);
-        yield return new WaitForSeconds(3); // Dorme por 3 segundos
-        GetComponent<Player>().canMove = true;
-        GetComponent<Animator>().SetBool("sleeping", false);
     }
 }
