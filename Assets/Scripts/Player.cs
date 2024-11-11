@@ -59,8 +59,9 @@ public class Player : MonoBehaviourPunCallbacks
     public PhotonView phView;
     public GameObject playerCam;
 
-    [SerializeField] GameObject minimapCamera;
+    [SerializeField] GameObject minimapCamera, emote;
     [SerializeField] Sprite portrait, dinoLostImage, dinoWinImage;
+    [SerializeField] Sprite[] emotes;
 
     public List<Material> skins = new List<Material>(); // Lista de skins
     private int currentSkinIndex = 0; // Índice da skin atual
@@ -158,6 +159,9 @@ public class Player : MonoBehaviourPunCallbacks
         HeadHittingDetect();
 
         if (life <= 0)  phView.RPC("RPC_EndGame", RpcTarget.All);
+
+        if (Input.GetKeyDown(KeyCode.F1)) phView.RPC("RPC_Emote", RpcTarget.All, 0);
+        if (Input.GetKeyDown(KeyCode.F2)) phView.RPC("RPC_Emote", RpcTarget.All, 1);
     }
 
 
@@ -235,6 +239,16 @@ public class Player : MonoBehaviourPunCallbacks
         }
     }
 
+    [PunRPC]
+    public void RPC_TakeDamage(float damage)
+    {
+        if (GetComponent<PhotonView>().IsMine)
+        {
+            gameObject.GetComponent<Player>().life -= damage;
+            Debug.Log("Perdeu vida. Vida atual: " + gameObject.GetComponent<Player>().life);
+        }
+    }
+
     [PunRPC] 
     public void RPC_EndGame()
     {
@@ -249,6 +263,11 @@ public class Player : MonoBehaviourPunCallbacks
     {
         yield return new WaitForSeconds(3);
         BackToMenu();
+    }
+    IEnumerator EmoteWait()
+    {
+        yield return new WaitForSeconds(2);
+        emote.SetActive(false);
     }
 
     public void SkipCutscene()
@@ -294,8 +313,14 @@ public class Player : MonoBehaviourPunCallbacks
             else nickTxt.text = "T-Rex";
         }
         if (nickTxt.gameObject.name.StartsWith("Steven Nick")) nickTxt.text += " Spielberg";
+    }
 
-
+    [PunRPC]
+    public void RPC_Emote(int index)
+    {
+        emote.GetComponent<Image>().sprite = emotes[index];
+        emote.SetActive(true);
+        StartCoroutine(EmoteWait());
     }
 
     public void BackToMenu()

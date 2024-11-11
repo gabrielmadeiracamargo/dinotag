@@ -117,18 +117,6 @@ public class Combat : MonoBehaviourPunCallbacks
         }
     }
 
-    // Função chamada pelo cliente humano ao acertar o tiro
-    [PunRPC]
-    public void RPC_TakeDamage(float damage)
-    {
-        if (phView.IsMine)
-        {
-            gameObject.GetComponent<Player>().life -= damage;
-            Debug.Log("Perdeu vida. Vida atual: " + gameObject.GetComponent<Player>().life);
-        }
-    }
-
-    // Faz o T-Rex entrar no estado de "dormir"
     [PunRPC]
     public void RPC_SleepDino()
     {
