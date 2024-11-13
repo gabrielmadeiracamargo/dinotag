@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class Combat : MonoBehaviourPunCallbacks
 {
-    private Animator anim;
+    /*private Animator anim;
     public float cooldownTime = 2f; // Tempo de cooldown entre as mordidas
     public static int noOfClicks = 0;
     float lastClickedTime = 0;
@@ -228,5 +228,5 @@ public class Combat : MonoBehaviourPunCallbacks
         {
             ReleasePlayer();
         }
-    }
+    }*/
 }

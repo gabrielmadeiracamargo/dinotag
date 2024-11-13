@@ -8,7 +8,7 @@ public class StevenCombat : MonoBehaviourPunCallbacks
     public static int noOfClicks = 0;
     float lastClickedTime = 0;
     float maxComboDelay = 1;
-    float damage = 5f;
+    public float damage = 5f;
     [SerializeField] GameObject sword;
     public PhotonView phView;
 
@@ -18,13 +18,13 @@ public class StevenCombat : MonoBehaviourPunCallbacks
         if (!phView.IsMine) return;
         anim = GetComponent<Animator>();
 
-        // Inicializando Sword com o respectivo Collider
+        // Inicializa o Collider da Sword
         if (GameObject.FindGameObjectWithTag("Sword") != null)
         {
             sword = GameObject.FindGameObjectWithTag("Sword");
             sword.GetComponent<BoxCollider>().enabled = false; // Desativa inicialmente
         }
-    } 
+    }
 
     void Update()
     {
@@ -45,16 +45,19 @@ public class StevenCombat : MonoBehaviourPunCallbacks
             noOfClicks = 0;
         }
 
+        // Zera o combo se o tempo máximo for ultrapassado
         if (Time.time - lastClickedTime > maxComboDelay)
         {
             noOfClicks = 0;
         }
 
+        // Detecção de clique para ataques
         if (Input.GetMouseButtonDown(0))
         {
             OnClick();
         }
 
+        // Ativação do Collider da Sword
         if (noOfClicks == 0)
         {
             if (sword != null) sword.GetComponent<BoxCollider>().enabled = false;
@@ -94,30 +97,34 @@ public class StevenCombat : MonoBehaviourPunCallbacks
         }
     }
 
-    [PunRPC]
-    public void RPC_BeBitten(Vector3 bitePos, Quaternion biteRotation)
+    private void OnTriggerEnter(Collider other)
     {
-        StartCoroutine(BitePlayer(bitePos, biteRotation));
-    }
-
-    private IEnumerator BitePlayer(Vector3 bitePos, Quaternion biteRotation)
-    {
-        float elapsedTime = 0f;
-        GetComponent<Player>().canMove = false;
-
-        while (elapsedTime < 1.0f) // Durando o tempo da mordida
+        if (other.gameObject.CompareTag("TRex"))
         {
-            transform.position = bitePos;
-            transform.rotation = biteRotation;
-            elapsedTime += Time.deltaTime;
-            yield return null;
+            if (other.GetComponentInParent<PhotonView>().IsMine)
+            {
+                float damageToApply = damage;
+                print(damage);
+                other.GetComponentInParent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.AllBuffered, damageToApply);
+            }
+        }
+        else if (other.CompareTag("Bite"))
+        {
+            GetComponentInParent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.AllBuffered, 6f);
+
+            TRexCombat dinoCombat = other.GetComponentInParent<TRexCombat>();
+            if (!dinoCombat.isBiting)
+            {
+                dinoCombat.isBiting = true;
+
+                if (photonView != null)
+                {
+                    photonView.RPC("RPC_BeBitten", RpcTarget.All, dinoCombat.bite.transform.position, dinoCombat.bite.transform.rotation);
+                }
+
+                StartCoroutine(dinoCombat.ReleasePlayerAfterBite(photonView));
+            }
         }
     }
-
-    [PunRPC]
-    public void RPC_ReleasePlayer(Vector3 releasePosition)
-    {
-        transform.position = releasePosition;
-        GetComponent<Player>().canMove = true;
-    }
+ 
 }

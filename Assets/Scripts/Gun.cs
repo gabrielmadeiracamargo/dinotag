@@ -23,30 +23,35 @@ public class Gun : MonoBehaviour
 
     void Update()
     {
-        // Detecta se a tecla 1 (Espada) ou 2 (Arma) foi pressionada
+        // Detect if the key 1 (Sword) or 2 (Gun) is pressed
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            phView.RPC("RPC_ChooseWeapon", RpcTarget.All, true); // Escolhe a espada
+            phView.RPC("RPC_ChooseWeapon", RpcTarget.All, true); // Choose the sword
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            phView.RPC("RPC_ChooseWeapon", RpcTarget.All, false); // Escolhe a arma
+            phView.RPC("RPC_ChooseWeapon", RpcTarget.All, false); // Choose the gun
         }
 
-        if (hasGun)
+        // Only update ammo UI for the local player if they have the gun equipped
+        if (phView.IsMine)
         {
-            ammoText.gameObject.SetActive(true);
-            AimGun();
-        }
-        else
-        {
-            ammoText.gameObject.SetActive(false);
+            if (hasGun)
+            {
+                ammoText.SetActive(true);
+                AimGun();
+            }
+            else
+            {
+                ammoText.SetActive(false);
+            }
         }
     }
 
     void AimGun()
     {
-        if (phView.IsMine) ammoText.SetActive(true);
+        // Continue only if this is the local player's gun
+        if (!phView.IsMine) return;
 
         if (Input.GetMouseButtonDown(1))
         {
@@ -69,26 +74,31 @@ public class Gun : MonoBehaviour
 
     void ShootGun()
     {
+        // Check if this instance is owned by the local player
+        if (!phView.IsMine) return;
+
         RaycastHit[] hits = Physics.RaycastAll(camT.position, camT.forward);
         foreach (RaycastHit hit in hits)
         {
-            if (hit.collider.gameObject.GetComponentInParent<Player>().gameObject.CompareTag("TRex"))
+            if (hit.collider.gameObject.CompareTag("TRex"))
             {
-                print(hit.collider.gameObject.GetComponentInParent<Player>().gameObject);
-                PhotonView dinoView = hit.collider.gameObject.GetComponent<PhotonView>();
+                PhotonView dinoView = GameObject.Find("TRex(Clone)").GetComponent<PhotonView>();
 
-                // Envia o RPC para todos os clientes
+                // Send the RPC to all clients for the T-Rex
                 if (dinoView != null)
                 {
-                    //hit.collider.gameObject.GetComponentInParent<Player>().life -= 5;
-                    dinoView.RPC("RPC_SleepDino", RpcTarget.All); // T-Rex dorme (apenas no cliente dele)
+                    dinoView.RPC("RPC_SleepDino", RpcTarget.All); // Make T-Rex sleep (client-specific)
                 }
             }
-
-            else print(hit.collider.name);
+            else
+            {
+                print(hit.collider.name);
+            }
         }
-            ammo--;
-            ammoText.GetComponent<TextMeshProUGUI>().text = $"{ammo}/7";
+
+        // Reduce ammo and update the UI for the local player only
+        ammo--;
+        ammoText.GetComponent<TextMeshProUGUI>().text = $"{ammo}/7";
         StartCoroutine(PlayShootingAnimation());
     }
 
@@ -104,10 +114,11 @@ public class Gun : MonoBehaviour
     [PunRPC]
     void RPC_ChooseWeapon(bool isSword)
     {
-        GameObject.FindGameObjectWithTag("Player").GetComponent<Gun>().sword.SetActive(isSword);
-        GameObject.FindGameObjectWithTag("Player").GetComponent<Gun>().gun.SetActive(!isSword);
-        GameObject.FindGameObjectWithTag("Player").GetComponent<Gun>().hasSword = isSword;
-        GameObject.FindGameObjectWithTag("Player").GetComponent<Gun>().hasGun = !isSword;
+        Gun gunScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Gun>();
+        gunScript.sword.SetActive(isSword);
+        gunScript.gun.SetActive(!isSword);
+        gunScript.hasSword = isSword;
+        gunScript.GetComponent<Gun>().hasGun = !isSword;
     }
 
     public void PickupAmmo(int amount)
