@@ -99,32 +99,50 @@ public class StevenCombat : MonoBehaviourPunCallbacks
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("TRex"))
+        if (other.CompareTag("TRex"))
         {
             if (other.GetComponentInParent<PhotonView>().IsMine)
             {
                 float damageToApply = damage;
-                print(damage);
                 other.GetComponentInParent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.AllBuffered, damageToApply);
             }
         }
-        else if (other.CompareTag("Bite"))
-        {
-            GetComponentInParent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.AllBuffered, 6f);
 
+        if (other.CompareTag("Bite"))
+        {
+            phView.RPC("RPC_TakeDamage", RpcTarget.AllBuffered, 6f);
             TRexCombat dinoCombat = other.GetComponentInParent<TRexCombat>();
             if (!dinoCombat.isBiting)
             {
                 dinoCombat.isBiting = true;
+                photonView.RPC("RPC_BeBitten", RpcTarget.All, dinoCombat.bite.transform.rotation);
 
-                if (photonView != null)
-                {
-                    photonView.RPC("RPC_BeBitten", RpcTarget.All, dinoCombat.bite.transform.position, dinoCombat.bite.transform.rotation);
-                }
-
-                StartCoroutine(dinoCombat.ReleasePlayerAfterBite(photonView));
+                StartCoroutine(dinoCombat.ReleasePlayerAfterBite());
             }
         }
     }
- 
+
+    [PunRPC]
+    public void RPC_BeBitten(Quaternion biteRotation)
+    {
+        StartCoroutine(BitePlayer(biteRotation));
+    }
+
+    private IEnumerator BitePlayer(Quaternion biteRotation)
+    {
+        GetComponent<Player>().canMove = false;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < 1.0f) // Duração da mordida
+        {
+            transform.position = GameObject.FindGameObjectWithTag("Bite").transform.position;   // Posiciona o jogador na boca do dinossauro
+            transform.rotation = biteRotation;
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        Vector3 releasePosition = GameObject.FindGameObjectWithTag("Bite").transform.position - (Vector3.up * 1.5f); // Ajusta para cair abaixo
+        transform.position = releasePosition;
+        GetComponent<Player>().canMove = true;
+    }
 }

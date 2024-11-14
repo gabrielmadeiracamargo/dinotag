@@ -60,14 +60,20 @@ public class TRexCombat : MonoBehaviourPunCallbacks
             OnClick();
         }
 
-        // Ativação do Collider de mordida
+        // Sincronização do estado do Collider de mordida entre os clientes
         if (noOfClicks == 0)
         {
-            if (bite != null) bite.GetComponent<SphereCollider>().enabled = false;
+            if (bite != null && bite.GetComponent<SphereCollider>().enabled)
+            {
+                phView.RPC("RPC_SetBiteCollider", RpcTarget.AllBuffered, false);
+            }
         }
         else
         {
-            if (bite != null) bite.GetComponent<SphereCollider>().enabled = true;
+            if (bite != null && !bite.GetComponent<SphereCollider>().enabled)
+            {
+                phView.RPC("RPC_SetBiteCollider", RpcTarget.AllBuffered, true);
+            }
         }
     }
 
@@ -100,77 +106,41 @@ public class TRexCombat : MonoBehaviourPunCallbacks
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    /*private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Sword"))
+        if (other.CompareTag("Player") && !isBiting)
         {
-            // Lógica de dano ao TRex quando é atingido por uma espada
-            if (other.GetComponentInParent<PhotonView>().IsMine)
+            isBiting = true;
+            PhotonView playerPhotonView = other.GetComponent<PhotonView>();
+
+            if (playerPhotonView != null)
             {
-                float damageToApply = other.GetComponentInParent<StevenCombat>().damage;
-                GetComponent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.AllBuffered, damageToApply);
+                // Chamando o RPC para o jogador para ele ser mordido
+                playerPhotonView.RPC("RPC_BeBitten", RpcTarget.All,
+                    bite.transform.position,
+                    bite.transform.rotation);
+
+                StartCoroutine(ReleasePlayerAfterBite());  // Inicia a liberação
             }
         }
-        else if (other.CompareTag("Food"))
-        {
-            // Regenera vida ao T-Rex ao consumir comida
-            GetComponent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.AllBuffered, -10f);
-            Destroy(other.gameObject);
-        }
-    }
+    }*/
 
-    [PunRPC]
-    public void RPC_BeBitten(Vector3 bitePos, Quaternion biteRotation)
-    {
-        StartCoroutine(BitePlayer(bitePos, biteRotation));
-    }
-
-    private IEnumerator BitePlayer(Vector3 bitePos, Quaternion biteRotation)
-    {
-        isBiting = true;
-        float elapsedTime = 0f;
-
-        // Enquanto a duração da mordida não acabar, mantém o jogador preso
-        while (elapsedTime < biteDuration)
-        {
-            SetPlayerPositionAndRotation();
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        // Libera o jogador depois da mordida
-        photonView.RPC("RPC_ReleasePlayer", RpcTarget.All);
-
-        yield return new WaitForSeconds(cooldownTime); // Tempo de cooldown entre as mordidas
-        isBiting = false;
-    }
-
-    public void SetPlayerPositionAndRotation()
-    {
-        GetComponent<Player>().canMove = false;
-        // Atualiza a posição e rotação do jogador para coincidir com a boca do dinossauro
-        transform.position = bite.transform.position;
-        transform.rotation = bite.transform.rotation;
-    }
-
-    [PunRPC]
-    public void RPC_ReleasePlayer()
-    {
-        GetComponent<Player>().canMove = true;
-        // Libera o jogador logo abaixo da boca do dinossauro para simular a queda
-        Vector3 releasePosition = bite.transform.position - (bite.transform.up * 1.5f); // Ajusta a altura para cair abaixo da boca
-        transform.position = releasePosition;
-
-        // Permite que o jogador recupere controle
-    }
-
-    public IEnumerator ReleasePlayerAfterBite(PhotonView playerPhotonView)
+    public IEnumerator ReleasePlayerAfterBite()
     {
         yield return new WaitForSeconds(biteDuration);
         isBiting = false;
 
         // Solta o jogador, movendo-o para uma posição abaixo da boca do T-Rex
-        playerPhotonView.RPC("RPC_ReleasePlayer", RpcTarget.All, bite.transform.position - (bite.transform.up * 1.5f));
+        phView.RPC("RPC_ReleasePlayer", RpcTarget.All, bite.transform.position - (bite.transform.up * 1.5f));
+    }
+
+    [PunRPC]
+    public void RPC_SetBiteCollider(bool isEnabled)
+    {
+        if (bite != null)
+        {
+            bite.GetComponent<SphereCollider>().enabled = isEnabled;
+        }
     }
 
     [PunRPC]

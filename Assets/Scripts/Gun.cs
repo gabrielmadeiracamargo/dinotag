@@ -15,42 +15,52 @@ public class Gun : MonoBehaviour
     [SerializeField] float shootingAnimationDelay;
     [SerializeField] GameObject ammoText;
 
+    [Header("Weapon Sprites")]
+    [SerializeField] GameObject weaponSprite; // Sprite UI for current weapon
+    [SerializeField] Sprite swordSprite;      // Sprite for sword
+    [SerializeField] Sprite gunSprite;        // Sprite for gun
+
+    private int weaponIndex = 0; // 0 = Sword, 1 = Gun
+    private const int totalWeapons = 2;
+
     void Start()
     {
         camT = Camera.main.transform;
         phView = GetComponent<PhotonView>();
+        UpdateWeaponSprite(); // Initialize the weapon sprite
     }
 
     void Update()
     {
-        // Detect if the key 1 (Sword) or 2 (Gun) is pressed
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (!phView.IsMine) return;
+
+        // Mouse scroll wheel input for changing weapons
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        if (scroll > 0f)
         {
-            phView.RPC("RPC_ChooseWeapon", RpcTarget.All, true); // Choose the sword
+            weaponIndex = (weaponIndex + 1) % totalWeapons; // Scroll up
+            phView.RPC("RPC_ChooseWeapon", RpcTarget.All, weaponIndex == 0); // 0 = Sword
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        else if (scroll < 0f)
         {
-            phView.RPC("RPC_ChooseWeapon", RpcTarget.All, false); // Choose the gun
+            weaponIndex = (weaponIndex - 1 + totalWeapons) % totalWeapons; // Scroll down
+            phView.RPC("RPC_ChooseWeapon", RpcTarget.All, weaponIndex == 0); // 0 = Sword
         }
 
-        // Only update ammo UI for the local player if they have the gun equipped
-        if (phView.IsMine)
+        // Only update ammo UI if gun is equipped
+        if (hasGun)
         {
-            if (hasGun)
-            {
-                ammoText.SetActive(true);
-                AimGun();
-            }
-            else
-            {
-                ammoText.SetActive(false);
-            }
+            ammoText.SetActive(true);
+            AimGun();
+        }
+        else
+        {
+            ammoText.SetActive(false);
         }
     }
 
     void AimGun()
     {
-        // Continue only if this is the local player's gun
         if (!phView.IsMine) return;
 
         if (Input.GetMouseButtonDown(1))
@@ -74,7 +84,6 @@ public class Gun : MonoBehaviour
 
     void ShootGun()
     {
-        // Check if this instance is owned by the local player
         if (!phView.IsMine) return;
 
         RaycastHit[] hits = Physics.RaycastAll(camT.position, camT.forward);
@@ -84,10 +93,9 @@ public class Gun : MonoBehaviour
             {
                 PhotonView dinoView = GameObject.Find("TRex(Clone)").GetComponent<PhotonView>();
 
-                // Send the RPC to all clients for the T-Rex
                 if (dinoView != null)
                 {
-                    dinoView.RPC("RPC_SleepDino", RpcTarget.All); // Make T-Rex sleep (client-specific)
+                    dinoView.RPC("RPC_SleepDino", RpcTarget.All);
                 }
             }
             else
@@ -96,7 +104,6 @@ public class Gun : MonoBehaviour
             }
         }
 
-        // Reduce ammo and update the UI for the local player only
         ammo--;
         ammoText.GetComponent<TextMeshProUGUI>().text = $"{ammo}/7";
         StartCoroutine(PlayShootingAnimation());
@@ -118,7 +125,16 @@ public class Gun : MonoBehaviour
         gunScript.sword.SetActive(isSword);
         gunScript.gun.SetActive(!isSword);
         gunScript.hasSword = isSword;
-        gunScript.GetComponent<Gun>().hasGun = !isSword;
+        gunScript.hasGun = !isSword;
+        gunScript.UpdateWeaponSprite();
+    }
+
+    void UpdateWeaponSprite()
+    {
+        if (weaponSprite != null)
+        {
+            weaponSprite.GetComponent<UnityEngine.UI.Image>().sprite = hasSword ? swordSprite : gunSprite;
+        }
     }
 
     public void PickupAmmo(int amount)

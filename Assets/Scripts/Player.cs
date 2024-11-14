@@ -1,17 +1,10 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Collections;
-
-/*
-    This file has a commented version with details about how each line works. 
-    The commented version contains code that is easier and simpler to read. This file is minified.
-*/
-
 
 /// <summary>
 /// Main script for third-person movement of the character in the game.
@@ -38,7 +31,6 @@ public class Player : MonoBehaviourPunCallbacks
     // Player states
     bool isJumping = false;
     bool isSprinting = false;
-    bool isCrouching = false;
 
     // Inputs
     public bool canMove = true;
@@ -47,7 +39,6 @@ public class Player : MonoBehaviourPunCallbacks
     float inputVertical;
     private int inputYHash = Animator.StringToHash("inputY");
     bool inputJump;
-    bool inputCrouch;
     bool inputSprint;
 
     [SerializeField] Animator animator;
@@ -68,6 +59,11 @@ public class Player : MonoBehaviourPunCallbacks
 
     public RenderTexture minimapTexture;
 
+    [Header("Ground Check Settings")]
+    public Transform groundCheck;
+    public float groundCheckRadius = 0.2f;
+    public LayerMask groundLayer;
+
     void Awake()
     {
         phView = GetComponent<PhotonView>();
@@ -83,7 +79,6 @@ public class Player : MonoBehaviourPunCallbacks
 
         if (!phView.IsMine) minimapCamera.SetActive(false);
     }
-
 
     // Update is only being used here to identify keys and trigger animations
     void Update()
@@ -105,29 +100,15 @@ public class Player : MonoBehaviourPunCallbacks
 
         animator.SetFloat(inputXHash, inputHorizontal);
         animator.SetFloat(inputYHash, inputVertical);
-        // Unfortunately GetAxis does not work with GetKeyDown, so inputs must be taken individually
-        inputCrouch = Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.JoystickButton1);
 
-        // Check if you pressed the crouch input key and change the player's state
-        if ( inputCrouch )
-            isCrouching = !isCrouching;
-
-        // walk and Crouch animation
-        // If dont have animator component, this block wont walk
-        if ( cc.isGrounded && animator != null )
+        // walk and Sprint animation
+        if (cc.isGrounded && animator != null)
         {
-
-            // Crouch
-            // Note: The crouch animation does not shrink the character's collider
-            animator.SetBool("crouch", isCrouching);
-            
-            // walk
             float minimumSpeed = 0.9f;
 
             // Sprint
             isSprinting = cc.velocity.magnitude > minimumSpeed && inputSprint;
-            animator.SetBool("sprint", isSprinting );
-
+            animator.SetBool("sprint", isSprinting);
         }
 
         if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
@@ -138,44 +119,39 @@ public class Player : MonoBehaviourPunCallbacks
         else animator.SetBool("walk", false);
 
         // Jump animation
-        if ( animator != null )
-            animator.SetBool("air", cc.isGrounded == false);
-        //animator.SetBool("fall", isJumping == false && cc.isGrounded == false);
+        if (animator != null)
+            animator.SetBool("air", !cc.isGrounded);
 
         // Handle can jump or not
-        if ( inputJump && cc.isGrounded )
+        if (inputJump && cc.isGrounded)
         {
             print("vai pular");
-           isJumping = true;
-            // Disable crounching when jumping
-           isCrouching = false; 
+            isJumping = true;
         }
 
-        if (isJumping == false && cc.isGrounded == false)
+        if (!isJumping && !cc.isGrounded)
         {
             animator.SetBool("fall", true);
         }
 
         HeadHittingDetect();
+        GroundCheck();
 
-        if (life <= 0)  phView.RPC("RPC_EndGame", RpcTarget.All);
+        if (life <= 0) phView.RPC("RPC_EndGame", RpcTarget.All);
 
         if (Input.GetKeyDown(KeyCode.F1)) phView.RPC("RPC_Emote", RpcTarget.All, 0);
         if (Input.GetKeyDown(KeyCode.F2)) phView.RPC("RPC_Emote", RpcTarget.All, 1);
     }
-
 
     // With the inputs and animations defined, FixedUpdate is responsible for applying movements and actions to the player
     private void FixedUpdate()
     {
         if (!photonView.IsMine) return;
 
-        // Sprinting velocity boost or crouching deceleration
+        // Sprinting velocity boost
         float velocityAdittion = 0;
         if (isSprinting)
             velocityAdittion = sprintAdittion;
-        if (isCrouching)
-            velocityAdittion = -(velocity * 0.50f); // -50% velocity
 
         // Direction movement
         float directionX = inputHorizontal * (velocity + velocityAdittion) * Time.deltaTime;
@@ -198,17 +174,7 @@ public class Player : MonoBehaviourPunCallbacks
         }
 
         // Add gravity to Y axis
-        directionY = directionY - gravity * Time.deltaTime;
-
-        // Remove this section that was handling player rotation based on movement
-        /*
-        if (directionX != 0 || directionZ != 0)
-        {
-            float angle = Mathf.Atan2(forward.x + right.x, forward.z + right.z) * Mathf.Rad2Deg;
-            Quaternion rotation = Quaternion.Euler(0, angle, 0);
-            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 0.15f);
-        }
-        */
+        directionY -= gravity * Time.deltaTime;
 
         Vector3 verticalDirection = Vector3.up * directionY;
         Vector3 horizontalDirection = (Camera.main.transform.forward * directionZ) + (Camera.main.transform.right * directionX);
@@ -218,6 +184,11 @@ public class Player : MonoBehaviourPunCallbacks
 
         Vector3 moviment = verticalDirection + horizontalDirection;
         cc.Move(moviment);
+    }
+
+    void GroundCheck()
+    {
+        bool isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundLayer);
     }
 
     //This function makes the character end his jump if he hits his head on something
@@ -249,7 +220,7 @@ public class Player : MonoBehaviourPunCallbacks
         }
     }
 
-    [PunRPC] 
+    [PunRPC]
     public void RPC_EndGame()
     {
         GameController.Instance.endGameObject.SetActive(true);
@@ -264,6 +235,7 @@ public class Player : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(3);
         BackToMenu();
     }
+
     IEnumerator EmoteWait()
     {
         yield return new WaitForSeconds(2);
@@ -284,7 +256,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     public void ChangeSkin()
     {
-       GetComponent<PhotonView>().RPC("RPC_ChangeSkin", RpcTarget.AllBuffered);
+        GetComponent<PhotonView>().RPC("RPC_ChangeSkin", RpcTarget.AllBuffered);
     }
 
     [PunRPC]
@@ -292,7 +264,6 @@ public class Player : MonoBehaviourPunCallbacks
     {
         if (gameObject.CompareTag("Player"))
         {
-            // Alterna para a próxima skin na lista
             currentSkinIndex = (currentSkinIndex + 1) % skins.Count;
             Material newSkin = skins[currentSkinIndex];
 

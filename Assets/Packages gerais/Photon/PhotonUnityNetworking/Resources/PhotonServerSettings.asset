@@ -55,6 +55,8 @@ MonoBehaviour:
   - RPC_ChooseWeapon
   - RPC_ReleasePlayer
   - RPC_Emote
+  - RPC_SetPlayerPosition
+  - RPC_SetBiteCollider
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

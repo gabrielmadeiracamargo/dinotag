@@ -14,7 +14,7 @@ public class Connection : MonoBehaviourPunCallbacks
     public GameObject connectionStatus;
     public string input;
     public string nick;
-    public int maxPlayers = 2;
+    public int maxPlayers = 4;
     Hashtable roomHashtable = new Hashtable();
     RoomOptions roomOptions = new RoomOptions();
 
