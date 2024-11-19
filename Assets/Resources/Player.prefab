@@ -2633,6 +2633,7 @@ MonoBehaviour:
   hasSword: 0
   hasGun: 0
   ammo: 7
+  maxAmmo: 14
   camT: {fileID: 1327720658830746266}
   sword: {fileID: 6381596450229922919}
   gun: {fileID: 1999612571734455383}
@@ -3795,17 +3796,17 @@ PrefabInstance:
     - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.284
+      value: 0.196
       objectReference: {fileID: 0}
     - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.126
+      value: 0.04
       objectReference: {fileID: 0}
     - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.031
+      value: -0.037
       objectReference: {fileID: 0}
     - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
         type: 3}

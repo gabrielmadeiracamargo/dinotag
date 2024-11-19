@@ -5359,6 +5359,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1149755976426841135, guid: 1ec5eca8fdf6ab14ca046e95f217c155,
+        type: 3}
+      propertyPath: sceneViewId
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4633401818625102958, guid: 1ec5eca8fdf6ab14ca046e95f217c155,
         type: 3}
       propertyPath: interactionInfoUI
@@ -7920,6 +7925,7 @@ MonoBehaviour:
   cutsceneEnded: 0
   _director: {fileID: 589820386}
   cutsceneObjects: {fileID: 1075572633}
+  endGameObject: {fileID: 0}
   skybox: {fileID: 2100000, guid: 90960d2b098935e45983a492810bdc11, type: 2}
   timer: 0
 --- !u!4 &784620873

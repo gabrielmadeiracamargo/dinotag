@@ -3,11 +3,12 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 
-public class Gun : MonoBehaviour
+public class Gun : MonoBehaviourPunCallbacks
 {
     public int damage;
     public bool hasSword, hasGun;
-    public int ammo = 7;
+    public int ammo = 14;
+    public int maxAmmo = 14;
     RaycastHit hit;
     [SerializeField] Transform camT;
     PhotonView phView;
@@ -27,14 +28,80 @@ public class Gun : MonoBehaviour
     {
         camT = Camera.main.transform;
         phView = GetComponent<PhotonView>();
-        UpdateWeaponSprite(); // Initialize the weapon sprite
+        ammoText = GameObject.Find("Ammo Count");
+        ammoText.SetActive(false);
     }
 
     void Update()
     {
+        print(PhotonNetwork.PlayerList.Length);
         if (!phView.IsMine) return;
 
-        // Mouse scroll wheel input for changing weapons
+
+        // Apenas os dois primeiros jogadores podem alternar entre as armas
+        if (PhotonNetwork.PlayerList.Length == 2)
+        {
+            HandleWeaponSwitching();
+        }
+        else AssignWeaponsBasedOnPlayers();
+
+        // Atualizar HUD de munição e mecânica de tiro
+        if (hasGun)
+        {
+            AimGun();
+            print("esse tem a arma");
+            ammoText.SetActive(true);
+        }
+        else
+        {
+            ammoText.SetActive(false);
+        }
+    }
+
+    [PunRPC]
+    public void RPC_AssignInitialWeapons(int playerActorNumber, bool isSword)
+    {
+        if (phView.Owner.ActorNumber == playerActorNumber)
+        {
+            hasSword = isSword;
+            hasGun = !isSword;
+            EquipInitialWeapon(); // Configura a arma inicial
+        }
+    }
+
+
+    private void AssignWeaponsBasedOnPlayers()
+    {
+        int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber;
+        print(playerIndex);
+
+        if (PhotonNetwork.PlayerList.Length >= 3)
+        {
+            if (playerIndex == 1)
+            {
+                // Primeiro jogador terá a espada
+                hasSword = true;
+                hasGun = false;
+                EquipSword();
+            }
+            else
+            {
+                // Segundo jogador terá a arma
+                hasSword = false;
+                hasGun = true;
+                EquipGun();
+            }
+        }
+        else
+        {
+            // Dois jogadores: troca de armas livre
+            EnableWeaponSwitching();
+        }
+    }
+
+    private void HandleWeaponSwitching()
+    {
+        // Troca de arma com base no scroll do mouse
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         if (scroll > 0f)
         {
@@ -46,25 +113,59 @@ public class Gun : MonoBehaviour
             weaponIndex = (weaponIndex - 1 + totalWeapons) % totalWeapons; // Scroll down
             phView.RPC("RPC_ChooseWeapon", RpcTarget.All, weaponIndex == 0); // 0 = Sword
         }
+    }
 
-        // Only update ammo UI if gun is equipped
-        if (hasGun)
+    private void EquipSword()
+    {
+        hasSword = true;
+        hasGun = false;
+
+        sword.SetActive(true);
+        gun.SetActive(false);
+
+        Debug.Log("Sword equipped.");
+        UpdateWeaponSprite();
+    }
+
+    private void EquipGun()
+    {
+        hasSword = false;
+        hasGun = true;
+
+        sword.SetActive(false);
+        gun.SetActive(true);
+
+        Debug.Log("Gun equipped.");
+        UpdateWeaponSprite();
+    }
+
+    private void EnableWeaponSwitching()
+    {
+        Debug.Log("Weapon switching enabled for this player.");
+        EquipInitialWeapon(); // Configurar arma inicial com base no estado atual
+    }
+
+    private void EquipInitialWeapon()
+    {
+        if (hasSword)
         {
-            ammoText.SetActive(true);
-            AimGun();
+            EquipSword();
         }
-        else
+        else if (hasGun)
         {
-            ammoText.SetActive(false);
+            EquipGun();
         }
     }
 
     void AimGun()
     {
         if (!phView.IsMine) return;
+        
+        ammoText.GetComponent<TextMeshProUGUI>().text = $"{ammo}/{maxAmmo}";
 
         if (Input.GetMouseButtonDown(1))
         {
+            print("esse ta mirando");
             GetComponent<Animator>().SetBool("aiming", true);
         }
         else if (Input.GetMouseButtonUp(1))
@@ -77,6 +178,7 @@ public class Gun : MonoBehaviour
             Debug.DrawRay(camT.position, camT.forward * 100f, Color.red, 2f);
             if (Input.GetMouseButtonDown(0) && ammo > 0)
             {
+                print("esse ta atirando");
                 ShootGun();
             }
         }
@@ -105,7 +207,7 @@ public class Gun : MonoBehaviour
         }
 
         ammo--;
-        ammoText.GetComponent<TextMeshProUGUI>().text = $"{ammo}/7";
+        ammoText.GetComponent<TextMeshProUGUI>().text = $"{ammo}/{maxAmmo}";
         StartCoroutine(PlayShootingAnimation());
     }
 
@@ -121,18 +223,21 @@ public class Gun : MonoBehaviour
     [PunRPC]
     void RPC_ChooseWeapon(bool isSword)
     {
-        Gun gunScript = GameObject.FindGameObjectWithTag("Player").GetComponent<Gun>();
-        gunScript.sword.SetActive(isSword);
-        gunScript.gun.SetActive(!isSword);
-        gunScript.hasSword = isSword;
-        gunScript.hasGun = !isSword;
-        gunScript.UpdateWeaponSprite();
+        if (isSword)
+        {
+            EquipSword();
+        }
+        else
+        {
+            EquipGun();
+        }
     }
 
     void UpdateWeaponSprite()
     {
         if (weaponSprite != null)
         {
+            weaponSprite.SetActive(true);
             weaponSprite.GetComponent<UnityEngine.UI.Image>().sprite = hasSword ? swordSprite : gunSprite;
         }
     }
@@ -140,7 +245,6 @@ public class Gun : MonoBehaviour
     public void PickupAmmo(int amount)
     {
         ammo += amount;
-        if (ammo > 7) ammo = 7;
-        ammoText.GetComponent<TextMeshProUGUI>().text = $"{ammo}/7";
+        if (ammo > maxAmmo) ammo = maxAmmo;
     }
 }

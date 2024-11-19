@@ -53,12 +53,17 @@ public class GameController : MonoBehaviourPunCallbacks
     }
 
     public override void OnJoinedRoom()
+
     {
         base.OnJoinedRoom();
-        if (PhotonNetwork.LocalPlayer.ActorNumber - 1 == 0) player = stevenPlayer;
-        else if (PhotonNetwork.LocalPlayer.ActorNumber - 1 == 1) player = dinoPlayer;
-
-        PhotonNetwork.Instantiate(player.name, spawnPoints[PhotonNetwork.LocalPlayer.ActorNumber - 1].position, player.transform.rotation);
+        if (PhotonNetwork.LocalPlayer.ActorNumber == 1 ||  PhotonNetwork.LocalPlayer.ActorNumber == 3) 
+        {
+            PhotonNetwork.Instantiate("Player", spawnPoints[PhotonNetwork.LocalPlayer.ActorNumber-1].position, stevenPlayer.transform.rotation);
+        }
+        else if (PhotonNetwork.LocalPlayer.ActorNumber == 2) 
+        {
+            PhotonNetwork.Instantiate("TRex", spawnPoints[PhotonNetwork.LocalPlayer.ActorNumber-1].position, dinoPlayer.transform.rotation);
+        }
     }
 
     // Update is called once per frame
