@@ -1533,6 +1533,7 @@ GameObject:
   - component: {fileID: 1864468381169091717}
   - component: {fileID: 1864468381169091716}
   - component: {fileID: 1864468381169091723}
+  - component: {fileID: 6734484655229461789}
   - component: {fileID: 4951884076132965464}
   - component: {fileID: 1864468381169091722}
   - component: {fileID: 1864468381169091721}
@@ -1624,6 +1625,20 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+--- !u!114 &6734484655229461789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1864468381169091726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30e45cf6c1b68164f9e4ebf307c4b3ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tipsText: {fileID: 0}
+  tips: []
 --- !u!114 &4951884076132965464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1638,6 +1653,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldownTime: 2
   isBiting: 0
+  isBeingAttacked: 0
   biteDuration: 1
   bite: {fileID: 7661018295541121310}
   phView: {fileID: 1864468381169091722}
@@ -2472,7 +2488,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clickToMoveCamera: 0
-  canZoom: 1
+  canZoom: 0
   sensitivity: 5
   cameraLimit: {x: -45, y: 40}
 --- !u!1 &1864468381788053516
@@ -3116,7 +3132,7 @@ SphereCollider:
   m_GameObject: {fileID: 7661018295541121310}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 4.5
   m_Center: {x: -1.25, y: 1, z: -2}

@@ -10,8 +10,8 @@ public class TRexCombat : MonoBehaviourPunCallbacks
     float lastClickedTime = 0;
     float maxComboDelay = 1;
     float damage = 5f;
-    public bool isBiting = false;
-    public float biteDuration = 1.0f; // Duração da mordida
+    public bool isBiting, isBeingAttacked = false;
+    public float biteDuration = 1.0f; // Duraï¿½ï¿½o da mordida
     public GameObject bite;
     public PhotonView phView;
 
@@ -33,7 +33,7 @@ public class TRexCombat : MonoBehaviourPunCallbacks
     {
         if (!phView.IsMine) return;
 
-        // Gerenciamento de animações de combo de mordida
+        // Gerenciamento de animaï¿½ï¿½es de combo de mordida
         if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f && anim.GetCurrentAnimatorStateInfo(0).IsName("hit1"))
         {
             anim.SetBool("hit1", false);
@@ -48,19 +48,19 @@ public class TRexCombat : MonoBehaviourPunCallbacks
             noOfClicks = 0;
         }
 
-        // Zera o combo se o tempo máximo for ultrapassado
+        // Zera o combo se o tempo mï¿½ximo for ultrapassado
         if (Time.time - lastClickedTime > maxComboDelay)
         {
             noOfClicks = 0;
         }
 
-        // Detecção de ataque de mordida
+        // Detecï¿½ï¿½o de ataque de mordida
         if (Input.GetMouseButtonDown(0))
         {
             OnClick();
         }
 
-        // Sincronização do estado do Collider de mordida entre os clientes
+        // Sincronizaï¿½ï¿½o do estado do Collider de mordida entre os clientes
         if (noOfClicks == 0)
         {
             if (bite != null && bite.GetComponent<SphereCollider>().enabled)
@@ -106,31 +106,53 @@ public class TRexCombat : MonoBehaviourPunCallbacks
         }
     }
 
-    /*private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && !isBiting)
+        print($"ele Ã© o {other.gameObject.name}");
+
+        if (other.CompareTag("Sword") && GetComponentInParent<PhotonView>().IsMine && isBeingAttacked == false)
         {
-            isBiting = true;
-            PhotonView playerPhotonView = other.GetComponent<PhotonView>();
-
-            if (playerPhotonView != null)
-            {
-                // Chamando o RPC para o jogador para ele ser mordido
-                playerPhotonView.RPC("RPC_BeBitten", RpcTarget.All,
-                    bite.transform.position,
-                    bite.transform.rotation);
-
-                StartCoroutine(ReleasePlayerAfterBite());  // Inicia a liberação
-            }
+            isBeingAttacked = true;
+            GetComponent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.AllBuffered, 8f);
         }
-    }*/
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        print($"ele Ã© o {other.gameObject.name}");
+
+        if (other.CompareTag("Sword") && GetComponentInParent<PhotonView>().IsMine && isBeingAttacked == true)
+        {
+            isBeingAttacked = false;
+        }
+    }
+
+    [PunRPC]
+    public void RPC_ReleasePlayer(Vector3 releasePosition)
+    {
+        if (!phView.IsMine) return;
+
+        if (bite != null)
+        {
+            bite.GetComponent<SphereCollider>().enabled = false;
+        }
+
+        // Libera o jogador para a posiÃ§Ã£o especificada
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            player.transform.position = releasePosition;
+            player.GetComponent<Player>().canMove = true;
+        }
+    }
+
 
     public IEnumerator ReleasePlayerAfterBite()
     {
         yield return new WaitForSeconds(biteDuration);
         isBiting = false;
 
-        // Solta o jogador, movendo-o para uma posição abaixo da boca do T-Rex
+        // Solta o jogador, movendo-o para uma posiï¿½ï¿½o abaixo da boca do T-Rex
         phView.RPC("RPC_ReleasePlayer", RpcTarget.All, bite.transform.position - (bite.transform.up * 1.5f));
     }
 

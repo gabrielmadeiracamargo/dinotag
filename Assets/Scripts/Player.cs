@@ -139,8 +139,8 @@ public class Player : MonoBehaviourPunCallbacks
 
         if (life <= 0) phView.RPC("RPC_EndGame", RpcTarget.All);
 
-        if (Input.GetKeyDown(KeyCode.F1)) phView.RPC("RPC_Emote", RpcTarget.All, 0);
-        if (Input.GetKeyDown(KeyCode.F2)) phView.RPC("RPC_Emote", RpcTarget.All, 1);
+        if (Input.GetKeyDown(KeyCode.Alpha1)) phView.RPC("RPC_Emote", RpcTarget.All, 0);
+        if (Input.GetKeyDown(KeyCode.Alpha2)) phView.RPC("RPC_Emote", RpcTarget.All, 1);
     }
 
     // With the inputs and animations defined, FixedUpdate is responsible for applying movements and actions to the player
@@ -291,6 +291,8 @@ public class Player : MonoBehaviourPunCallbacks
     {
         emote.GetComponent<Image>().sprite = emotes[index];
         emote.SetActive(true);
+        
+        StopCoroutine(EmoteWait());
         StartCoroutine(EmoteWait());
     }
 

@@ -8,7 +8,7 @@ public class StevenCombat : MonoBehaviourPunCallbacks
     public static int noOfClicks = 0;
     float lastClickedTime = 0;
     float maxComboDelay = 1;
-    public float damage = 5f;
+    public float damage = 8f;
     [SerializeField] GameObject sword;
     public PhotonView phView;
 
@@ -45,19 +45,19 @@ public class StevenCombat : MonoBehaviourPunCallbacks
             noOfClicks = 0;
         }
 
-        // Zera o combo se o tempo máximo for ultrapassado
+        // Zera o combo se o tempo mï¿½ximo for ultrapassado
         if (Time.time - lastClickedTime > maxComboDelay)
         {
             noOfClicks = 0;
         }
 
-        // Detecção de clique para ataques
+        // Detecï¿½ï¿½o de clique para ataques
         if (Input.GetMouseButtonDown(0))
         {
             OnClick();
         }
 
-        // Ativação do Collider da Sword
+        // Ativaï¿½ï¿½o do Collider da Sword
         if (noOfClicks == 0)
         {
             if (sword != null) sword.GetComponent<BoxCollider>().enabled = false;
@@ -99,18 +99,9 @@ public class StevenCombat : MonoBehaviourPunCallbacks
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("TRex"))
-        {
-            if (other.GetComponentInParent<PhotonView>().IsMine)
-            {
-                float damageToApply = damage;
-                other.GetComponentInParent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.AllBuffered, damageToApply);
-            }
-        }
-
         if (other.CompareTag("Bite"))
         {
-            phView.RPC("RPC_TakeDamage", RpcTarget.AllBuffered, 6f);
+            phView.RPC("RPC_TakeDamage", RpcTarget.AllBuffered, 4f);
             TRexCombat dinoCombat = other.GetComponentInParent<TRexCombat>();
             if (!dinoCombat.isBiting)
             {
@@ -133,7 +124,7 @@ public class StevenCombat : MonoBehaviourPunCallbacks
         GetComponent<Player>().canMove = false;
         float elapsedTime = 0f;
 
-        while (elapsedTime < 1.0f) // Duração da mordida
+        while (elapsedTime < 1.0f) // Duraï¿½ï¿½o da mordida
         {
             transform.position = GameObject.FindGameObjectWithTag("Bite").transform.position;   // Posiciona o jogador na boca do dinossauro
             transform.rotation = biteRotation;

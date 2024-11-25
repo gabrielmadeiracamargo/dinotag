@@ -2389,15 +2389,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7299029242029104621}
-  m_LocalRotation: {x: 0.0008901988, y: -0.010947754, z: 0.1202204, w: 0.9926865}
-  m_LocalPosition: {x: -0.021343404, y: 0.10440619, z: 2.1978479e-10}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: 0.51550573, y: 0.4294604, z: -0.18187283, w: -0.7188463}
+  m_LocalPosition: {x: 0.254, y: 0.014, z: -0.055}
+  m_LocalScale: {x: 0.6562501, y: 0.65624976, z: 0.65625006}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 200284771540660851}
   m_Father: {fileID: 7796764066785679255}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -184.203, y: 56.336998, z: -144.435}
 --- !u!1 &7492219958257828053
 GameObject:
   m_ObjectHideFlags: 0
@@ -2472,7 +2472,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7255805990405003667}
   - component: {fileID: 3625927451974042601}
-  - component: {fileID: 4633401818625102958}
   - component: {fileID: 134352379180842926}
   - component: {fileID: 5992495953972898473}
   - component: {fileID: 7150436822050514169}
@@ -2481,6 +2480,7 @@ GameObject:
   - component: {fileID: 585758378}
   - component: {fileID: 4999992611357157478}
   - component: {fileID: 5252128377339199747}
+  - component: {fileID: 6618109019788232012}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2527,22 +2527,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
---- !u!114 &4633401818625102958
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8068794351579136809}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: add6d5ef3064b034e9749ed099223e6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  actualDistance: 0
-  interactionDistance: 35
-  targetName: 
-  interactionInfoUI: {fileID: 0}
 --- !u!114 &134352379180842926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2754,6 +2738,21 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &6618109019788232012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8068794351579136809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30e45cf6c1b68164f9e4ebf307c4b3ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tipsText: {fileID: 0}
+  playerTips: []
+  trexTips: []
 --- !u!1 &8166628433855335208
 GameObject:
   m_ObjectHideFlags: 0
@@ -3494,12 +3493,12 @@ PrefabInstance:
     - target: {fileID: 9030538853541958529, guid: 0090731b51e488b43a6a7307adf4cfef,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.405
+      value: 0.455
       objectReference: {fileID: 0}
     - target: {fileID: 9030538853541958529, guid: 0090731b51e488b43a6a7307adf4cfef,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.584
+      value: -0.756
       objectReference: {fileID: 0}
     - target: {fileID: 9030538853541958529, guid: 0090731b51e488b43a6a7307adf4cfef,
         type: 3}
@@ -3796,17 +3795,17 @@ PrefabInstance:
     - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.196
+      value: 0.254
       objectReference: {fileID: 0}
     - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.04
+      value: 0.014
       objectReference: {fileID: 0}
     - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.037
+      value: -0.055
       objectReference: {fileID: 0}
     - target: {fileID: 3124680919626738749, guid: e85fc4dc7ff48ef47b06d604ed700c4e,
         type: 3}

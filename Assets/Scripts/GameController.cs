@@ -8,6 +8,7 @@ using UnityEngine.SocialPlatforms.Impl;
 using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameController : MonoBehaviourPunCallbacks
 {
@@ -81,8 +82,8 @@ public class GameController : MonoBehaviourPunCallbacks
         }
 
 
-        if (PhotonNetwork.PlayerList.Length == 1) waitingText.SetActive(true);
-        else if (PhotonNetwork.PlayerList.Length == 2)
+        waitingText.GetComponent<TextMeshProUGUI>().text = $"{PhotonNetwork.PlayerList.Length}/3 jogadores";
+        /*else if (PhotonNetwork.PlayerList.Length == 2)
         {   
             if (!cutsceneEnded)
             {
@@ -91,7 +92,7 @@ public class GameController : MonoBehaviourPunCallbacks
                 cutsceneObjects.SetActive(true);
             }
             if (waitingText.activeSelf) waitingText.SetActive(false);
-        }
+        }*/
 
 
         if (Input.GetKeyDown(KeyCode.Escape)) 
