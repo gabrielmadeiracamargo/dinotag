@@ -50,11 +50,9 @@ public class Player : MonoBehaviourPunCallbacks
     public PhotonView phView;
     public GameObject playerCam;
 
-    [SerializeField] GameObject minimapCamera, emote;
+    [SerializeField] GameObject minimapCamera;
     [SerializeField] Sprite portrait, dinoLostImage, dinoWinImage;
-    [SerializeField] Sprite[] emotes;
 
-    public List<Material> skins = new List<Material>(); // Lista de skins
     private int currentSkinIndex = 0; // Índice da skin atual
 
     public RenderTexture minimapTexture;
@@ -223,9 +221,9 @@ public class Player : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_EndGame()
     {
-        GameController.Instance.endGameObject.SetActive(true);
+        /*GameController.Instance.endGameObject.SetActive(true);
         if (gameObject.CompareTag("Player")) GameController.Instance.endGameObject.GetComponent<Image>().sprite = dinoWinImage;
-        else if (gameObject.CompareTag("TRex")) GameController.Instance.endGameObject.GetComponent<Image>().sprite = dinoLostImage;
+        else if (gameObject.CompareTag("TRex")) GameController.Instance.endGameObject.GetComponent<Image>().sprite = dinoLostImage;*/
         PhotonNetwork.LeaveRoom();
         StartCoroutine(WaitToMenu());
     }
@@ -234,66 +232,6 @@ public class Player : MonoBehaviourPunCallbacks
     {
         yield return new WaitForSeconds(3);
         BackToMenu();
-    }
-
-    IEnumerator EmoteWait()
-    {
-        yield return new WaitForSeconds(2);
-        emote.SetActive(false);
-    }
-
-    public void SkipCutscene()
-    {
-        phView.RPC("RPC_SkipCutscene", RpcTarget.All);
-    }
-
-    [PunRPC]
-    public void RPC_SkipCutscene()
-    {
-        GameController.Instance.skipCutsceneButton.SetActive(false);
-        GameController.Instance._director.time = 58.5f;
-    }
-
-    public void ChangeSkin()
-    {
-        GetComponent<PhotonView>().RPC("RPC_ChangeSkin", RpcTarget.AllBuffered);
-    }
-
-    [PunRPC]
-    public void RPC_ChangeSkin()
-    {
-        if (gameObject.CompareTag("Player"))
-        {
-            currentSkinIndex = (currentSkinIndex + 1) % skins.Count;
-            Material newSkin = skins[currentSkinIndex];
-
-            foreach (var renderer in GetComponentsInChildren<SkinnedMeshRenderer>())
-            {
-                if (renderer != null) renderer.material = newSkin;
-            }
-        }
-    }
-
-    [PunRPC]
-    public void RPC_SetNickname(int index)
-    {
-        nickTxt.text = PhotonNetwork.PlayerList[index - 1].NickName;
-        if (nickTxt.text == null || nickTxt.text == "")
-        {
-            if (nickTxt.gameObject.name.StartsWith("Steven Nick")) nickTxt.text = "Steven";
-            else nickTxt.text = "T-Rex";
-        }
-        if (nickTxt.gameObject.name.StartsWith("Steven Nick")) nickTxt.text += " Spielberg";
-    }
-
-    [PunRPC]
-    public void RPC_Emote(int index)
-    {
-        emote.GetComponent<Image>().sprite = emotes[index];
-        emote.SetActive(true);
-        
-        StopCoroutine(EmoteWait());
-        StartCoroutine(EmoteWait());
     }
 
     public void BackToMenu()
