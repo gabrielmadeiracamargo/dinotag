@@ -1611,14 +1611,9 @@ MonoBehaviour:
   phView: {fileID: 0}
   playerCam: {fileID: 1864468380673402929}
   minimapCamera: {fileID: 7976204525581183797}
-  emote: {fileID: 352240895618736491}
   portrait: {fileID: 21300000, guid: 5ee279332f8bd11438bcae233a67bc92, type: 3}
   dinoLostImage: {fileID: 21300000, guid: e02c1903735b0e74b8e38e0113508d70, type: 3}
   dinoWinImage: {fileID: 21300000, guid: c81397e6b2a026444927fdd6aba7f332, type: 3}
-  emotes:
-  - {fileID: 21300000, guid: 4e634442dece0e04e97d4d8047e03c90, type: 3}
-  - {fileID: 21300000, guid: d75d6d31eac603e4c9f04325ad19ee4b, type: 3}
-  skins: []
   minimapTexture: {fileID: 8400000, guid: 8600592228f668941ba74ad446e8c86a, type: 2}
   groundCheck: {fileID: 4060294057761525361}
   groundCheckRadius: 0.2

@@ -7,14 +7,15 @@ public class Gun : MonoBehaviourPunCallbacks
 {
     public int damage;
     public bool hasSword, hasGun;
-    public int ammo = 14;
-    public int maxAmmo = 14;
+    public int ammo = 4;
+    public int maxAmmo = 4;
     RaycastHit hit;
     [SerializeField] Transform camT;
-    PhotonView phView;
     [SerializeField] public GameObject sword, gun;
     [SerializeField] float shootingAnimationDelay;
     [SerializeField] GameObject ammoText;
+
+    [SerializeField] PhotonView phView;
 
     [Header("Weapon Sprites")]
     [SerializeField] GameObject weaponSprite; // Sprite UI for current weapon
@@ -47,7 +48,7 @@ public class Gun : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        if (!photonView.IsMine) return;
+        if (!phView.IsMine) return;
 
 
         // Apenas os dois primeiros jogadores podem alternar entre as armas
@@ -104,10 +105,12 @@ public class Gun : MonoBehaviourPunCallbacks
 
     private void HandleWeaponSwitching()
     {
+        print("executando");
         // Troca de arma com base no scroll do mouse
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         if (scroll > 0f)
         {
+            print($"photon view existe: {phView.name} scroll: {scroll} weaponindex: {weaponIndex} total weapons: {totalWeapons}");
             weaponIndex = (weaponIndex + 1) % totalWeapons; // Scroll up
             phView.RPC("RPC_ChooseWeapon", RpcTarget.All, weaponIndex == 0); // 0 = Sword
             GetComponent<GameTips>().UpdateTips();

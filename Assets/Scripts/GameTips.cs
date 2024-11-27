@@ -70,11 +70,13 @@ public class GameTips : MonoBehaviourPunCallbacks
 
         // Dicas gerais para todos
         tips.Add("Use WASD pra andar e espaço para pular");
-        tips.Add("Espere ajuda ou derrote o dinossauro");
+        tips.Add("Jogue com 2 ou 3 jogadores");
 
         // Dicas específicas para armas
         if (!isTRex)
         {
+            tips.Add("Derrote o dinossauro ou espere a ajuda chegar");
+
             if (PhotonNetwork.PlayerList.Length == 2)
             {
                 tips.Add("Use scroll do mouse para trocar entre a espada e a arma sonífera");

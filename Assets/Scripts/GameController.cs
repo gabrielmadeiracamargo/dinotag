@@ -27,6 +27,7 @@ public class GameController : MonoBehaviourPunCallbacks
     public bool cutsceneEnded;
     public PlayableDirector _director;
     [SerializeField] GameObject startCutsceneObject;
+    public GameObject playerWinCutscene, trexWinCutscene;
     public Material skybox;
     public float timer;
 
@@ -37,8 +38,8 @@ public class GameController : MonoBehaviourPunCallbacks
         if (LevelManager.Instance != null) LevelManager.Instance._loaderCanvas.SetActive(false);
 
         stevenPlayer = GameObject.FindGameObjectWithTag("Player");
-        skybox.SetFloat("_CubemapTransition", 0);
-        skybox.SetFloat("_FogIntensity", 0);
+        skybox.SetFloat("_CubemapTransition", 1);
+        skybox.SetFloat("_FogIntensity", 1);
 
         /*if (Instance != null && Instance != this)
         {
@@ -58,10 +59,10 @@ public class GameController : MonoBehaviourPunCallbacks
     void Update()
     {
         timer += Time.deltaTime;
-        float transitionTime = 60f; // Dura��o total da transi��o em segundos
+        float transitionTime = 120f; // Dura��o total da transi��o em segundos
         float transitionValue = 1f - (timer / transitionTime); // Inverte de 1 para 0
 
-        if (transitionValue > 0) // Verifica se ainda n�o chegou no m�nimo
+        if (transitionValue > 0 && GameObject.Find("GameController").GetComponent<Timer>().enabled) // Verifica se ainda n�o chegou no m�nimo
         {
             GameObject.Find("Directional Light").GetComponent<Light>().intensity = 1.125f-transitionValue;
             skybox.SetFloat("_CubemapTransition", transitionValue);
@@ -95,10 +96,8 @@ public class GameController : MonoBehaviourPunCallbacks
 
         if (!cutsceneEnded && _director.time >= 17)
         {
-            print("acabou!");
             EndCutscene(); // Finaliza a cutscene automaticamente
         }
-        else print("nao acabou");
 
         if (Input.GetKeyDown(KeyCode.Space) && !cutsceneEnded)
         {

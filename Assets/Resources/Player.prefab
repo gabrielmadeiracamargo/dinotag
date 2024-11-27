@@ -2497,7 +2497,7 @@ Transform:
   m_GameObject: {fileID: 8068794351579136809}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 716.16, y: 37.318867, z: 671.65}
-  m_LocalScale: {x: 30, y: 30, z: 30}
+  m_LocalScale: {x: 20, y: 20, z: 20}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5889515349994117805}
@@ -2556,11 +2556,11 @@ MonoBehaviour:
   dinoLostImage: {fileID: 0}
   dinoWinImage: {fileID: 0}
   minimapTexture: {fileID: 8400000, guid: a2563f7574f7e6540939b01e3da89a48, type: 2}
-  groundCheck: {fileID: 0}
+  groundCheck: {fileID: 4341456753905582490}
   groundCheckRadius: 0.2
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
 --- !u!114 &5992495953972898473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2609,13 +2609,14 @@ MonoBehaviour:
   damage: 1
   hasSword: 0
   hasGun: 0
-  ammo: 7
-  maxAmmo: 14
+  ammo: 4
+  maxAmmo: 4
   camT: {fileID: 1327720658830746266}
   sword: {fileID: 6381596450229922919}
   gun: {fileID: 1999612571734455383}
   shootingAnimationDelay: 0.2
   ammoText: {fileID: 0}
+  phView: {fileID: 0}
   weaponSprite: {fileID: 0}
   swordSprite: {fileID: 0}
   gunSprite: {fileID: 0}
@@ -3480,17 +3481,17 @@ PrefabInstance:
     - target: {fileID: 9030538853541958529, guid: 0090731b51e488b43a6a7307adf4cfef,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.149
+      value: 0.21
       objectReference: {fileID: 0}
     - target: {fileID: 9030538853541958529, guid: 0090731b51e488b43a6a7307adf4cfef,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.455
+      value: 0.09
       objectReference: {fileID: 0}
     - target: {fileID: 9030538853541958529, guid: 0090731b51e488b43a6a7307adf4cfef,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.756
+      value: -0.86
       objectReference: {fileID: 0}
     - target: {fileID: 9030538853541958529, guid: 0090731b51e488b43a6a7307adf4cfef,
         type: 3}

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 using TMPro;
@@ -86,8 +87,12 @@ public class Player : MonoBehaviourPunCallbacks
         if (GameController.Instance.portrait.sprite != null) GameController.Instance.portrait.sprite = this.portrait;
         if (GameController.Instance.healthBar != null) GameController.Instance.healthBar.BarValue = life;
 
-        if (GameObject.Find("GameController").GetComponent<Timer>().enabled == false && GameController.Instance.cutsceneEnded == false) GameObject.Find("GameController").GetComponent<Timer>().enabled = true;
-
+        if (GameObject.Find("GameController").GetComponent<Timer>().enabled == false && GameController.Instance.cutsceneEnded == true) 
+        {
+            print("ativa");
+            GameObject.Find("GameController").GetComponent<Timer>().enabled = true;
+        }
+        print($"gamecontroller é achado: {GameObject.Find("GameController").tag}\ntimer é achado {GameObject.Find("GameController").GetComponent<Timer>()} cutscene ended: {GameController.Instance.cutsceneEnded}");
         // Input checkers
         if (canMove)
         {
@@ -136,10 +141,16 @@ public class Player : MonoBehaviourPunCallbacks
         HeadHittingDetect();
         GroundCheck();
 
-        if (life <= 0) phView.RPC("RPC_EndGame", RpcTarget.All);
+        if (life <= 0) 
+        {
+            print("eita!");
+            phView.RPC("RPC_EndGame", RpcTarget.All, gameObject.tag);
+        }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1)) phView.RPC("RPC_Emote", RpcTarget.All, 0);
-        if (Input.GetKeyDown(KeyCode.Alpha2)) phView.RPC("RPC_Emote", RpcTarget.All, 1);
+        if (GameController.Instance.playerWinCutscene.GetComponent<PlayableDirector>().time >= 30f || GameController.Instance.trexWinCutscene.GetComponent<PlayableDirector>().time >= 15f) 
+        {
+            StartCoroutine(WaitToMenu());
+        }
     }
 
     // With the inputs and animations defined, FixedUpdate is responsible for applying movements and actions to the player
@@ -210,6 +221,18 @@ public class Player : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
+    public void RPC_SetNickname(int index)
+    {
+        nickTxt.text = PhotonNetwork.PlayerList[index - 1].NickName;
+        if (nickTxt.text == null || nickTxt.text == "")
+        {
+            if (nickTxt.gameObject.name.StartsWith("Steven Nick")) nickTxt.text = "Steven";
+            else nickTxt.text = "T-Rex";
+        }
+        if (nickTxt.gameObject.name.StartsWith("Steven Nick")) nickTxt.text += " Spielberg";
+    }
+
+    [PunRPC]
     public void RPC_TakeDamage(float damage)
     {
         if (GetComponent<PhotonView>().IsMine)
@@ -220,13 +243,18 @@ public class Player : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void RPC_EndGame()
+    public void RPC_EndGame(string deadTag)
     {
+        switch (deadTag)
+        {
+            case "Player":
+                GameController.Instance.trexWinCutscene.SetActive(true); break;
+            case "TRex":
+                GameController.Instance.playerWinCutscene.SetActive(true); break;
+        }
         /*GameController.Instance.endGameObject.SetActive(true);
         if (gameObject.CompareTag("Player")) GameController.Instance.endGameObject.GetComponent<Image>().sprite = dinoWinImage;
         else if (gameObject.CompareTag("TRex")) GameController.Instance.endGameObject.GetComponent<Image>().sprite = dinoLostImage;*/
-        PhotonNetwork.LeaveRoom();
-        StartCoroutine(WaitToMenu());
     }
 
     IEnumerator WaitToMenu()
@@ -237,6 +265,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     public void BackToMenu()
     {
+        PhotonNetwork.LeaveRoom();
         SceneManager.LoadScene("Menu");
     }
 }

@@ -9,10 +9,11 @@ using System;
 public class Timer : MonoBehaviourPunCallbacks
 {
     public TextMeshProUGUI timerText;
-    public float timerDuration = 60 * 2f; // Duração do temporizador em segundos
+    public float timerDuration = 60 * 2f; // Duraï¿½ï¿½o do temporizador em segundos
 
-    private bool timerOn = false;
+    public bool timerOn = false;
     private double startTime;
+    public int seconds = 120; //inicializando assim pra contornar erros 
 
     void Start()
     {
@@ -52,6 +53,7 @@ public class Timer : MonoBehaviourPunCallbacks
                 else
                 {
                     Debug.Log("Acabou o tempo!!");
+                    GameObject.Find("Player(Clone)").GetComponent<PhotonView>().RPC("RPC_EndGame", RpcTarget.All, "TRex");
                     timerOn = false;
                     UpdateTimer(0); // Mostra 0 segundos
                 }
@@ -61,7 +63,7 @@ public class Timer : MonoBehaviourPunCallbacks
 
     void UpdateTimer(float currentTime)
     {
-        int seconds = Mathf.CeilToInt(currentTime); // Arredonda para cima para evitar "tempo negativo"
+        seconds = Mathf.CeilToInt(currentTime); // Arredonda para cima para evitar "tempo negativo"
         timerText.text = $"{seconds}";
     }
 }
