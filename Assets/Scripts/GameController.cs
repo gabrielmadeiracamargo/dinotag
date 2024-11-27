@@ -165,6 +165,7 @@ public class GameController : MonoBehaviourPunCallbacks
         startCutsceneObject.SetActive(false);
         InstantiatePlayer();
         player.GetComponent<Player>().canMove = true;
+        player.GetComponent<Player>().life = 100;
     }
 
     public void ShowObjects(GameObject[] objects, bool isShown)

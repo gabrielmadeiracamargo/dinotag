@@ -83,7 +83,11 @@ public class Player : MonoBehaviourPunCallbacks
     void Update()
     {
         if (!photonView.IsMine) return;
-        if (GameObject.FindGameObjectWithTag("Minimap") != null) GameObject.FindGameObjectWithTag("Minimap").GetComponent<RawImage>().texture = minimapTexture;
+        if (GameObject.FindGameObjectWithTag("Minimap") != null) 
+        {
+            print("colocando imagem do minimapa");
+            GameObject.FindGameObjectWithTag("Minimap").GetComponent<RawImage>().texture = minimapTexture;
+        }
         if (GameController.Instance.portrait.sprite != null) GameController.Instance.portrait.sprite = this.portrait;
         if (GameController.Instance.healthBar != null) GameController.Instance.healthBar.BarValue = life;
 

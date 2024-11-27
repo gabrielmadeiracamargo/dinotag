@@ -108,6 +108,14 @@ public class Gun : MonoBehaviourPunCallbacks
         print("executando");
         // Troca de arma com base no scroll do mouse
         float scroll = Input.GetAxis("Mouse ScrollWheel");
+        if (scroll != 0f)
+        {
+            GetComponent<Animator>().SetBool("aiming", false);
+            GetComponent<Animator>().SetBool("shooted", false);
+            GetComponent<Animator>().SetBool("hit1", false);
+            GetComponent<Animator>().SetBool("hit2", false);
+            GetComponent<Animator>().SetBool("hit3", false);
+        }
         if (scroll > 0f)
         {
             print($"photon view existe: {phView.name} scroll: {scroll} weaponindex: {weaponIndex} total weapons: {totalWeapons}");
