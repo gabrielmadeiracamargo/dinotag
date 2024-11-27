@@ -3,26 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Photon.Pun;
+using System.Drawing;
+using System;
 
 public class Timer : MonoBehaviourPunCallbacks
 {
     public TextMeshProUGUI timerText;
-    public float timerDuration = 60*5f; // Duração do temporizador em segundos
+    public float timerDuration = 60 * 2f; // Duração do temporizador em segundos
 
     private bool timerOn = false;
     private double startTime;
 
     void Start()
     {
+        timerText.gameObject.SetActive(false);
         if (PhotonNetwork.IsMasterClient)
         {
-            GameController.Instance.skipCutsceneButton.SetActive(true);
             startTime = PhotonNetwork.Time;
             PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "StartTime", startTime } });
         }
         else
         {
-            GameController.Instance.skipCutsceneButton.SetActive(false);
             if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("StartTime"))
             {
                 startTime = (double)PhotonNetwork.CurrentRoom.CustomProperties["StartTime"];
@@ -52,7 +53,7 @@ public class Timer : MonoBehaviourPunCallbacks
                 {
                     Debug.Log("Acabou o tempo!!");
                     timerOn = false;
-                    UpdateTimer(0); // Mostra 00:00 no timer
+                    UpdateTimer(0); // Mostra 0 segundos
                 }
             }
         }
@@ -60,8 +61,7 @@ public class Timer : MonoBehaviourPunCallbacks
 
     void UpdateTimer(float currentTime)
     {
-        int minutes = Mathf.FloorToInt(currentTime / 60);
-        int seconds = Mathf.FloorToInt(currentTime % 60);
-        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        int seconds = Mathf.CeilToInt(currentTime); // Arredonda para cima para evitar "tempo negativo"
+        timerText.text = $"{seconds}";
     }
 }

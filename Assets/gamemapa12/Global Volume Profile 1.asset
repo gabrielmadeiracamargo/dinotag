@@ -18,13 +18,41 @@ MonoBehaviour:
     m_Value: 2
   intensity:
     m_OverrideState: 1
-    m_Value: 0.438
+    m_Value: 0.5
   response:
-    m_OverrideState: 1
-    m_Value: 0.013
+    m_OverrideState: 0
+    m_Value: 0
   texture:
     m_OverrideState: 0
     m_Value: {fileID: 0}
+--- !u!114 &-3423109951126118382
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5e1dc532bcb41949b58bc4f2abfbb7e, type: 3}
+  m_Name: LensDistortion
+  m_EditorClassIdentifier: 
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0.25
+  xMultiplier:
+    m_OverrideState: 1
+    m_Value: 1
+  yMultiplier:
+    m_OverrideState: 1
+    m_Value: 1
+  center:
+    m_OverrideState: 1
+    m_Value: {x: 0.5, y: 0.5}
+  scale:
+    m_OverrideState: 1
+    m_Value: 1
 --- !u!114 &-3002143264650948134
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -46,7 +74,7 @@ MonoBehaviour:
     m_Value: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.302
+    m_Value: 0.1
   clamp:
     m_OverrideState: 0
     m_Value: 0.05
@@ -64,9 +92,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   components:
   - {fileID: -5901835349348088120}
-  - {fileID: 3477964133263811526}
   - {fileID: -3002143264650948134}
---- !u!114 &3477964133263811526
+  - {fileID: -3423109951126118382}
+  - {fileID: 5456061643526295496}
+--- !u!114 &5456061643526295496
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -75,10 +104,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 97c23e3b12dc18c42a140437e53d3951, type: 3}
-  m_Name: Tonemapping
+  m_Script: {fileID: 11500000, guid: 81180773991d8724ab7f2d216912b564, type: 3}
+  m_Name: ChromaticAberration
   m_EditorClassIdentifier: 
   active: 1
-  mode:
+  intensity:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0.15

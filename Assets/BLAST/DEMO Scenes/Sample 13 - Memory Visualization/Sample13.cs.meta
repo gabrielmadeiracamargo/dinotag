@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 3f26c789ef998404a8d634c93a10c9a3
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - DataStackTexture: {fileID: 8400000, guid: 99a72578263cbef4392eec2fc59ab5f6, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

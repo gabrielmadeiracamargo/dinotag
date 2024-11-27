@@ -8,28 +8,25 @@ using UnityEngine.SocialPlatforms.Impl;
 using System;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameController : MonoBehaviourPunCallbacks
 {
     public static GameController Instance { get; private set; }
 
     [Header("Player related")]
-    public GameObject player, stevenPlayer, dinoPlayer;
+    public GameObject player, stevenPlayer, dinoPlayer, canvas;
     public Transform[] spawnPoints;
 
     [Header("UI related")]
-    [SerializeField] GameObject tabMenu, waitingText, settingsMenu;
-    [SerializeField] GameObject[] uiObjectsToHide;
+    [SerializeField] GameObject waitingText, settingsMenu;
     public ProgressBarCircle healthBar;
-    public GameObject skipCutsceneButton;
     public Image portrait;
-    bool isOnTab;
 
     [Header("Game related")]
     public bool cutsceneEnded;
     public PlayableDirector _director;
-    [SerializeField] GameObject cutsceneObjects;
-    public GameObject endGameObject;
+    [SerializeField] GameObject startCutsceneObject;
     public Material skybox;
     public float timer;
 
@@ -51,19 +48,10 @@ public class GameController : MonoBehaviourPunCallbacks
 
         //DontDestroyOnLoad(gameObject);
     }
-
     public override void OnJoinedRoom()
-
     {
         base.OnJoinedRoom();
-        if (PhotonNetwork.LocalPlayer.ActorNumber == 1 ||  PhotonNetwork.LocalPlayer.ActorNumber == 3) 
-        {
-            PhotonNetwork.Instantiate("Player", spawnPoints[PhotonNetwork.LocalPlayer.ActorNumber-1].position, stevenPlayer.transform.rotation);
-        }
-        else if (PhotonNetwork.LocalPlayer.ActorNumber == 2) 
-        {
-            PhotonNetwork.Instantiate("TRex", spawnPoints[PhotonNetwork.LocalPlayer.ActorNumber-1].position, dinoPlayer.transform.rotation);
-        }
+        PlayLocalCutscene(); // Iniciar cutscene local
     }
 
     // Update is called once per frame
@@ -81,17 +69,17 @@ public class GameController : MonoBehaviourPunCallbacks
         }
 
 
-        if (PhotonNetwork.PlayerList.Length == 1) waitingText.SetActive(true);
-        else if (PhotonNetwork.PlayerList.Length == 2)
+        waitingText.GetComponent<TextMeshProUGUI>().text = $"{PhotonNetwork.PlayerList.Length}/3 jogadores";
+        /*else if (PhotonNetwork.PlayerList.Length == 2)
         {   
             if (!cutsceneEnded)
             {
                 GameObject.FindGameObjectWithTag("Player").transform.position = new Vector3 (150,-150,0);
                 GameObject.FindGameObjectWithTag("TRex").transform.position = new Vector3 (150,-150,0);
-                cutsceneObjects.SetActive(true);
+                startCutsceneObjects.SetActive(true);
             }
             if (waitingText.activeSelf) waitingText.SetActive(false);
-        }
+        }*/
 
 
         if (Input.GetKeyDown(KeyCode.Escape)) 
@@ -105,18 +93,16 @@ public class GameController : MonoBehaviourPunCallbacks
             PhotonNetwork.LoadLevel("Menu");
         }
 
-        if (_director.time >= 62 && !cutsceneEnded)
+        if (!cutsceneEnded && _director.time >= 17)
         {
-            GameObject.FindGameObjectWithTag("Player").transform.position = spawnPoints[0].position;
-            GameObject.FindGameObjectWithTag("TRex").transform.position = spawnPoints[1].position;
-            cutsceneEnded = true;
+            print("acabou!");
+            EndCutscene(); // Finaliza a cutscene automaticamente
         }
+        else print("nao acabou");
 
-        if (cutsceneEnded)
+        if (Input.GetKeyDown(KeyCode.Space) && !cutsceneEnded)
         {
-            GetComponent<Timer>().enabled = true;
-            Destroy(cutsceneObjects);
-            skipCutsceneButton.SetActive(false);
+            SkipCutscene(); // Permitir pular com a tecla Espaço
         }
 
         /*if (Input.GetKeyDown(KeyCode.Tab))
@@ -125,7 +111,7 @@ public class GameController : MonoBehaviourPunCallbacks
             else OnTabClosed();
         }*/
 
-        if (isOnTab || settingsMenu.activeInHierarchy)
+        if (settingsMenu.activeInHierarchy)
         {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
@@ -139,16 +125,49 @@ public class GameController : MonoBehaviourPunCallbacks
         }
     }
 
-    public void OnTabOpened()
+    private void InstantiatePlayer()
     {
-        isOnTab = true;
-        tabMenu.SetActive(true);
+        int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber - 1;
+        if (playerIndex == 0 || playerIndex == 2)
+        {
+            PhotonNetwork.Instantiate("Player", spawnPoints[playerIndex].position, Quaternion.identity);
+            player = GameObject.FindGameObjectWithTag("Player");
+            stevenPlayer = player;
+        }
+        else if (playerIndex == 1)
+        {
+            PhotonNetwork.Instantiate("TRex", spawnPoints[playerIndex].position, Quaternion.identity);
+            player = dinoPlayer;
+        }
+
+        GameObject.FindGameObjectWithTag("Player").transform.position = spawnPoints[playerIndex].position;
+        GameObject.FindGameObjectWithTag("TRex").transform.position = spawnPoints[playerIndex].position;
     }
-    public void OnTabClosed()
+
+    private void PlayLocalCutscene()
     {
-        isOnTab = false;
-        tabMenu.SetActive(false);
+        GameObject.Find("Canvas").SetActive(false);
+        print($"existe: {GameObject.Find("Canvas")} está ativo: {GameObject.Find("Canvas").activeInHierarchy}");
+        startCutsceneObject.SetActive(true);
+        _director.Play();
+        player.GetComponent<Player>().canMove = false;
     }
+
+    public void SkipCutscene()
+    {
+        _director.time = 17; // Avançar até o final
+        EndCutscene();
+    }
+
+    private void EndCutscene()
+    {
+        canvas.SetActive(true);
+        cutsceneEnded = true;
+        startCutsceneObject.SetActive(false);
+        InstantiatePlayer();
+        player.GetComponent<Player>().canMove = true;
+    }
+
     public void ShowObjects(GameObject[] objects, bool isShown)
     {
         for (int i = 0; i < objects.Length; i++)

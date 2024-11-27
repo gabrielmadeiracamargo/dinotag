@@ -26,16 +26,28 @@ public class Gun : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        camT = Camera.main.transform;
-        phView = GetComponent<PhotonView>();
         ammoText = GameObject.Find("Ammo Count");
         ammoText.SetActive(false);
+        phView = GetComponent<PhotonView>();
+        if (!phView.IsMine) return;
+        ammo = maxAmmo;
+        camT = Camera.main.transform;
+
+
+        if (PhotonNetwork.PlayerList.Length >= 3)
+        {
+            AssignWeaponsBasedOnPlayers(); // Sincroniza estado inicial das armas
+        }
+        else
+        {
+            EnableWeaponSwitching(); // Permite troca livre de armas para 2 jogadores
+        }
     }
+
 
     void Update()
     {
-        print(PhotonNetwork.PlayerList.Length);
-        if (!phView.IsMine) return;
+        if (!photonView.IsMine) return;
 
 
         // Apenas os dois primeiros jogadores podem alternar entre as armas
@@ -69,32 +81,23 @@ public class Gun : MonoBehaviourPunCallbacks
         }
     }
 
-
     private void AssignWeaponsBasedOnPlayers()
     {
         int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber;
-        print(playerIndex);
 
         if (PhotonNetwork.PlayerList.Length >= 3)
         {
             if (playerIndex == 1)
             {
-                // Primeiro jogador terá a espada
-                hasSword = true;
-                hasGun = false;
-                EquipSword();
+                phView.RPC("RPC_ChooseWeapon", RpcTarget.All, true); // Equip Sword
             }
             else
             {
-                // Segundo jogador terá a arma
-                hasSword = false;
-                hasGun = true;
-                EquipGun();
+                phView.RPC("RPC_ChooseWeapon", RpcTarget.All, false); // Equip Gun
             }
         }
         else
         {
-            // Dois jogadores: troca de armas livre
             EnableWeaponSwitching();
         }
     }
@@ -107,11 +110,13 @@ public class Gun : MonoBehaviourPunCallbacks
         {
             weaponIndex = (weaponIndex + 1) % totalWeapons; // Scroll up
             phView.RPC("RPC_ChooseWeapon", RpcTarget.All, weaponIndex == 0); // 0 = Sword
+            GetComponent<GameTips>().UpdateTips();
         }
-        else if (scroll < 0f)
+        else if (scroll < 0f) 
         {
             weaponIndex = (weaponIndex - 1 + totalWeapons) % totalWeapons; // Scroll down
             phView.RPC("RPC_ChooseWeapon", RpcTarget.All, weaponIndex == 0); // 0 = Sword
+            GetComponent<GameTips>().UpdateTips();
         }
     }
 
@@ -225,12 +230,20 @@ public class Gun : MonoBehaviourPunCallbacks
     {
         if (isSword)
         {
-            EquipSword();
+            hasSword = true;
+            hasGun = false;
+            sword.SetActive(true);
+            gun.SetActive(false);
         }
         else
         {
-            EquipGun();
+            hasSword = false;
+            hasGun = true;
+            sword.SetActive(false);
+            gun.SetActive(true);
         }
+
+        UpdateWeaponSprite();
     }
 
     void UpdateWeaponSprite()
