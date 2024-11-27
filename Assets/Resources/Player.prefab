@@ -2552,16 +2552,9 @@ MonoBehaviour:
   phView: {fileID: 0}
   playerCam: {fileID: 237278930112303628}
   minimapCamera: {fileID: 684754620}
-  emote: {fileID: 4549422713589542282}
   portrait: {fileID: 21300000, guid: ab5edd579b638014789286618a7a7660, type: 3}
   dinoLostImage: {fileID: 0}
   dinoWinImage: {fileID: 0}
-  emotes:
-  - {fileID: 21300000, guid: 4e634442dece0e04e97d4d8047e03c90, type: 3}
-  - {fileID: 21300000, guid: d75d6d31eac603e4c9f04325ad19ee4b, type: 3}
-  skins:
-  - {fileID: 2100000, guid: d143d9814ff6c8545bea82253b253ca4, type: 2}
-  - {fileID: 2100000, guid: e28ed4577f9344e429c6277b75406fe3, type: 2}
   minimapTexture: {fileID: 8400000, guid: a2563f7574f7e6540939b01e3da89a48, type: 2}
   groundCheck: {fileID: 0}
   groundCheckRadius: 0.2
@@ -2751,8 +2744,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tipsText: {fileID: 0}
-  playerTips: []
-  trexTips: []
+  tips: []
 --- !u!1 &8166628433855335208
 GameObject:
   m_ObjectHideFlags: 0

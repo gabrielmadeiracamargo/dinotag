@@ -47,8 +47,7 @@ public class Gun : MonoBehaviourPunCallbacks
 
     void Update()
     {
-        print(PhotonNetwork.PlayerList.Length);
-        if (!phView.IsMine) return;
+        if (!photonView.IsMine) return;
 
 
         // Apenas os dois primeiros jogadores podem alternar entre as armas

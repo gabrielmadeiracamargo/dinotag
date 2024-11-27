@@ -15,7 +15,7 @@ public class GameController : MonoBehaviourPunCallbacks
     public static GameController Instance { get; private set; }
 
     [Header("Player related")]
-    public GameObject player, stevenPlayer, dinoPlayer, skipCutsceneButton;
+    public GameObject player, stevenPlayer, dinoPlayer, canvas;
     public Transform[] spawnPoints;
 
     [Header("UI related")]
@@ -93,11 +93,12 @@ public class GameController : MonoBehaviourPunCallbacks
             PhotonNetwork.LoadLevel("Menu");
         }
 
-        if (!cutsceneEnded && _director.time >= _director.duration)
+        if (!cutsceneEnded && _director.time >= 17)
         {
             print("acabou!");
             EndCutscene(); // Finaliza a cutscene automaticamente
         }
+        else print("nao acabou");
 
         if (Input.GetKeyDown(KeyCode.Space) && !cutsceneEnded)
         {
@@ -130,7 +131,8 @@ public class GameController : MonoBehaviourPunCallbacks
         if (playerIndex == 0 || playerIndex == 2)
         {
             PhotonNetwork.Instantiate("Player", spawnPoints[playerIndex].position, Quaternion.identity);
-            player = stevenPlayer;
+            player = GameObject.FindGameObjectWithTag("Player");
+            stevenPlayer = player;
         }
         else if (playerIndex == 1)
         {
@@ -144,23 +146,24 @@ public class GameController : MonoBehaviourPunCallbacks
 
     private void PlayLocalCutscene()
     {
+        GameObject.Find("Canvas").SetActive(false);
+        print($"existe: {GameObject.Find("Canvas")} está ativo: {GameObject.Find("Canvas").activeInHierarchy}");
         startCutsceneObject.SetActive(true);
-        skipCutsceneButton.SetActive(true);
         _director.Play();
         player.GetComponent<Player>().canMove = false;
     }
 
     public void SkipCutscene()
     {
-        _director.time = _director.duration; // Avançar até o final
+        _director.time = 17; // Avançar até o final
         EndCutscene();
     }
 
     private void EndCutscene()
     {
+        canvas.SetActive(true);
         cutsceneEnded = true;
         startCutsceneObject.SetActive(false);
-        skipCutsceneButton.SetActive(false);
         InstantiatePlayer();
         player.GetComponent<Player>().canMove = true;
     }
