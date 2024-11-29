@@ -32,6 +32,7 @@ public class Connection : MonoBehaviourPunCallbacks
 
         roomOptions.CustomRoomProperties = roomHashtable;
         roomOptions.MaxPlayers = System.Convert.ToByte(maxPlayers);
+        //EnableCloseConnection = true;
     }
 
     IEnumerator WaitToConnect()
@@ -105,7 +106,6 @@ public class Connection : MonoBehaviourPunCallbacks
     {
         print($"Criou a sala {input}");
     }
-
     public override async void OnJoinedRoom()
     {
         print(roomOptions.MaxPlayers - PhotonNetwork.PlayerList.Length);
@@ -119,13 +119,26 @@ public class Connection : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             await Task.Delay(100);
-            PhotonNetwork.LoadLevel("Game");
+            print("CARREGANDO SALA NOVA");
+
+            // Apenas o MasterClient carrega a cena
+            if (SceneManager.GetActiveScene().name != "Game")
+            {
+                PhotonNetwork.LoadLevel("Game");
+            }
         }
-        else
-        {
-            //PhotonNetwork.CurrentRoom.IsOpen = false;
-            //PhotonNetwork.CurrentRoom.IsVisible = false;
-        }
+
+            if (PhotonNetwork.CurrentRoom.PlayerCount == roomOptions.MaxPlayers) 
+            {
+                roomHashtable.Add("isOpen", false);
+                roomHashtable.Add("isVisible", false);
+            }
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        print($"Desconectado: {cause}");
+        SceneManager.LoadScene("Menu");
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message) // criar sala se não tiver nenhuma
@@ -162,6 +175,9 @@ public class Connection : MonoBehaviourPunCallbacks
     // Adiciona o evento de saída de sala para garantir que o jogador seja desconectado corretamente
     public override void OnLeftRoom()
     {
-        print("Saiu da sala com sucesso");
+        if (SceneManager.GetActiveScene().name != "Menu")
+        {
+            SceneManager.LoadScene("Menu");
+        }
     }
 }

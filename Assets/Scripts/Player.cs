@@ -65,6 +65,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     void Awake()
     {
+        PhotonNetwork.AutomaticallySyncScene = false;
         phView = GetComponent<PhotonView>();
 
         if (!phView.IsMine) playerCam.SetActive(false);
@@ -93,10 +94,8 @@ public class Player : MonoBehaviourPunCallbacks
 
         if (GameObject.Find("GameController").GetComponent<Timer>().enabled == false && GameController.Instance.cutsceneEnded == true) 
         {
-            print("ativa");
             GameObject.Find("GameController").GetComponent<Timer>().enabled = true;
         }
-        print($"gamecontroller é achado: {GameObject.Find("GameController").tag}\ntimer é achado {GameObject.Find("GameController").GetComponent<Timer>()} cutscene ended: {GameController.Instance.cutsceneEnded}");
         // Input checkers
         if (canMove)
         {
@@ -151,9 +150,16 @@ public class Player : MonoBehaviourPunCallbacks
             phView.RPC("RPC_EndGame", RpcTarget.All, gameObject.tag);
         }
 
-        if (GameController.Instance.playerWinCutscene.GetComponent<PlayableDirector>().time >= 25f || GameController.Instance.trexWinCutscene.GetComponent<PlayableDirector>().time >= 15f) 
+        if (GameController.Instance.playerWinCutscene.GetComponent<PlayableDirector>().time >= 25f || GameController.Instance.trexWinCutscene.GetComponent<PlayableDirector>().time >= 8f) 
         {
-            Application.Quit();
+            if (PhotonNetwork.InRoom)
+            {
+                StartCoroutine(DisconnectAndLoadMenu());
+            }
+
+            // Carrega a cena do Menu
+            print("acabou");
+            //SceneManager.LoadScene("Menu");
         }
     }
 
@@ -256,15 +262,20 @@ public class Player : MonoBehaviourPunCallbacks
             case "TRex":
                 GameController.Instance.playerWinCutscene.SetActive(true); break;
         }
-        /*GameController.Instance.endGameObject.SetActive(true);
-        if (gameObject.CompareTag("Player")) GameController.Instance.endGameObject.GetComponent<Image>().sprite = dinoWinImage;
-        else if (gameObject.CompareTag("TRex")) GameController.Instance.endGameObject.GetComponent<Image>().sprite = dinoLostImage;*/
+        GameObject.Find("Canvas").SetActive(false);
+    }
+
+    IEnumerator DisconnectAndLoadMenu()
+    {
+        PhotonNetwork.LeaveRoom();
+        while (PhotonNetwork.InRoom) yield return null; // Aguarda até sair da sala
+        SceneManager.LoadScene("Menu");
     }
 
     IEnumerator WaitToMenu()
     {
         yield return new WaitForSeconds(3);
-        Application.Quit();
+        BackToMenu();
     }
 
     public void BackToMenu()

@@ -127,6 +127,7 @@ public class TRexCombat : MonoBehaviourPunCallbacks
 
         if (other.CompareTag("Sword") && GetComponentInParent<PhotonView>().IsMine && isBeingAttacked == false)
         {
+            other.gameObject.transform.GetChild(0).gameObject.GetComponent<ParticleSystem>().Play();
             isBeingAttacked = true;
             GetComponent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.AllBuffered, 12f);
         }

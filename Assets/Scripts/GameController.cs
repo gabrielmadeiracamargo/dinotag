@@ -184,6 +184,7 @@ public class GameController : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
     {
         base.OnPlayerLeftRoom(otherPlayer);
+        
         PhotonNetwork.LeaveRoom();
         PhotonNetwork.LoadLevel("Menu");
     }
