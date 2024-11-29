@@ -69,7 +69,7 @@ public class GameTips : MonoBehaviourPunCallbacks
         tips.Clear(); // Limpa as dicas antigas
 
         // Dicas gerais para todos
-        tips.Add("Use WASD pra andar e espaço para pular");
+        tips.Add("Use WASD pra andar");
         tips.Add("Jogue com 2 ou 3 jogadores");
 
         // Dicas específicas para armas

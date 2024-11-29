@@ -101,7 +101,7 @@ public class StevenCombat : MonoBehaviourPunCallbacks
     {
         if (other.CompareTag("Bite"))
         {
-            phView.RPC("RPC_TakeDamage", RpcTarget.AllBuffered, 4f);
+            phView.RPC("RPC_TakeDamage", RpcTarget.AllBuffered, 3.5f);
             TRexCombat dinoCombat = other.GetComponentInParent<TRexCombat>();
             if (!dinoCombat.isBiting)
             {

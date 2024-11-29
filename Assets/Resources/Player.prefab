@@ -2541,8 +2541,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocity: 25
   sprintAdittion: 35
-  jumpForce: 30
-  jumpTime: 0.5
+  jumpForce: 0
+  jumpTime: 0
   gravity: 9.8
   canMove: 1
   animator: {fileID: 3625927451974042601}
@@ -2609,8 +2609,8 @@ MonoBehaviour:
   damage: 1
   hasSword: 0
   hasGun: 0
-  ammo: 4
-  maxAmmo: 4
+  ammo: 10
+  maxAmmo: 10
   camT: {fileID: 1327720658830746266}
   sword: {fileID: 6381596450229922919}
   gun: {fileID: 1999612571734455383}

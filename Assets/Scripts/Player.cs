@@ -147,13 +147,13 @@ public class Player : MonoBehaviourPunCallbacks
 
         if (life <= 0) 
         {
-            print("eita!");
+            print($"{gameObject.tag} morreu");
             phView.RPC("RPC_EndGame", RpcTarget.All, gameObject.tag);
         }
 
-        if (GameController.Instance.playerWinCutscene.GetComponent<PlayableDirector>().time >= 30f || GameController.Instance.trexWinCutscene.GetComponent<PlayableDirector>().time >= 15f) 
+        if (GameController.Instance.playerWinCutscene.GetComponent<PlayableDirector>().time >= 25f || GameController.Instance.trexWinCutscene.GetComponent<PlayableDirector>().time >= 15f) 
         {
-            StartCoroutine(WaitToMenu());
+            Application.Quit();
         }
     }
 
@@ -264,7 +264,7 @@ public class Player : MonoBehaviourPunCallbacks
     IEnumerator WaitToMenu()
     {
         yield return new WaitForSeconds(3);
-        BackToMenu();
+        Application.Quit();
     }
 
     public void BackToMenu()

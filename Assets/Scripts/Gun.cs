@@ -7,8 +7,8 @@ public class Gun : MonoBehaviourPunCallbacks
 {
     public int damage;
     public bool hasSword, hasGun;
-    public int ammo = 4;
-    public int maxAmmo = 4;
+    public int ammo = 12;
+    public int maxAmmo = 12;
     RaycastHit hit;
     [SerializeField] Transform camT;
     [SerializeField] public GameObject sword, gun;

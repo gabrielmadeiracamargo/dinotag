@@ -10,8 +10,8 @@ public class TRexCombat : MonoBehaviourPunCallbacks
     float lastClickedTime = 0;
     float maxComboDelay = 1;
     float damage = 5f;
-    public bool isBiting, isBeingAttacked = false;
-    public float biteDuration = 1.0f; // Dura��o da mordida
+    public bool isBiting, isBeingAttacked = false, isCooldown = false; // Adicionado isCooldown
+    public float biteDuration = 1.0f; // Duração da mordida
     public GameObject bite;
     public PhotonView phView;
 
@@ -33,7 +33,9 @@ public class TRexCombat : MonoBehaviourPunCallbacks
     {
         if (!phView.IsMine) return;
 
-        // Gerenciamento de anima��es de combo de mordida
+        if (GameObject.Find("Ammo Count") != null) GameObject.Find("Ammo Count").SetActive(false);
+
+        // Gerenciamento de animações de combo de mordida
         if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f && anim.GetCurrentAnimatorStateInfo(0).IsName("hit1"))
         {
             anim.SetBool("hit1", false);
@@ -46,21 +48,27 @@ public class TRexCombat : MonoBehaviourPunCallbacks
         {
             anim.SetBool("hit3", false);
             noOfClicks = 0;
+
+            // Inicia cooldown após o final do hit3
+            if (!isCooldown)
+            {
+                StartCoroutine(StartCooldown());
+            }
         }
 
-        // Zera o combo se o tempo m�ximo for ultrapassado
+        // Zera o combo se o tempo máximo for ultrapassado
         if (Time.time - lastClickedTime > maxComboDelay)
         {
             noOfClicks = 0;
         }
 
-        // Detec��o de ataque de mordida
-        if (Input.GetMouseButtonDown(0))
+        // Detecção de ataque de mordida
+        if (Input.GetMouseButtonDown(0) && !isCooldown)
         {
             OnClick();
         }
 
-        // Sincroniza��o do estado do Collider de mordida entre os clientes
+        // Sincronização do estado do Collider de mordida entre os clientes
         if (noOfClicks == 0)
         {
             if (bite != null && bite.GetComponent<SphereCollider>().enabled)
@@ -106,6 +114,13 @@ public class TRexCombat : MonoBehaviourPunCallbacks
         }
     }
 
+    private IEnumerator StartCooldown()
+    {
+        isCooldown = true; // Ativa cooldown
+        yield return new WaitForSeconds(cooldownTime); // Aguarda o tempo de cooldown
+        isCooldown = false; // Desativa cooldown
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         print($"ele é o {other.gameObject.name}");
@@ -113,7 +128,7 @@ public class TRexCombat : MonoBehaviourPunCallbacks
         if (other.CompareTag("Sword") && GetComponentInParent<PhotonView>().IsMine && isBeingAttacked == false)
         {
             isBeingAttacked = true;
-            GetComponent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.AllBuffered, 8f);
+            GetComponent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.AllBuffered, 12f);
         }
     }
 
@@ -146,13 +161,12 @@ public class TRexCombat : MonoBehaviourPunCallbacks
         }
     }
 
-
     public IEnumerator ReleasePlayerAfterBite()
     {
         yield return new WaitForSeconds(biteDuration);
         isBiting = false;
 
-        // Solta o jogador, movendo-o para uma posi��o abaixo da boca do T-Rex
+        // Solta o jogador, movendo-o para uma posição abaixo da boca do T-Rex
         phView.RPC("RPC_ReleasePlayer", RpcTarget.All, bite.transform.position - (bite.transform.up * 1.5f));
     }
 
@@ -170,7 +184,7 @@ public class TRexCombat : MonoBehaviourPunCallbacks
     {
         if (phView.IsMine)
         {
-            GetComponent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.AllBuffered, 5f);
+            GetComponent<PhotonView>().RPC("RPC_TakeDamage", RpcTarget.AllBuffered, 2.5f);
             StartCoroutine(Sleep());
         }
     }
