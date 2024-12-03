@@ -65,7 +65,6 @@ public class Player : MonoBehaviourPunCallbacks
 
     void Awake()
     {
-        PhotonNetwork.AutomaticallySyncScene = false;
         phView = GetComponent<PhotonView>();
 
         if (!phView.IsMine) playerCam.SetActive(false);
@@ -160,6 +159,14 @@ public class Player : MonoBehaviourPunCallbacks
             // Carrega a cena do Menu
             print("acabou");
             //SceneManager.LoadScene("Menu");
+        }
+
+        if (GameController.Instance.settingsMenu.activeInHierarchy && Input.GetKeyDown(KeyCode.X))
+        {
+            if (PhotonNetwork.InRoom)
+            {
+                StartCoroutine(DisconnectAndLoadMenu());
+            }
         }
     }
 
@@ -265,11 +272,27 @@ public class Player : MonoBehaviourPunCallbacks
         GameObject.Find("Canvas").SetActive(false);
     }
 
+    [PunRPC]
+    public void RPC_DisableSceneSync()
+    {
+        print("Desativando sincronização automática de cenas.");
+        PhotonNetwork.AutomaticallySyncScene = false;
+    }
+
     IEnumerator DisconnectAndLoadMenu()
     {
+        print("desconectando");
+        photonView.RPC("RPC_DisableSceneSync", RpcTarget.All); // Desativa sincronização globalmente
+        print("dessincronizando e saindo da sala");
         PhotonNetwork.LeaveRoom();
+        print("esperando sair da sala");
         while (PhotonNetwork.InRoom) yield return null; // Aguarda até sair da sala
-        SceneManager.LoadScene("Menu");
+        print("saiu da sala");
+        if (SceneManager.GetActiveScene().name != "Menu")
+        {
+            print("Carregando Menu.");
+            SceneManager.LoadScene("Menu");
+        }
     }
 
     IEnumerator WaitToMenu()

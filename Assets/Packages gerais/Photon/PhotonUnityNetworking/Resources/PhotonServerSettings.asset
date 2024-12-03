@@ -58,6 +58,7 @@ MonoBehaviour:
   - RPC_SetPlayerPosition
   - RPC_SetBiteCollider
   - RPC_AssignInitialWeapons
+  - RPC_DisableSceneSync
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

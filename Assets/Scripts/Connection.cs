@@ -161,7 +161,12 @@ public class Connection : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.LeaveRoom();
         }
-
+        if (PhotonNetwork.IsMasterClient)
+        {
+            print("dessincronizando");
+            //PhotonNetwork.AutomaticallySyncScene = false;
+            PhotonNetwork.LeaveRoom();
+        }
         // Carrega a cena do Menu
         SceneManager.LoadScene("Menu");
     }
@@ -172,11 +177,29 @@ public class Connection : MonoBehaviourPunCallbacks
         Application.Quit();
     }
 
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    {
+        base.OnPlayerLeftRoom(otherPlayer);
+        print($"Jogador saiu: {otherPlayer.NickName}");
+
+        // Se o MasterClient atual sair, o novo MasterClient deve redefinir sincronização
+        if (PhotonNetwork.IsMasterClient)
+        {
+            print("Novo MasterClient configurado.");
+
+            // Certifique-se de que a sincronização de cenas está desativada
+            PhotonNetwork.AutomaticallySyncScene = false;
+            print("Sincronização desativada pelo novo MasterClient.");
+        }
+    }
+
     // Adiciona o evento de saída de sala para garantir que o jogador seja desconectado corretamente
     public override void OnLeftRoom()
     {
         if (SceneManager.GetActiveScene().name != "Menu")
         {
+            print(PhotonNetwork.AutomaticallySyncScene);
+            print("trocando cena");
             SceneManager.LoadScene("Menu");
         }
     }

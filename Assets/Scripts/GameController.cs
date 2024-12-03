@@ -19,7 +19,7 @@ public class GameController : MonoBehaviourPunCallbacks
     public Transform[] spawnPoints;
 
     [Header("UI related")]
-    [SerializeField] GameObject waitingText, settingsMenu;
+    [SerializeField] public GameObject waitingText, settingsMenu;
     public ProgressBarCircle healthBar;
     public Image portrait;
 
@@ -86,12 +86,6 @@ public class GameController : MonoBehaviourPunCallbacks
         if (Input.GetKeyDown(KeyCode.Escape)) 
         {
             settingsMenu.SetActive(!settingsMenu.activeInHierarchy);
-        }
-
-        if (settingsMenu.activeInHierarchy && Input.GetKeyDown(KeyCode.X))
-        {
-            PhotonNetwork.LeaveRoom();
-            PhotonNetwork.LoadLevel("Menu");
         }
 
         if (!cutsceneEnded && _director.time >= 17)
