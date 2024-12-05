@@ -93,9 +93,14 @@ public class GameController : MonoBehaviourPunCallbacks
             EndCutscene(); // Finaliza a cutscene automaticamente
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && !cutsceneEnded)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            SkipCutscene(); // Permitir pular com a tecla Espaço
+            if (!cutsceneEnded) SkipCutscene(); 
+            if (playerWinCutscene.activeSelf || trexWinCutscene.activeSelf) 
+            {
+                print("voltando?");
+                StartCoroutine(DisconnectAndLoadMenu());
+            }
         }
 
         /*if (Input.GetKeyDown(KeyCode.Tab))
@@ -160,6 +165,21 @@ public class GameController : MonoBehaviourPunCallbacks
         InstantiatePlayer();
         player.GetComponent<Player>().canMove = true;
         player.GetComponent<Player>().life = 100;
+    }
+
+    IEnumerator DisconnectAndLoadMenu()
+    {
+        print("desconectando");
+        print("dessincronizando e saindo da sala");
+        PhotonNetwork.LeaveRoom();
+        print("esperando sair da sala");
+        while (PhotonNetwork.InRoom) yield return null; // Aguarda até sair da sala
+        print("saiu da sala");
+        if (SceneManager.GetActiveScene().name != "Menu")
+        {
+            print("Carregando Menu.");
+            SceneManager.LoadScene("Menu");
+        }
     }
 
     public void ShowObjects(GameObject[] objects, bool isShown)

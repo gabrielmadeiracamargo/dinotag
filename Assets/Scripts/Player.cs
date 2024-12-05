@@ -262,6 +262,7 @@ public class Player : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_EndGame(string deadTag)
     {
+        PhotonNetwork.AutomaticallySyncScene = false;
         switch (deadTag)
         {
             case "Player":
@@ -277,6 +278,7 @@ public class Player : MonoBehaviourPunCallbacks
     {
         print("Desativando sincronização automática de cenas.");
         PhotonNetwork.AutomaticallySyncScene = false;
+        print(PhotonNetwork.AutomaticallySyncScene);
     }
 
     IEnumerator DisconnectAndLoadMenu()

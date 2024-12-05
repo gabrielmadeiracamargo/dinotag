@@ -18,37 +18,33 @@ public class Connection : MonoBehaviourPunCallbacks
     Hashtable roomHashtable = new Hashtable();
     RoomOptions roomOptions = new RoomOptions();
 
-    // Start is called before the first frame update
     void Awake()
     {
+        if (connection == null)
+        {
+            connection = gameObject;
+            DontDestroyOnLoad(gameObject); // Faz o objeto persistir entre cenas
+        }
+        else
+        {
+            Destroy(gameObject); // Evita duplicação do objeto
+        }
+
         StartCoroutine(WaitToConnect());
         PhotonNetwork.ConnectUsingSettings();
-
+        
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         PhotonNetwork.AutomaticallySyncScene = true;
-
         PhotonNetwork.LocalPlayer.NickName = nick;
 
         roomOptions.CustomRoomProperties = roomHashtable;
         roomOptions.MaxPlayers = System.Convert.ToByte(maxPlayers);
-        //EnableCloseConnection = true;
     }
 
     IEnumerator WaitToConnect()
     {
         yield return new WaitForSeconds(0.5f);
-    }
-
-    private void Update()
-    {
-        if (connectionStatus != null)
-        {
-            if (PhotonNetwork.IsConnected)
-                connectionStatus.GetComponent<TextMeshProUGUI>().text = "    Status: <color=green>Online";
-            else
-                connectionStatus.GetComponent<TextMeshProUGUI>().text = "    Status: <color=red>Offline";
-        }
     }
 
     public void ReadRoomInputName(string s)
@@ -108,7 +104,7 @@ public class Connection : MonoBehaviourPunCallbacks
     }
     public override async void OnJoinedRoom()
     {
-        print(roomOptions.MaxPlayers - PhotonNetwork.PlayerList.Length);
+        print($"diferença: {roomOptions.MaxPlayers - PhotonNetwork.PlayerList.Length}, máximo: {roomOptions.MaxPlayers}, jogadores: {PhotonNetwork.PlayerList.Length}");
 
         if (PhotonNetwork.CurrentRoom.PlayerCount > roomOptions.MaxPlayers)
         {
@@ -182,15 +178,7 @@ public class Connection : MonoBehaviourPunCallbacks
         base.OnPlayerLeftRoom(otherPlayer);
         print($"Jogador saiu: {otherPlayer.NickName}");
 
-        // Se o MasterClient atual sair, o novo MasterClient deve redefinir sincronização
-        if (PhotonNetwork.IsMasterClient)
-        {
-            print("Novo MasterClient configurado.");
-
-            // Certifique-se de que a sincronização de cenas está desativada
-            PhotonNetwork.AutomaticallySyncScene = false;
-            print("Sincronização desativada pelo novo MasterClient.");
-        }
+        SceneManager.LoadScene("Menu"); // Carrega a cena Menu
     }
 
     // Adiciona o evento de saída de sala para garantir que o jogador seja desconectado corretamente

@@ -1646,7 +1646,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e167fb2ecf119194f8d7fa10428cf1e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cooldownTime: 1
+  cooldownTime: 1.7
   isBiting: 0
   isBeingAttacked: 0
   isCooldown: 0

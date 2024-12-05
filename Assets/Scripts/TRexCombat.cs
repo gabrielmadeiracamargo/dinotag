@@ -125,7 +125,7 @@ public class TRexCombat : MonoBehaviourPunCallbacks
     {
         print($"ele é o {other.gameObject.name}");
 
-        if (other.CompareTag("Sword") && GetComponentInParent<PhotonView>().IsMine && isBeingAttacked == false)
+        if (other.CompareTag("Sword") && GetComponentInParent<PhotonView>().IsMine && isBeingAttacked == false && GameObject.Find("GameController").GetComponent<Timer>().seconds < 119)
         {
             other.gameObject.transform.GetChild(0).gameObject.GetComponent<ParticleSystem>().Play();
             isBeingAttacked = true;
